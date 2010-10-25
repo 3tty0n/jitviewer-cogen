@@ -29,7 +29,7 @@ class CodeRepr(object):
 
         last_lineno = -1
         for chunk in loop.chunks:
-            if isinstance(chunk, Bytecode):
+            if chunk.is_bytecode:
                 no = chunk.lineno
                 if no < last_lineno:
                     no = last_lineno

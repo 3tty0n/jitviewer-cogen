@@ -1,39 +1,28 @@
-<html>
-<head>
-  <link rel="stylesheet" type="text/css" href="/static/style.css"/>
-  <link rel="stylesheet" type="text/css" href="/static/pygments.css"/>
-  <script src="/static/jquery.min.js"></script>
-  <script src="/static/jquery.scrollTo-1.4.2-min.js"></script>
-  <script src="/static/script.js"></script>
-  <script>
-    $(document).ready(function() {
-      $.scrollTo($("#line-{{startline}}"), 200);
-    });
-  </script>
-</head>
-<body>
-  <!-- header -->
-  <a href="loop?no={{current_loop}}&path={{upper_path}}&scroll_to={{upper_start}}">Up</a>
-  <!-- end of header -->
-  {% for sourceline in source.lines %}
-     {% if sourceline.in_loop %}
-         <div id="line-{{loop.index + source.firstlineno - 1}}" class="source visible">{{sourceline.line}}</div>
-         {% if sourceline.chunks %}
-            <div class="operations">
-                {% for chunk in sourceline.chunks %}
-                   {% if chunk.is_bytecode %}
-                     <span class="dmp">{{chunk.html_repr() + "\n"}}</span>
-                     {% for op in chunk.operations[1:] %}
-                        <span class="single-operation {{op.extra_style()}}">{{(op.html_repr() + "\n")}}</span>
-                     {% endfor %}
-                   {% else %}
-                     <a class="inlined_call" href="loop?no={{current_loop}}&path={{chunk.path}}">{{(chunk.html_repr())|safe}}</a><br/>
-                   {% endif %}
-                {% endfor %}
-            </div>
-         {% endif %}
-     {% else %}
-         <div id="line-{{loop.index + source.firstlineno - 1}}" class="source hidden">{{sourceline.line}}</div>
-     {% endif %}
-  {% endfor %}
-</body>
+{% if show_upper_path %}
+   <a href="#" onClick="show_loop({{current_loop}}, {{upper_path}})">&lt;-- Up</a>
+{% endif %}
+{% for sourceline in source.lines %}
+   {% if sourceline.in_loop %}
+       <div id="line-{{loop.index + source.firstlineno - 1}}" class="source visible">{{sourceline.line}}</div>
+       {% if sourceline.chunks %}
+          <div class="operations">
+              {% for chunk in sourceline.chunks %}
+                 {% if chunk.is_bytecode %}
+                   <span class="dmp">{{chunk.html_repr()}}</span><br/>
+                   {% for op in chunk.operations[1:] %}
+                      {% if op.bridge %}
+                        <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="#" onClick="replace_from(this, {{op.bridge.no}})">&gt;&gt;show bridge</a><br/>
+                      {% else %}
+                        <span class="single-operation {{op.extra_style()}}">{{op.html_repr()}}</span><br/>
+                      {% endif %}
+                   {% endfor %}
+                 {% else %}
+                   <a class="inlined_call" onClick="show_loop({{current_loop}}, {{chunk.path}})" href="#">{{(chunk.html_repr())|safe}}</a><br/>
+                 {% endif %}
+              {% endfor %}
+          </div>
+       {% endif %}
+   {% else %}
+       <div id="line-{{loop.index + source.firstlineno - 1}}" class="source hidden">{{sourceline.line}}</div>
+   {% endif %}
+{% endfor %}

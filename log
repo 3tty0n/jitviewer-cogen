@@ -1,4 +1,4 @@
-[838b10c650a9] {jit-log-opt-loop
+[34290ea893e] {jit-log-opt-loop
 # Loop 0 : loop with 21 ops
 [p0, p1, p2, p3, i4, p5, p6, i7]
 debug_merge_point('<code object f, file 'source.py', line 2> #9 LOAD_FAST')
@@ -22,8 +22,8 @@ i19 = int_is_true(i18)
 guard_false(i19, descr=<Guard3>) [p1, p0, p2, p3, i11, None]
 debug_merge_point('<code object f, file 'source.py', line 2> #9 LOAD_FAST')
 jump(p0, p1, p2, p3, 9, ConstPtr(ptr22), ConstPtr(ptr23), i11, descr=<Loop0>)
-[838b10cb7479] jit-log-opt-loop}
-[838b10f675c9] {jit-log-opt-loop
+[34290f159b2] jit-log-opt-loop}
+[342912842da] {jit-log-opt-loop
 # Loop 1 : loop with 60 ops
 [p0, p1, p2, p3, i4, p5, p6, p7]
 debug_merge_point('<code object inlined_call, file 'source.py', line 12> #9 LOAD_FAST')
@@ -86,4 +86,132 @@ debug_merge_point('<code object inlined_call, file 'source.py', line 12> #9 LOAD
 p49 = new_with_vtable(ConstClass(W_IntObject))
 setfield_gc(p49, i37, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
 jump(p0, p1, p2, p3, 9, ConstPtr(ptr51), ConstPtr(ptr52), p49, descr=<Loop1>)
-[838b10fac96f] jit-log-opt-loop}
+[342912dbd2a] jit-log-opt-loop}
+[342915070fe] {jit-log-opt-loop
+# Loop 2 : loop with 43 ops
+[p0, p1, p2, p3, i4, p5, p6, i7, i8]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #15 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #18 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #21 COMPARE_OP')
+i10 = int_lt(i8, 3000)
+guard_true(i10, descr=<Guard17>) [p1, p0, p2, p3, i8, i7]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #24 JUMP_IF_FALSE')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #27 POP_TOP')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #28 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #31 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #34 BINARY_MODULO')
+i12 = int_add(i8, 2147483647)
+i14 = int_and(i12, 2)
+i15 = int_mod(i8, 2)
+i16 = int_xor(i8, 2)
+i18 = int_le(i16, 0)
+i19 = int_is_true(i15)
+i20 = int_and(i18, i19)
+i21 = int_mul(i20, 2)
+i22 = int_add(i15, i21)
+debug_merge_point('<code object bridge, file 'source.py', line 19> #35 JUMP_IF_FALSE')
+i23 = int_is_true(i22)
+guard_false(i23, descr=<Guard18>) [p1, p0, p2, p3, i22, i8, i7]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #52 POP_TOP')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #53 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #56 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #59 INPLACE_ADD')
+i25 = int_add_ovf(i7, 2)
+guard_no_overflow(, descr=<Guard19>) [p1, p0, i25, p2, p3, None, i8, i7]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #60 STORE_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #63 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #66 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #69 INPLACE_ADD')
+i28 = int_add(i8, 1)
+debug_merge_point('<code object bridge, file 'source.py', line 19> #70 STORE_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #73 JUMP_ABSOLUTE')
+i30 = getfield_raw(151937600, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i32 = int_add(i30, 1)
+setfield_raw(151937600, i32, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i35 = int_and(i32, 1089470464)
+i36 = int_is_true(i35)
+guard_false(i36, descr=<Guard20>) [p1, p0, p2, p3, i25, i28, None, None, None]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #15 LOAD_FAST')
+jump(p0, p1, p2, p3, 15, ConstPtr(ptr38), ConstPtr(ptr39), i25, i28, descr=<Loop2>)
+[3429153345a] jit-log-opt-loop}
+[3429172a1aa] {jit-log-opt-loop
+# Loop 3 : entry bridge with 50 ops
+[p0, p1, p2, p3, i4, p5, i6, p7, p8, p9, p10]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #15 LOAD_FAST')
+guard_value(i4, 0, descr=<Guard21>) [i4, p1, p0, p2, p3, p5, i6, p7, p8, p9, p10]
+guard_nonnull_class(p10, ConstClass(W_IntObject), descr=<Guard22>) [p1, p0, p10, p2, p3, p5, p7, p8, p9]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #18 LOAD_CONST')
+guard_value(p2, ConstPtr(ptr13), descr=<Guard23>) [p1, p0, p2, p3, p5, p10, p8, p9]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #21 COMPARE_OP')
+i14 = getfield_gc_pure(p10, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
+i16 = int_lt(i14, 3000)
+guard_true(i16, descr=<Guard24>) [p1, p0, p10, p3, p5, p9]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #24 JUMP_IF_FALSE')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #27 POP_TOP')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #28 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #31 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #34 BINARY_MODULO')
+i18 = int_add(i14, 2147483647)
+i20 = int_and(i18, 2)
+i21 = int_mod(i14, 2)
+i22 = int_xor(i14, 2)
+i24 = int_le(i22, 0)
+i25 = int_is_true(i21)
+i26 = int_and(i24, i25)
+i27 = int_mul(i26, 2)
+i28 = int_add(i21, i27)
+debug_merge_point('<code object bridge, file 'source.py', line 19> #35 JUMP_IF_FALSE')
+i29 = int_is_true(i28)
+guard_true(i29, descr=<Guard25>) [p1, p0, p3, p5, p9, p10, i28]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #38 POP_TOP')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #39 LOAD_FAST')
+guard_nonnull_class(p9, ConstClass(W_IntObject), descr=<Guard26>) [p1, p0, p9, p3, p5, p10, None]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #42 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #45 INPLACE_ADD')
+i32 = getfield_gc_pure(p9, descr=<SignedFieldDescr pypy.objspace.std.intobject.W_IntObject.inst_intval 8>)
+i34 = int_add_ovf(i32, 1)
+guard_no_overflow(, descr=<Guard27>) [p1, p0, p9, i34, p3, p5, p10, None]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #46 STORE_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #49 JUMP_FORWARD')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #63 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #66 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #69 INPLACE_ADD')
+i36 = int_add(i14, 1)
+debug_merge_point('<code object bridge, file 'source.py', line 19> #70 STORE_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #73 JUMP_ABSOLUTE')
+i38 = getfield_raw(151937600, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i40 = int_add(i38, 1)
+setfield_raw(151937600, i40, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i43 = int_and(i40, 1089470464)
+i44 = int_is_true(i43)
+guard_false(i44, descr=<Guard28>) [p1, p0, p3, p5, i34, i36, None]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #15 LOAD_FAST')
+jump(p0, p1, p3, p5, 15, ConstPtr(ptr46), ConstPtr(ptr47), i34, i36, descr=<Loop2>)
+[3429176185a] jit-log-opt-loop}
+[34291dbe9ee] {jit-log-opt-bridge
+# bridge out of Guard 18 with 23 ops
+[p0, p1, p2, p3, i4, i5, i6]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #38 POP_TOP')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #39 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #42 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #45 INPLACE_ADD')
+i8 = int_add_ovf(i6, 1)
+guard_no_overflow(, descr=<Guard29>) [p0, p1, i8, p2, p3, i5, i6]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #46 STORE_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #49 JUMP_FORWARD')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #63 LOAD_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #66 LOAD_CONST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #69 INPLACE_ADD')
+i10 = int_add_ovf(i5, 1)
+guard_no_overflow(, descr=<Guard30>) [p0, p1, i10, p2, p3, i8, i5, None]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #70 STORE_FAST')
+debug_merge_point('<code object bridge, file 'source.py', line 19> #73 JUMP_ABSOLUTE')
+i13 = getfield_raw(151937600, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i15 = int_add(i13, 1)
+setfield_raw(151937600, i15, descr=<SignedFieldDescr pypysig_long_struct.c_value 0>)
+i18 = int_and(i15, 1089470464)
+i19 = int_is_true(i18)
+guard_false(i19, descr=<Guard31>) [p0, p1, p2, p3, i10, i8, None, None]
+debug_merge_point('<code object bridge, file 'source.py', line 19> #15 LOAD_FAST')
+jump(p1, p0, p2, p3, 15, ConstPtr(ptr21), ConstPtr(ptr22), i8, i10, descr=<Loop2>)
+[34291dd9dde] jit-log-opt-bridge}

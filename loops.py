@@ -11,17 +11,25 @@ def _new_binop(name):
     return f
 
 class Op(object):
+    bridge = None
+    
     def __init__(self, name, args, res, descr):
         self.name = name
         self.args = args
         self.res = res
         self.descr = descr
+        self._is_guard = name.startswith('guard_')
+        if self._is_guard:
+            self.guard_no = int(self.descr[len('<Guard'):-1])
 
     def setfailargs(self, _):
         pass
 
     def html_repr(self):
         return getattr(self, 'repr_' + self.name, self.generic_repr)()
+
+    def is_guard(self):
+        return self._is_guard
 
     for bin_op, name in [('<', 'int_lt'),
                          ('>', 'int_gt'),
@@ -161,8 +169,8 @@ class Function(object):
     is_bytecode = False
     
     def __init__(self, chunks, path):
-        self.chunks = chunks
         self.path = path
+        self.chunks = chunks
         for chunk in self.chunks:
             if chunk.filename is not None:
                 self.startlineno = chunk.startlineno
@@ -178,7 +186,7 @@ class Function(object):
             minline = sys.maxint
             maxline = -1
             for chunk in self.chunks:
-                if isinstance(chunk, Bytecode) and chunk.filename is not None:
+                if chunk.is_bytecode and chunk.filename is not None:
                     lineno = chunk.lineno
                     minline = min(minline, lineno)
                     maxline = max(maxline, lineno)
@@ -210,12 +218,23 @@ class Function(object):
                 print >>out, "  ", source
             chunk.pretty_print(out)
 
-def slice_debug_merge_points(loop):
+def parse_log_counts(lines):
+    for line in lines:
+        pass
+
+def parse(input):
+    return SimpleParser(input, None, {}, 'lltype', None,
+                        nonstrict=True).parse()
+
+def slice_debug_merge_points(operations):
+    """ Slice given operation list into a chain of Bytecode chunks.
+    Also detect inlined functions and make them Function
+    """
     stack = []
 
     def getpath(stack):
-        return ','.join([str(len(v)) for (k, v) in stack])
-    
+        return ",".join([str(len(v)) for _, v in stack])
+
     def append_to_res(bc):
         if not stack:
             stack.append((bc.key(), []))
@@ -235,7 +254,7 @@ def slice_debug_merge_points(loop):
 
     so_far = []
     stack = []
-    for op in loop.operations:
+    for op in operations:
         if op.name == 'debug_merge_point':
             if so_far:
                 append_to_res(Bytecode(so_far))
@@ -244,27 +263,29 @@ def slice_debug_merge_points(loop):
     if so_far:
         append_to_res(Bytecode(so_far))
     # wrap stack back up
+    if not stack:
+        # no ops whatsoever
+        return Function([], getpath(stack))
     while True:
         _, next = stack.pop()
         if not stack:
             return Function(next, getpath(stack))
         stack[-1][1].append(Function(next, getpath(stack)))
 
-def parse_log_counts(lines):
-    for line in lines:
-        pass
-
-def parse(input):
-    return SimpleParser(input, None, {}, 'lltype', None,
-                        nonstrict=True).parse()
-
-if __name__ == '__main__':
-    # XXX kill probably
-    from pypy.tool.logparser import parse_log_file, extract_category
-
-    log = parse_log_file('log')
-    loops = [parse(l) for l in
-             extract_category(log, "jit-log-opt-")]
-    loops = [slice_debug_merge_points(loop) for loop in loops]
-    for i, loop in enumerate(loops):
-        loop.pretty_print(sys.stdout)
+def adjust_bridges(loop, bridges):
+    """ Slice given loop according to given bridges to follow. Returns a plain
+    list of operations.
+    """
+    ops = loop.operations
+    res = []
+    i = 0
+    while i < len(ops):
+        op = ops[i]
+        if op.is_guard() and bridges.get('loop-' + str(op.guard_no), None):
+            res.append(op)
+            i = 0
+            ops = op.bridge.operations
+        else:
+            res.append(op)
+            i += 1
+    return res
