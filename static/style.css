@@ -11,7 +11,7 @@ a,abbr,address,article,aside,audio,b,blockquote,body,canvas,caption,cite,code,dd
 body {
 	font-family: "Droid Sans Mono", DroidSansMono, Andale Mono, Courier New, Courier, monospace;
 	font-size: 13px;
-	line-height: 18px;
+	line-height: 20px;
 }
 #single_loop {
     float: right;
