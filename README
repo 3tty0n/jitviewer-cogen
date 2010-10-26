@@ -1,0 +1,13 @@
+You need to use PyPy to run this.  To get started, using a recent virtualenv
+(1.5.0 or newer), virtualenvwrapper, and a recent PyPy (trunk) create a
+virtualenv:
+
+    mkvirtualenv --python=/path/to/pypy-c pypy-viewer
+
+Now install the dependencies:
+
+    pip install flask pygments simplejson
+
+Finally, run it:
+
+    python baseviewer.py
