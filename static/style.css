@@ -62,7 +62,7 @@ body {
 .inlined_call {
     font-size: 15px;
     color: red;
-    margin: 50px;
+	margin: 50px;
     font-weight: bold;
 }
 
@@ -76,4 +76,5 @@ body {
 .guard {
     border: 1px solid #F00;
     margin-left: 13px;
+	padding: 0 3px 1px 3px;
 }
