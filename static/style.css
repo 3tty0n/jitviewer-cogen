@@ -54,7 +54,6 @@ body {
 }
 
 .single-operation {
-    font-size: 12px;
     white-space: pre;
     margin-left: 10px;
 }
@@ -70,7 +69,6 @@ body {
     font-weight: bold;
     margin-left: 30px;
     white-space: pre;
-    font-size: 12px;
 }
 
 .guard {
