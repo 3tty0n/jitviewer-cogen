@@ -12,12 +12,20 @@
     });
   </script> 
 </head> 
-<body> 
-  <!-- header. --> 
-  <a href="loop?no=2&path=&scroll_to=0">Up</a> 
-  <!-- end of header --> 
+<body>
+	<header>
+		<div id="loops">
+		<span>FuckYeah &#9733; floating menu!</span>
+			<ul>
+			  <li><a href="#" onclick="show_loop(1)">f, file 'source.py', line 2</a></li>
+			  <li><a href="#" onclick="show_loop(2)">inlined_call, file 'source.py', line 12</a></li>
+			  <li><a href="#" onclick="show_loop(3)">bridge, file 'source.py', line 19</a></li>
+			</ul>
+		</div>
+		<a href="loop?no=2&path=&scroll_to=0">Up</a> 
+	</header>
   
-     
+    <div id=main> 
          <div id="line-12" class="source hidden">def inlined_call():</div> 
      
   
@@ -188,6 +196,6 @@
   
      
          <div id="line-16" class="source hidden"></div> 
-     
+    </div><!-- End of #main -->
   
 </body>
