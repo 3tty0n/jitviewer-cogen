@@ -18,8 +18,12 @@ class Server(object):
 
     def index(self):
         # XXX cache results possibly
-        loops = [slice_debug_merge_points(loop.operations)
-                 for loop in self.storage.loops]
+        loops = []
+        for loop in self.storage.loops:
+            try:
+                loops.append(slice_debug_merge_points(loop.operations))
+            except NonCodeLoop:
+                pass
         return flask.render_template('index.html', loops=loops)
 
     def loop(self):
@@ -79,7 +83,7 @@ def main():
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
-    app.run(use_reloader=False)
+    app.run(use_reloader=False, host='0.0.0.0')
 
 if __name__ == '__main__':
     main()
