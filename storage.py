@@ -30,7 +30,8 @@ class LoopStorage(object):
                     no = int(comment[len('# bridge out of Guard '):].split(' ', 1)[0])
                     op, parent = guard_dict[no]
                     op.bridge = loop
-                    op.percentage = (loop.count * 100) / parent.count
+                    op.percentage = ((getattr(loop, 'count', 1) * 100) /
+                                     getattr(parent, 'count', 1))
                     loop.no = no
                     continue
             res.append(loop)
