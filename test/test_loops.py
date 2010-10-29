@@ -115,11 +115,13 @@ def test_reassign_loops():
     [v0]
     guard_false(v0, descr=<Guard18>) []
     ''')
+    main.count = 10
     bridge = parse('''
     # bridge out of Guard 18 with 13 ops
     [i0, i1]
     int_add(i0, i1)
     ''')
+    bridge.count = 3
     entry_bridge = parse('''
     # Loop 3 : entry bridge
     []
@@ -128,6 +130,7 @@ def test_reassign_loops():
     assert len(loops) == 2
     assert len(loops[0].operations[0].bridge.operations) == 1
     assert loops[0].operations[0].bridge.no == 18
+    assert loops[0].operations[0].percentage == 30
 
 def test_adjust_bridges():
     main = parse('''
