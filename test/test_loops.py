@@ -2,7 +2,7 @@
 from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
 from loops import parse, Bytecode, Function, slice_debug_merge_points,\
-     adjust_bridges
+     adjust_bridges, parse_log_counts
 import py
 from storage import LoopStorage
 
@@ -86,10 +86,6 @@ def test_name_no_first():
     res = slice_debug_merge_points(ops.operations)
     assert res.repr() == res.chunks[1].repr()
 
-
-#def test_parse_log_count():
-#    parse_log_counts(LINES)
-
 def test_lineno():
     fname = str(py.path.local(__file__).join('..', 'x.py'))
     ops = parse('''
@@ -129,7 +125,7 @@ def test_reassign_loops():
     []
     ''')
     loops = LoopStorage().reconnect_loops([main, bridge, entry_bridge])
-    assert len(loops) == 1
+    assert len(loops) == 2
     assert len(loops[0].operations[0].bridge.operations) == 1
     assert loops[0].operations[0].bridge.no == 18
 
@@ -147,3 +143,29 @@ def test_adjust_bridges():
     loops = LoopStorage().reconnect_loops([main, bridge])
     assert adjust_bridges(main, {})[1].name == 'guard_true'
     assert adjust_bridges(main, {'loop-13': True})[1].name == 'int_add'
+
+def test_parsing_strliteral():
+    ops = parse("""
+    debug_merge_point('StrLiteralSearch at 11/51 [17, 8, 3, 1, 1, 1, 1, 51, 0, 19, 51, 1]')
+    """).operations
+    assert slice_debug_merge_points(ops).chunks[0].bytecode_name == 'StrLiteralSearch'
+
+LINES = '''
+0:3
+1:3
+2:604
+3:396
+4:102
+5:2000
+6:3147
+7:2445
+8:2005
+9:2000
+10:1420
+11:40
+12:0
+'''.split("\n")
+
+def test_parse_log_count():
+    nums = parse_log_counts(LINES)
+    assert nums[5] == 2000

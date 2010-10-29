@@ -28,7 +28,7 @@ body {
 
 /* Floating Side-Menu 
 -----------------------------------------*/
-#loops  ul li a {
+#loops  ul li span {
 	display: block;
 	width: 100%;
 	padding-left: 5px;
@@ -85,17 +85,17 @@ header,
 .operations {
 	background: rgba(251, 252, 246, 0.9);
 }
-#loops span {
-	display: block;
-	font-family: "Lucida Sans Unicode", Sans, sans-serif;
-	font-weight: bold;
-	font-size: 15px;
-	padding-left: 5px;
-	text-shadow: rgba(255, 255, 255, 0.3);
-	margin-bottom: 5px;
+/* #loops span { */
+/* 	display: block; */
+/* 	font-family: "Lucida Sans Unicode", Sans, sans-serif; */
+/* 	font-weight: bold; */
+/* 	font-size: 15px; */
+/* 	padding-left: 5px; */
+/* 	text-shadow: rgba(255, 255, 255, 0.3); */
+/* 	margin-bottom: 5px; */
 	
 
-}
+/* } */
 /* End of Floating Side-Menu  
 -----------------------------------------*/
 

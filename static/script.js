@@ -51,3 +51,8 @@ function replace_from(elem, bridge_id)
         });
     });
 }
+
+function toggle()
+{
+    $('.operations').toggle()
+}

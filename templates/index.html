@@ -11,15 +11,24 @@
   </script>
 </head>
 <body>
+  <header>
+    <span>Menu</span><br/>
+    <a href="#" onClick="toggle()">Toggle operations</a>
+    <div id="callstack">
+    </div>
+  </header>
   <div id="loops">
     <ul>
-      {% for item in loops %}
-      <li><a href="#" onClick="show_loop({{loop.index}})">{{item.repr()}}</a></li>
+      {% for is_entry_bridge, item in loops %}
+      {% if is_entry_bridge %}
+        <li><span>Entry bridge: <a href="#" onClick="show_loop({{loop.index}})">{{item.repr()}}</a></span></li>
+      {% else %}
+        <li><span><a href="#" onClick="show_loop({{loop.index}})">{{item.repr()}}</a></span></li>
+      {% endif %}
       {% endfor %}
     </ul>
   </div>
   <div id="main">
-    Loop placeholder
   </div>
 </body>
 </html>

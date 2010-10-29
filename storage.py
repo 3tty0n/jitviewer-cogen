@@ -25,7 +25,7 @@ class LoopStorage(object):
             if loop.comment:
                 comment = loop.comment.strip()
                 if 'entry bridge' in comment:
-                    continue
+                    pass
                 elif comment.startswith('# bridge out of'):
                     no = int(comment[len('# bridge out of Guard '):].split(' ', 1)[0])
                     guard_dict[no].bridge = loop

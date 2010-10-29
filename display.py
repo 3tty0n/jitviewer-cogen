@@ -13,6 +13,12 @@ class LineRepr(object):
         else:
             self.chunks = chunks
 
+class CodeReprNoFile(object):
+    firstlineno = 0
+    
+    def __init__(self, loop):
+        self.lines = [LineRepr('', True, loop.chunks)]
+
 class CodeRepr(object):
     """ A representation of a single code object suitable for display
     """

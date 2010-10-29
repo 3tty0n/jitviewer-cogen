@@ -1,4 +1,6 @@
 
+import re
+
 def f():
     i = 0
     while i < 1003:
@@ -28,3 +30,10 @@ def bridge():
     return s
 
 bridge()
+
+def inlined_str_stuff():
+    s = [str(i) for i in range(3000)]
+    for elem in s:
+        re.search('3', elem)
+
+inlined_str_stuff()

@@ -4,9 +4,9 @@ import flask
 import inspect
 from pypy.tool.logparser import parse_log_file, extract_category
 from module_finder import load_code
-from loops import NonCodeLoop, parse, slice_debug_merge_points, adjust_bridges
+from loops import parse, slice_debug_merge_points, adjust_bridges
 from storage import LoopStorage
-from display import CodeRepr
+from display import CodeRepr, CodeReprNoFile
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
@@ -17,18 +17,19 @@ class Server(object):
         self.storage = storage
 
     def index(self):
-        # XXX cache results possibly
         loops = []
         for loop in self.storage.loops:
-            try:
-                loops.append(slice_debug_merge_points(loop.operations))
-            except NonCodeLoop:
-                pass
+            if 'entry bridge' in loop.comment:
+                is_entry = True
+            else:
+                is_entry = False
+            loops.append((is_entry, slice_debug_merge_points(loop.operations)))
         return flask.render_template('index.html', loops=loops)
 
     def loop(self):
         no = int(flask.request.args.get('no', '1'))
-        ops = adjust_bridges(self.storage.loops[no - 1], flask.request.args)
+        orig_loop = self.storage.loops[no - 1]
+        ops = adjust_bridges(orig_loop, flask.request.args)
         loop = slice_debug_merge_points(ops)
         path = flask.request.args.get('path', '').split(',')
         if path:
@@ -39,38 +40,18 @@ class Server(object):
             if e:
                 loop = loop.chunks[int(e)]
         startline, endline = loop.linerange
-        code = load_code(loop.filename, loop.name, loop.startlineno)
-        source = inspect.getsource(code)
+        if loop.filename is not None:
+            code = load_code(loop.filename, loop.name, loop.startlineno)
+            source = CodeRepr(inspect.getsource(code), code, loop)
+        else:
+            source = CodeReprNoFile(loop)
         d = {'html': flask.render_template('loop.html',
-                                           source=CodeRepr(source, code,
-                                                           loop),
+                                           source=source,
                                            current_loop=no,
                                            upper_path=up,
                                            show_upper_path=bool(path)),
              'scrollto': startline}
         return flask.jsonify(d)
-
-    # def show(self): 
-    #     no = int(flask.request.args.get('no', '1'))       
-
-    # def loop(self):
-    #     no = int(flask.request.args.get('no', '1'))
-    #     scroll_to = int(flask.request.args.get('scroll_to', '0'))
-    #     # gather all functions
-    #     loop = self.storage.loops[no - 1]
-    #             upper_start = loop.chunks[nr - 1].lineno # XXX what if it's
-    #             # also a Function? is it even possible without a bytecode
-    #             # in between?
-    #         loop = loop.chunks[nr]
-    #     startline, endline = loop.linerange
-    #     code = load_code(loop.filename, loop.name, loop.startlineno)
-    #     source = inspect.getsource(code)
-    #     return flask.render_template('loop.html',
-    #                                  source=CodeRepr(source, code, loop),
-    #                                  startline=scroll_to or startline,
-    #                                  current_loop=no,
-    #                                  upper_path=','.join(path[:-1]),
-    #                                  upper_start=upper_start)
 
 def main():
     log = parse_log_file('log')

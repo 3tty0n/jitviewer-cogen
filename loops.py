@@ -69,7 +69,7 @@ class Op(object):
 
     def repr_setfield_gc(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '((%s)%s).%s = %s' % (name, self.args[0], field, self.args[1])        
+        return '((%s)%s).%s = %s' % (name, self.args[0], field, self.args[1])
 
     def generic_repr(self):
         if self.res is not None:
@@ -78,7 +78,8 @@ class Op(object):
             return '%s(%s)' % (self.name, ', '.join(self.args))
 
     def __repr__(self):
-        return '<%s (%s)>' % (self.name, ', '.join([repr(a) for a in self.args]))
+        return '<%s (%s)>' % (self.name, ', '.join([repr(a)
+                                                    for a in self.args]))
 
     def extra_style(self):
         if self.name.startswith('guard_'):
@@ -104,11 +105,9 @@ class SimpleParser(OpParser):
 
     def create_op(self, opnum, args, res, descr):
         return Op(intern(opname[opnum].lower()), args, res, descr)
-        
-class NonCodeLoop(Exception):
-    """ An exception raised in case the loop is not associated with
-    applevel code
-    """
+
+class NonCodeError(Exception):
+    pass
 
 class Bytecode(object):
     filename = None
@@ -124,12 +123,12 @@ class Bytecode(object):
             m = re.search('<code object ([<>\w]+), file \'(.+?)\', line (\d+)> #(\d+) (\w+)',
                          operations[0].args[0])
             if m is None:
-                # a non-code loop, like StrLiteralSearch or something, ignore
-                # for now
-                raise NonCodeLoop()
-            self.name, self.filename, lineno, bytecode_no, self.bytecode_name = m.groups()
-            self.startlineno = int(lineno)
-            self.bytecode_no = int(bytecode_no)
+                # a non-code loop, like StrLiteralSearch or something
+                self.bytecode_name = operations[0].args[0].split(" ")[0][1:]
+            else:
+                self.name, self.filename, lineno, bytecode_no, self.bytecode_name = m.groups()
+                self.startlineno = int(lineno)
+                self.bytecode_no = int(bytecode_no)
         self.operations = operations
 
     def key(self):
@@ -219,8 +218,15 @@ class Function(object):
             chunk.pretty_print(out)
 
 def parse_log_counts(lines):
+    nums = []
+    i = 0
     for line in lines:
-        pass
+        if line:
+            num, count = line.split(':')
+            assert int(num) == i
+            nums.append(int(count))
+            i += 1
+    return nums
 
 def parse(input):
     return SimpleParser(input, None, {}, 'lltype', None,
