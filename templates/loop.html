@@ -11,7 +11,7 @@
                    <span class="dmp">{{chunk.html_repr()}}</span><br/>
                    {% for op in chunk.operations[1:] %}
                       {% if op.bridge %}
-                        <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="#" onClick="replace_from(this, {{op.bridge.no}})">&gt;&gt;show bridge</a><br/>
+                        <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="#" onClick="replace_from(this, {{op.bridge.no}})">&gt;&gt;show bridge</a> (taken {{op.percentage}}%)<br/>
                       {% else %}
                         <span class="single-operation {{op.extra_style()}}">{{op.html_repr()}}</span><br/>
                       {% endif %}

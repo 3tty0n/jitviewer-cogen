@@ -4,7 +4,8 @@ import flask
 import inspect
 from pypy.tool.logparser import parse_log_file, extract_category
 from module_finder import load_code
-from loops import parse, slice_debug_merge_points, adjust_bridges
+from loops import (parse, slice_debug_merge_points, adjust_bridges,
+                   parse_log_counts)
 from storage import LoopStorage
 from display import CodeRepr, CodeReprNoFile
 
@@ -18,17 +19,20 @@ class Server(object):
 
     def index(self):
         loops = []
-        for loop in self.storage.loops:
+        for index, loop in enumerate(self.storage.loops):
             if 'entry bridge' in loop.comment:
                 is_entry = True
             else:
                 is_entry = False
-            loops.append((is_entry, slice_debug_merge_points(loop.operations)))
+            func = slice_debug_merge_points(loop.operations)
+            func.count = loop.count
+            loops.append((is_entry, index, func))
+        loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
         return flask.render_template('index.html', loops=loops)
 
     def loop(self):
-        no = int(flask.request.args.get('no', '1'))
-        orig_loop = self.storage.loops[no - 1]
+        no = int(flask.request.args.get('no', '0'))
+        orig_loop = self.storage.loops[no]
         ops = adjust_bridges(orig_loop, flask.request.args)
         loop = slice_debug_merge_points(ops)
         path = flask.request.args.get('path', '').split(',')
@@ -50,7 +54,8 @@ class Server(object):
                                            current_loop=no,
                                            upper_path=up,
                                            show_upper_path=bool(path)),
-             'scrollto': startline}
+             'scrollto': startline,
+             'callstack': None}
         return flask.jsonify(d)
 
 def main():

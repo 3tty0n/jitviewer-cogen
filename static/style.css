@@ -136,9 +136,7 @@ header,
 }
 
 .inlined_call {
-    font-size: 15px;
-    color: red;
-	margin: 4em;
+    font-size: 12px;
     font-weight: bold;
 }
 

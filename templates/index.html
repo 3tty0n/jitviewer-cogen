@@ -19,11 +19,11 @@
   </header>
   <div id="loops">
     <ul>
-      {% for is_entry_bridge, item in loops %}
+      {% for is_entry_bridge, index, item in loops %}
       {% if is_entry_bridge %}
-        <li><span>Entry bridge: <a href="#" onClick="show_loop({{loop.index}})">{{item.repr()}}</a></span></li>
+        <li><span>Entry bridge: <a href="#" onClick="show_loop({{index}})">{{item.repr()}}</a> run {{item.count}} times</span></li>
       {% else %}
-        <li><span><a href="#" onClick="show_loop({{loop.index}})">{{item.repr()}}</a></span></li>
+        <li><span><a href="#" onClick="show_loop({{index}})">{{item.repr()}}</a> run {{item.count}} times</span></li>
       {% endif %}
       {% endfor %}
     </ul>

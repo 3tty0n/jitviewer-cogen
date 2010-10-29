@@ -21,7 +21,7 @@ inlined_call()
 def bridge():
     s = 0
     i = 0
-    while i < 3000:
+    while i < 10000:
         if i % 2:
             s += 1
         else:

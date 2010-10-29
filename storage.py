@@ -20,7 +20,7 @@ class LoopStorage(object):
         for loop_no, loop in enumerate(loops):
             for op in loop.operations:
                 if op.name.startswith('guard_'):
-                    guard_dict[int(op.descr[len('<Guard'):-1])] = op
+                    guard_dict[int(op.descr[len('<Guard'):-1])] = (op, loop)
         for loop in loops:
             if loop.comment:
                 comment = loop.comment.strip()
@@ -28,7 +28,9 @@ class LoopStorage(object):
                     pass
                 elif comment.startswith('# bridge out of'):
                     no = int(comment[len('# bridge out of Guard '):].split(' ', 1)[0])
-                    guard_dict[no].bridge = loop
+                    op, parent = guard_dict[no]
+                    op.bridge = loop
+                    op.percentage = (loop.count * 100) / parent.count
                     loop.no = no
                     continue
             res.append(loop)
