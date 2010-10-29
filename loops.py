@@ -217,14 +217,16 @@ class Function(object):
                 print >>out, "  ", source
             chunk.pretty_print(out)
 
-def parse_log_counts(lines):
+def parse_log_counts(lines, loops):
     nums = []
     i = 0
     for line in lines:
         if line:
             num, count = line.split(':')
             assert int(num) == i
-            nums.append(int(count))
+            count = int(count)
+            nums.append(count)
+            loops[i].count = count
             i += 1
     return nums
 

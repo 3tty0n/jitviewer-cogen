@@ -56,9 +56,9 @@ class Server(object):
 def main():
     log = parse_log_file('log')
     storage = LoopStorage()
-    #log_counts = parse_log_counts(open('log.count').readlines())
-    storage.reconnect_loops([parse(l) for l in
-                             extract_category(log, "jit-log-opt-")])
+    loops = [parse(l) for l in extract_category(log, "jit-log-opt-")]
+    parse_log_counts(open('log.count').readlines(), loops)
+    storage.reconnect_loops(loops)
     app = flask.Flask(__name__)
     server = Server(storage)
     app.debug = True

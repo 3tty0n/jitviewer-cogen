@@ -167,5 +167,10 @@ LINES = '''
 '''.split("\n")
 
 def test_parse_log_count():
-    nums = parse_log_counts(LINES)
+    class Loop(object):
+        pass
+    
+    loops = [Loop() for i in range(13)]
+    nums = parse_log_counts(LINES, loops)
     assert nums[5] == 2000
+    assert loops[9].count == 2000
