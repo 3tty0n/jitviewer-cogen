@@ -1,4 +1,15 @@
+#!/usr/bin/env pypy-c
+""" A web-based browser of your log files. Run by
 
+baseviewer.py <path to your log file>
+
+and point your browser to http://localhost:5000
+
+Demo logfile available in this directory as 'log'.
+"""
+
+import sys
+import os
 import cgi
 import flask
 import inspect
@@ -14,8 +25,9 @@ from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
 class Server(object):
-    def __init__(self, storage):
+    def __init__(self, storage, extrapath):
         self.storage = storage
+        self.extrapath = extrapath
 
     def index(self):
         loops = []
@@ -45,7 +57,11 @@ class Server(object):
                 loop = loop.chunks[int(e)]
         startline, endline = loop.linerange
         if loop.filename is not None:
-            code = load_code(loop.filename, loop.name, loop.startlineno)
+            try:
+                code = load_code(loop.filename, loop.name, loop.startlineno)
+            except OSError:
+                code = load_code(os.path.join(self.extra_path, loop.filename),
+                                 loop.name, loop.startlineno)
             source = CodeRepr(inspect.getsource(code), code, loop)
         else:
             source = CodeReprNoFile(loop)
@@ -59,13 +75,17 @@ class Server(object):
         return flask.jsonify(d)
 
 def main():
-    log = parse_log_file('log')
+    if len(sys.argv) != 2:
+        print __doc__
+        sys.exit(1)
+    log = parse_log_file(sys.argv[1])
+    extra_path = os.path.dirname(sys.argv[1])
     storage = LoopStorage()
     loops = [parse(l) for l in extract_category(log, "jit-log-opt-")]
-    parse_log_counts(open('log.count').readlines(), loops)
+    parse_log_counts(open(sys.argv[1] + '.count').readlines(), loops)
     storage.reconnect_loops(loops)
     app = flask.Flask(__name__)
-    server = Server(storage)
+    server = Server(storage, extra_path)
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)

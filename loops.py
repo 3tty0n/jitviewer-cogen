@@ -189,6 +189,9 @@ class Function(object):
                     lineno = chunk.lineno
                     minline = min(minline, lineno)
                     maxline = max(maxline, lineno)
+            if minline == sys.maxint:
+                minline = 0
+                maxline = 0
             self._linerange = minline, maxline
         return self._linerange
     linerange = property(getlinerange)
