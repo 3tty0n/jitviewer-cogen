@@ -55,13 +55,10 @@ class Server(object):
         for e in path:
             if e:
                 loop = loop.chunks[int(e)]
+        
         startline, endline = loop.linerange
         if loop.filename is not None:
-            try:
-                code = load_code(loop.filename, loop.name, loop.startlineno)
-            except OSError:
-                code = load_code(os.path.join(self.extra_path, loop.filename),
-                                 loop.name, loop.startlineno)
+            code = load_code(loop.filename, loop.name, loop.startlineno)
             source = CodeRepr(inspect.getsource(code), code, loop)
         else:
             source = CodeReprNoFile(loop)
@@ -75,6 +72,9 @@ class Server(object):
         return flask.jsonify(d)
 
 def main():
+    if not '__pypy__' in sys.builtin_module_names:
+        print "Please run it using pypy-c"
+        sys.exit(1)
     if len(sys.argv) != 2:
         print __doc__
         sys.exit(1)
