@@ -3,12 +3,29 @@
 for all loops and bridges, so http requests can refer to them by name
 """
 
+import os
 from loops import Function, Bytecode
+from module_finder import gather_all_code_objs
 
 class LoopStorage(object):
-    def __init__(self):
+    def __init__(self, extrapath=None):
         self.loops = None
         self.functions = {}
+        self.codes = {}
+        self.extrapath = extrapath
+
+    def load_code(self, fname):
+        try:
+            return self.codes[fname]
+        except KeyError:
+            if os.path.isabs(fname):
+                res = gather_all_code_objs(fname)
+            else:
+                if self.extrapath is None:
+                    raise IOError("Cannot find %s" % fname)
+                res = gather_all_code_objs(os.path.join(self.extrapath, fname))
+            self.codes[fname] = res
+            return res
 
     def reconnect_loops(self, loops):
         """ Re-connect loops in a way that entry bridges are filtered out
