@@ -32,7 +32,7 @@ def test_split():
     debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #11 SUB")
     i2 = int_add(i1, 1)
     ''')
-    res = slice_debug_merge_points(ops.operations)
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert len(res.chunks) == 3
     assert len(res.chunks[0].operations) == 1
     assert len(res.chunks[1].operations) == 2
@@ -49,7 +49,7 @@ def test_inlined_call():
     debug_merge_point('<code object inner, file 'source.py', line 9> #7 RETURN_VALUE')
     debug_merge_point('<code object inlined_call, file 'source.py', line 12> #31 STORE_FAST')
     """)
-    res = slice_debug_merge_points(ops.operations)
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert len(res.chunks) == 3 # two chunks + inlined call
     assert isinstance(res.chunks[0], Bytecode)
     assert isinstance(res.chunks[1], Function)
@@ -66,7 +66,7 @@ def test_name():
     debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB")
     i2 = int_add(i1, 1)
     ''')
-    res = slice_debug_merge_points(ops.operations)
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert res.repr() == res.chunks[0].repr()
     assert res.repr() == "stuff, file '/tmp/x.py', line 200"
     assert res.startlineno == 200
@@ -83,7 +83,7 @@ def test_name_no_first():
     debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB")
     i2 = int_add(i1, 1)
     ''')
-    res = slice_debug_merge_points(ops.operations)
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert res.repr() == res.chunks[1].repr()
 
 def test_lineno():
@@ -95,7 +95,7 @@ def test_lineno():
     debug_merge_point("<code object f, file '%(fname)s', line 2> #6 BINARY_ADD")
     debug_merge_point("<code object f, file '%(fname)s', line 2> #7 RETURN_VALUE")
     ''' % locals())
-    res = slice_debug_merge_points(ops.operations)
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert res.chunks[1].lineno == 3
 
 def test_linerange():
@@ -107,7 +107,7 @@ def test_linerange():
     debug_merge_point("<code object f, file '%(fname)s', line 5> #22 LOAD_CONST")
     debug_merge_point("<code object f, file '%(fname)s', line 5> #6 SETUP_LOOP")
     ''' % locals())
-    res = slice_debug_merge_points(ops.operations)
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert res.linerange == (7, 8)
 
 def test_reassign_loops():
@@ -151,7 +151,7 @@ def test_parsing_strliteral():
     ops = parse("""
     debug_merge_point('StrLiteralSearch at 11/51 [17, 8, 3, 1, 1, 1, 1, 51, 0, 19, 51, 1]')
     """).operations
-    assert slice_debug_merge_points(ops).chunks[0].bytecode_name == 'StrLiteralSearch'
+    assert slice_debug_merge_points(ops, LoopStorage()).chunks[0].bytecode_name == 'StrLiteralSearch'
 
 LINES = '''
 0:3

@@ -1,7 +1,6 @@
 
 import re, sys
 from pypy.jit.metainterp.resoperation import rop, opname
-from module_finder import load_code
 from disassembler import dis
 from pypy.jit.tool.oparser import OpParser
 
@@ -118,7 +117,7 @@ class Bytecode(object):
     bytecode_name = None
     is_bytecode = True
     
-    def __init__(self, operations):
+    def __init__(self, operations, storage):
         if operations[0].name == 'debug_merge_point':
             m = re.search('<code object ([<>\w]+), file \'(.+?)\', line (\d+)> #(\d+) (\w+)',
                          operations[0].args[0])
@@ -130,6 +129,7 @@ class Bytecode(object):
                 self.startlineno = int(lineno)
                 self.bytecode_no = int(bytecode_no)
         self.operations = operations
+        self.storage = storage
 
     def key(self):
         return self.startlineno, self.name, self.filename
@@ -142,8 +142,7 @@ class Bytecode(object):
 
     def getcode(self):
         if self.code is None:
-            self.code = dis(load_code(self.filename, self.name,
-                                      self.startlineno))
+            self.code = dis(self.storage.load_code(self.filename)[self.startlineno])
         return self.code
 
     def getlineno(self):
@@ -167,7 +166,7 @@ class Function(object):
     _linerange = None
     is_bytecode = False
     
-    def __init__(self, chunks, path):
+    def __init__(self, chunks, path, storage):
         self.path = path
         self.chunks = chunks
         for chunk in self.chunks:
@@ -176,6 +175,7 @@ class Function(object):
                 self.filename = chunk.filename
                 self.name = chunk.name
                 break
+        self.storage = storage
 
     def key(self):
         return self.startlineno, self.name, self.filename
@@ -237,7 +237,7 @@ def parse(input):
     return SimpleParser(input, None, {}, 'lltype', None,
                         nonstrict=True).parse()
 
-def slice_debug_merge_points(operations):
+def slice_debug_merge_points(operations, storage):
     """ Slice given operation list into a chain of Bytecode chunks.
     Also detect inlined functions and make them Function
     """
@@ -258,7 +258,7 @@ def slice_debug_merge_points(operations):
                 if (previous_bytecode.bytecode_name in
                     ['RAISE_VARARGS', 'RETURN_VALUE', 'YIELD_VALUE']):
                     _, last = stack.pop()
-                    stack[-1][1].append(Function(last, getpath(stack)))
+                    stack[-1][1].append(Function(last, getpath(stack), storage))
                 else:
                     stack.append((bc.key(), []))
         stack[-1][1].append(bc)
@@ -268,20 +268,20 @@ def slice_debug_merge_points(operations):
     for op in operations:
         if op.name == 'debug_merge_point':
             if so_far:
-                append_to_res(Bytecode(so_far))
+                append_to_res(Bytecode(so_far, storage))
                 so_far = []
         so_far.append(op)
     if so_far:
-        append_to_res(Bytecode(so_far))
+        append_to_res(Bytecode(so_far, storage))
     # wrap stack back up
     if not stack:
         # no ops whatsoever
-        return Function([], getpath(stack))
+        return Function([], getpath(stack), storage)
     while True:
         _, next = stack.pop()
         if not stack:
-            return Function(next, getpath(stack))
-        stack[-1][1].append(Function(next, getpath(stack)))
+            return Function(next, getpath(stack), storage)
+        stack[-1][1].append(Function(next, getpath(stack), storage))
 
 def adjust_bridges(loop, bridges):
     """ Slice given loop according to given bridges to follow. Returns a plain

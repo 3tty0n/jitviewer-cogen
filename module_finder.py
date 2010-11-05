@@ -32,10 +32,3 @@ def gather_all_code_objs(fname):
     else:
         raise Exception("Unknown file extension: %s" % fname)
     return _all_codes_from(code)
-
-def load_code(fname, name, lineno):
-    """ Loads a module code from a given description. If fname is a pyc file,
-    just unmarshal it and find correct code, otherwise use ast module to
-    get code. Insane hack, but works
-    """
-    return gather_all_code_objs(fname)[lineno]

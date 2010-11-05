@@ -14,7 +14,6 @@ import cgi
 import flask
 import inspect
 from pypy.tool.logparser import parse_log_file, extract_category
-from module_finder import load_code
 from loops import (parse, slice_debug_merge_points, adjust_bridges,
                    parse_log_counts)
 from storage import LoopStorage
@@ -25,9 +24,8 @@ from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
 class Server(object):
-    def __init__(self, storage, extrapath):
+    def __init__(self, storage):
         self.storage = storage
-        self.extrapath = extrapath
 
     def index(self):
         loops = []
@@ -36,7 +34,7 @@ class Server(object):
                 is_entry = True
             else:
                 is_entry = False
-            func = slice_debug_merge_points(loop.operations)
+            func = slice_debug_merge_points(loop.operations, self.storage)
             func.count = loop.count
             loops.append((is_entry, index, func))
         loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
@@ -46,7 +44,7 @@ class Server(object):
         no = int(flask.request.args.get('no', '0'))
         orig_loop = self.storage.loops[no]
         ops = adjust_bridges(orig_loop, flask.request.args)
-        loop = slice_debug_merge_points(ops)
+        loop = slice_debug_merge_points(ops, self.storage)
         path = flask.request.args.get('path', '').split(',')
         if path:
             up = '"' + ','.join(path[:-1]) + '"'
@@ -58,7 +56,7 @@ class Server(object):
         
         startline, endline = loop.linerange
         if loop.filename is not None:
-            code = load_code(loop.filename, loop.name, loop.startlineno)
+            code = self.storage.load_code(loop.filename)[loop.startlineno]
             source = CodeRepr(inspect.getsource(code), code, loop)
         else:
             source = CodeReprNoFile(loop)
@@ -80,12 +78,12 @@ def main():
         sys.exit(1)
     log = parse_log_file(sys.argv[1])
     extra_path = os.path.dirname(sys.argv[1])
-    storage = LoopStorage()
+    storage = LoopStorage(extra_path)
     loops = [parse(l) for l in extract_category(log, "jit-log-opt-")]
     parse_log_counts(open(sys.argv[1] + '.count').readlines(), loops)
     storage.reconnect_loops(loops)
     app = flask.Flask(__name__)
-    server = Server(storage, extra_path)
+    server = Server(storage)
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)

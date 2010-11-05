@@ -1,6 +1,6 @@
 
 import py
-from module_finder import load_code, gather_all_code_objs
+from module_finder import gather_all_code_objs
 import re
 
 def test_gather_code():
@@ -19,7 +19,7 @@ def test_gather_code_py():
 
 def test_load_code():
     fname = py.path.local(__file__).join('..', 'xre.pyc')
-    code = load_code(fname, 'name', 144)
+    code = gather_all_code_objs(fname)[144]
     assert code.co_name == 'sub'
     assert code.co_filename == '/usr/lib/python2.6/re.py'
     assert code.co_firstlineno == 144
