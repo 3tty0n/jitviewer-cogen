@@ -69,7 +69,19 @@ class Server(object):
              'callstack': None}
         return flask.jsonify(d)
 
+def start_browser(url):
+    import time
+    import webbrowser
+    import threading
+    def run():
+        time.sleep(0.5) # give the server some time to start
+        webbrowser.open(url)
+    th = threading.Thread(target=run)
+    th.start()
+    return th
+
 def main():
+
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
@@ -87,7 +99,9 @@ def main():
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
+    th = start_browser('http://localhost:5000/')
     app.run(use_reloader=False, host='0.0.0.0')
+    th.join()
 
 if __name__ == '__main__':
     main()
