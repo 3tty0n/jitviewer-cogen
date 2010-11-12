@@ -56,3 +56,25 @@ function toggle()
 {
     $('.operations').toggle()
 }
+
+function highlight_var(elem)
+{
+    var cssclass = elem.className
+    var elems = document.getElementsByClassName(cssclass);
+   	for (var i=0; i<elems.length; i++) {
+        var elem = elems[i];
+        if (elem.className.search("variable_highlight") == -1)
+            elem.className += " variable_highlight";
+    }
+}
+
+function disable_var(elem)
+{
+    var cssclass = "variable_highlight";
+    var elems = document.getElementsByClassName(cssclass);
+    // the collections is mutated while the loop runs
+    while (elems.length > 0) {
+        var elem = elems[0];
+        elem.className = elem.className.replace(/variable_highlight/g, "");
+    }
+}

@@ -99,9 +99,9 @@ def main():
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
-    th = start_browser('http://localhost:5000/')
+    #th = start_browser('http://localhost:5000/')
     app.run(use_reloader=False, host='0.0.0.0')
-    th.join()
+    #th.join()
 
 if __name__ == '__main__':
     main()

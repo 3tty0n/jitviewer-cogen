@@ -6,8 +6,16 @@ from pypy.jit.tool.oparser import OpParser
 
 def _new_binop(name):
     def f(self):
-        return '%s = %s %s %s' % (self.res, self.args[0], name, self.args[1])
+        return '%s = %s %s %s' % (self.getres(), self.getarg(0), name, self.getarg(1))
     return f
+
+class Html(str):
+    def __html__(self):
+        return self
+
+def cssclass(cls, s, **kwds):
+    attrs = ['%s="%s"' % (name, value) for name, value in kwds.iteritems()]
+    return '<span class="%s" %s>%s</span>' % (cls, ' '.join(attrs), s)
 
 class Op(object):
     bridge = None
@@ -25,7 +33,16 @@ class Op(object):
         pass
 
     def html_repr(self):
-        return getattr(self, 'repr_' + self.name, self.generic_repr)()
+        return Html(getattr(self, 'repr_' + self.name, self.generic_repr)())
+
+    def getarg(self, i):
+        return self._getvar(self.args[i])
+
+    def getres(self):
+        return self._getvar(self.res)
+
+    def _getvar(self, v):
+        return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
 
     def is_guard(self):
         return self._is_guard
@@ -42,37 +59,43 @@ class Op(object):
         locals()['repr_' + name] = _new_binop(bin_op)
 
     def repr_guard_true(self):
-        return '%s is true' % self.args[0]
+        return '%s is true' % self.getarg(0)
 
     def repr_guard_false(self):
-        return '%s is false' % self.args[0]
+        return '%s is false' % self.getarg(0)
 
     def repr_guard_value(self):
-        return '%s is %s' % (self.args[0], self.args[1])
+        return '%s is %s' % (self.getarg(0), self.getarg(1))
 
     def repr_guard_isnull(self):
-        return '%s is null' % self.args[0]
+        return '%s is null' % self.getarg(0)
 
     def repr_getfield_raw(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '%s = ((%s)%s).%s' % (self.res, name, self.args[0], field[2:])
+        return '%s = ((%s)%s).%s' % (self.getres(), name, self.getarg(0), field[2:])
 
     def repr_getfield_gc(self):
-        name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '%s = ((%s)%s).%s' % (self.res, name, self.args[0], field)
+        fullname, field = self.descr.split(' ')[1].rsplit('.', 1)
+        namespace, classname = fullname.rsplit('.', 1)
+        namespace = cssclass('namespace', namespace)
+        classname = cssclass('classname', classname)
+        field = cssclass('fieldname', field)
+        #obj = self.getarg(0)
+        obj = self.getarg(0)
+        return '%s = ((%s.%s)%s).%s' % (self.getres(), namespace, classname, obj, field)
     repr_getfield_gc_pure = repr_getfield_gc
 
     def repr_setfield_raw(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '((%s)%s).%s = %s' % (name, self.args[0], field[2:], self.args[1])
+        return '((%s)%s).%s = %s' % (name, self.getarg(0), field[2:], self.getarg(1))
 
     def repr_setfield_gc(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '((%s)%s).%s = %s' % (name, self.args[0], field, self.args[1])
+        return '((%s)%s).%s = %s' % (name, self.getarg(0), field, self.getarg(1))
 
     def generic_repr(self):
         if self.res is not None:
-            return '%s = %s(%s)' % (self.res, self.name, ', '.join(self.args))
+            return '%s = %s(%s)' % (self.getres(), self.name, ', '.join(self.args))
         else:
             return '%s(%s)' % (self.name, ', '.join(self.args))
 
@@ -120,10 +143,10 @@ class Bytecode(object):
     def __init__(self, operations, storage):
         if operations[0].name == 'debug_merge_point':
             m = re.search('<code object ([<>\w]+), file \'(.+?)\', line (\d+)> #(\d+) (\w+)',
-                         operations[0].args[0])
+                         operations[0].getarg(0))
             if m is None:
                 # a non-code loop, like StrLiteralSearch or something
-                self.bytecode_name = operations[0].args[0].split(" ")[0][1:]
+                self.bytecode_name = operations[0].getarg(0).split(" ")[0][1:]
             else:
                 self.name, self.filename, lineno, bytecode_no, self.bytecode_name = m.groups()
                 self.startlineno = int(lineno)

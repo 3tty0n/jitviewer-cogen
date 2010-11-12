@@ -165,6 +165,23 @@ span.single-operation,
 .inlined_call {
 	display: inline-block;
 }
+
+.variable_highlight {
+    background-color: #FFA;
+}
+
+.namespace {
+    color: black;
+}
+
+.classname {
+    color: #A00;
+}
+
+.fieldname {
+    color: #00A;
+}
+
 /* End of Formatting 
 -----------------------------------------*/
 
