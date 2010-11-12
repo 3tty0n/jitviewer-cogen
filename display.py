@@ -23,15 +23,14 @@ class CodeRepr(object):
     """ A representation of a single code object suitable for display
     """
     def __init__(self, source, code, loop):
-        startline, endline = loop.linerange
+        #startline, endline = loop.linerange
+        lineset = loop.lineset
         self.lines = []
         self.firstlineno = code.co_firstlineno
         for i, line in enumerate(source.split("\n")):
             no = i + code.co_firstlineno
-            if no < startline or no > endline:
-                self.lines.append(LineRepr(line, False))
-            else:
-                self.lines.append(LineRepr(line, True))
+            in_loop = no in lineset
+            self.lines.append(LineRepr(line, in_loop))
 
         last_lineno = -1
         for chunk in loop.chunks:

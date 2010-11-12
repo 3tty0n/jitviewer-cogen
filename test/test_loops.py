@@ -105,10 +105,12 @@ def test_linerange():
     debug_merge_point("<code object f, file '%(fname)s', line 5> #9 LOAD_FAST")
     debug_merge_point("<code object f, file '%(fname)s', line 5> #12 LOAD_CONST")
     debug_merge_point("<code object f, file '%(fname)s', line 5> #22 LOAD_CONST")
+    debug_merge_point("<code object f, file '%(fname)s', line 5> #28 LOAD_CONST")
     debug_merge_point("<code object f, file '%(fname)s', line 5> #6 SETUP_LOOP")
     ''' % locals())
     res = slice_debug_merge_points(ops.operations, LoopStorage())
-    assert res.linerange == (7, 8)
+    assert res.linerange == (7, 9)
+    assert res.lineset == set([7, 8, 9])
 
 def test_reassign_loops():
     main = parse('''

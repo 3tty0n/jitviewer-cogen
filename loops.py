@@ -164,6 +164,7 @@ class Function(object):
     name = None
     startlineno = 0
     _linerange = None
+    _lineset = None
     is_bytecode = False
     
     def __init__(self, chunks, path, storage):
@@ -182,19 +183,30 @@ class Function(object):
 
     def getlinerange(self):
         if self._linerange is None:
-            minline = sys.maxint
-            maxline = -1
-            for chunk in self.chunks:
-                if chunk.is_bytecode and chunk.filename is not None:
-                    lineno = chunk.lineno
-                    minline = min(minline, lineno)
-                    maxline = max(maxline, lineno)
-            if minline == sys.maxint:
-                minline = 0
-                maxline = 0
-            self._linerange = minline, maxline
+            self._compute_linerange()
         return self._linerange
     linerange = property(getlinerange)
+
+    def getlineset(self):
+        if self._lineset is None:
+            self._compute_linerange()
+        return self._lineset
+    lineset = property(getlineset)
+
+    def _compute_linerange(self):
+        self._lineset = set()
+        minline = sys.maxint
+        maxline = -1
+        for chunk in self.chunks:
+            if chunk.is_bytecode and chunk.filename is not None:
+                lineno = chunk.lineno
+                minline = min(minline, lineno)
+                maxline = max(maxline, lineno)
+                self._lineset.add(lineno)
+        if minline == sys.maxint:
+            minline = 0
+            maxline = 0
+        self._linerange = minline, maxline
 
     def html_repr(self):
         return "inlined call to %s in %s" % (self.name, self.filename)
