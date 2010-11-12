@@ -17,9 +17,10 @@ del _opcodes_all
 class Opcode(object):
     """ An abstract base class for all opcode implementations
     """
-    def __init__(self, pos, lineno, arg=None):
+    def __init__(self, pos, lineno, arg=None, argstr=''):
         self.pos = pos
         self.arg = arg
+        self.argstr = argstr
         self.lineno = lineno
         self.line_starts_here = False
 
@@ -137,33 +138,30 @@ def disassemble(co, lasti=-1):
         i = i + 1
         if op >= HAVE_ARGUMENT:
             oparg = ord(code[i]) + ord(code[i+1])*256 + extended_arg
+            opargstr = str(oparg)
             extended_arg = 0
             i = i+2
             if op == EXTENDED_ARG:
                 extended_arg = oparg*65536L
-            # if op in hasconst:
-            #     xxx
-            #     print '(' + repr(co.co_consts[oparg]) + ')',
-            # elif op in hasname:
-            #     xxxx
-            #     print '(' + co.co_names[oparg] + ')',
-            # elif op in hasjrel:
-            #     xxx
-            #     print '(to ' + repr(i + oparg) + ')',
-            # elif op in haslocal:
-            #     xxx
-            #     print '(' + co.co_varnames[oparg] + ')',
-            # elif op in hascompare:
-            #     xxx
-            #     print '(' + cmp_op[oparg] + ')',
-            # elif op in hasfree:
-            #     if free is None:
-            #         free = co.co_cellvars + co.co_freevars
-            #     xxx
-            #     print '(' + free[oparg] + ')',
+            if op in hasconst:
+                opargstr = repr(co.co_consts[oparg])
+            elif op in hasname:
+                opargstr = co.co_names[oparg]
+            elif op in hasjrel:
+                opargstr = 'to ' + repr(i + oparg)
+            elif op in haslocal:
+                opargstr = co.co_varnames[oparg]
+            elif op in hascompare:
+                opargstr = cmp_op[oparg]
+            elif op in hasfree:
+                if free is None:
+                    free = co.co_cellvars + co.co_freevars
+                opargstr = free[oparg]
         else:
             oparg = None
-        res.append(globals()[opname[op].replace('+', '_')](pos, lastline, oparg))
+            opargstr = ''
+        opcls = globals()[opname[op].replace('+', '_')]
+        res.append(opcls(pos, lastline, oparg, opargstr))
     return CodeRepresentation(res, source)
 
 def disassemble_string(code, lasti=-1, varnames=None, names=None,

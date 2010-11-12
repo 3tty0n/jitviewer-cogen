@@ -18,7 +18,7 @@ def test_disassembler():
         'LOAD_FAST', 'LOAD_FAST', 'BINARY_ADD', 'RETURN_VALUE']
     for i in range(4):
         assert res.opcodes[i].lineno == f.func_code.co_firstlineno + 1
-    
+    assert res.opcodes[0].argstr == '(a)'
 
 def test_line_starting_opcodes():
     if sys.version_info[:2] != (2, 6):
