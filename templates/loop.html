@@ -8,7 +8,7 @@
           <div class="operations">
               {% for chunk in sourceline.chunks %}
                  {% if chunk.is_bytecode %}
-                   <span class="dmp">{{chunk.html_repr()}}</span><br/>
+                   <span class="{{chunk.cssclass}}">{{chunk.html_repr()}}</span><br/>
                    {% for op in chunk.operations[1:] %}
                       {% if op.bridge %}
                         <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="#" onClick="replace_from(this, {{op.bridge.no}})">&gt;&gt;show bridge</a> (taken {{op.percentage}}%)<br/>

@@ -36,6 +36,11 @@ class CodeRepr(object):
         last_lineno = -1
         for chunk in loop.chunks:
             if chunk.is_bytecode:
+                chunk.cssclass = 'dmp '
+                if len(chunk.operations) <= 1:
+                    chunk.cssclass += 'empty'
+                else:
+                    chunk.cssclass += 'nonempty'
                 no = chunk.lineno
                 if no < last_lineno:
                     no = last_lineno

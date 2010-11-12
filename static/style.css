@@ -141,10 +141,18 @@ header,
 }
 
 .dmp {
-    font-weight: bold;
     margin-left: 3em;
     white-space: pre;
 }
+
+.nonempty {
+    font-weight: bold;
+}
+
+.empty {
+    color: #AAA;
+}
+
 
 .guard {
     border: 1px solid #F00;
