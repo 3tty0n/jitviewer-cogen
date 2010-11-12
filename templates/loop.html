@@ -1,5 +1,5 @@
 {% if show_upper_path %}
-   <a href="#" onClick="show_loop({{current_loop}}, {{upper_path}})">&lt;-- Up</a>
+   <a href="/" onClick="show_loop({{current_loop}}, {{upper_path}}); return false">&lt;-- Up</a>
 {% endif %}
 {% for sourceline in source.lines %}
    {% if sourceline.in_loop %}
@@ -11,13 +11,13 @@
                    <span class="{{chunk.cssclass}}">{{chunk.html_repr()}}</span><br/>
                    {% for op in chunk.operations[1:] %}
                       {% if op.bridge %}
-                        <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="#" onClick="replace_from(this, {{op.bridge.no}})">&gt;&gt;show bridge</a> (taken {{op.percentage}}%)<br/>
+                        <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="/" onClick="replace_from(this, {{op.bridge.no}}); return false">&gt;&gt;show bridge</a> (taken {{op.percentage}}%)<br/>
                       {% else %}
                         <span class="single-operation {{op.extra_style()}}">{{op.html_repr()}}</span><br/>
                       {% endif %}
                    {% endfor %}
                  {% else %}
-                   <a class="inlined_call" onClick="show_loop({{current_loop}}, {{chunk.path}})" href="#">{{(chunk.html_repr())|safe}}</a><br/>
+                   <a class="inlined_call" onClick="show_loop({{current_loop}}, {{chunk.path}}); return false" href="/">{{(chunk.html_repr())|safe}}</a><br/>
                  {% endif %}
               {% endfor %}
           </div>

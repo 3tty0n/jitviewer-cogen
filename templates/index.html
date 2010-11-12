@@ -13,7 +13,7 @@
 <body>
   <header>
     <span>Menu</span><br/>
-    <a href="#" onClick="toggle()">Toggle operations</a>
+    <a href="/" onClick="toggle(); return false">Toggle operations</a>
     <div id="callstack">
     </div>
   </header>
@@ -21,9 +21,9 @@
     <ul>
       {% for is_entry_bridge, index, item in loops %}
       {% if is_entry_bridge %}
-        <li><span>Entry bridge: <a href="#" onClick="show_loop({{index}})">{{item.repr()}}</a> run {{item.count}} times</span></li>
+        <li><span>Entry bridge: <a href="/" onClick="show_loop({{index}}); return false">{{item.repr()}}</a> run {{item.count}} times</span></li>
       {% else %}
-        <li><span><a href="#" onClick="show_loop({{index}})">{{item.repr()}}</a> run {{item.count}} times</span></li>
+        <li><span><a href="/" onClick="show_loop({{index}}); return false">{{item.repr()}}</a> run {{item.count}} times</span></li>
       {% endif %}
       {% endfor %}
     </ul>
