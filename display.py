@@ -23,7 +23,6 @@ class CodeRepr(object):
     """ A representation of a single code object suitable for display
     """
     def __init__(self, source, code, loop):
-        #startline, endline = loop.linerange
         lineset = loop.lineset
         self.lines = []
         self.firstlineno = code.co_firstlineno
