@@ -150,6 +150,11 @@ class Bytecode(object):
         return code.map[self.bytecode_no].lineno
     lineno = property(getlineno)
 
+    def getline_starts_here(self):
+        code = self.getcode()
+        return code.map[self.bytecode_no].line_starts_here
+    line_starts_here = property(getline_starts_here)
+
     def __repr__(self):
         return "[%s]" % ", ".join([repr(op) for op in self.operations])
 
@@ -202,7 +207,8 @@ class Function(object):
                 lineno = chunk.lineno
                 minline = min(minline, lineno)
                 maxline = max(maxline, lineno)
-                self._lineset.add(lineno)
+                if chunk.line_starts_here:
+                    self._lineset.add(lineno)
         if minline == sys.maxint:
             minline = 0
             maxline = 0

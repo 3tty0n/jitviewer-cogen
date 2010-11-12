@@ -21,6 +21,7 @@ class Opcode(object):
         self.pos = pos
         self.arg = arg
         self.lineno = lineno
+        self.line_starts_here = False
 
     def __repr__(self):
         if self.arg is None:
@@ -33,8 +34,12 @@ class CodeRepresentation(object):
     def __init__(self, opcodes, source):
         self.opcodes = opcodes
         self.map = {}
+        current_lineno = None
         for opcode in opcodes:
             self.map[opcode.pos] = opcode
+            if opcode.lineno != current_lineno:
+                opcode.line_starts_here = True
+            current_lineno = opcode.lineno
         self.source = source.split("\n")
 
 def _setup():
