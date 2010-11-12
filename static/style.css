@@ -132,7 +132,7 @@ header,
 
 .single-operation {
     white-space: pre;
-    margin-left: 1em;
+    margin-left: 3em;
 }
 
 .inlined_call {
@@ -141,7 +141,7 @@ header,
 }
 
 .dmp {
-    margin-left: 3em;
+    margin-left: 1em;
     white-space: pre;
 }
 
@@ -156,7 +156,7 @@ header,
 
 .guard {
     border: 1px solid #F00;
-    margin-left: 2em;
+    margin-left: 3em;
 	padding: 0 3px 1px 3px;
 }
 span.dmp,
