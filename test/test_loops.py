@@ -23,6 +23,15 @@ def test_parse():
     assert len(ops[2].args) == 1
     assert ops[2].html_repr().plaintext() == 'i13 = ((pypysig_long_struct)151937600).value'
 
+def test_parse_non_code():
+    ops = parse('''
+    []
+    debug_merge_point("SomeRandomStuff", 0)
+    ''')
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    assert len(res.chunks) == 1
+    assert res.chunks[0].html_repr()
+
 def test_split():
     ops = parse('''
     [i0]

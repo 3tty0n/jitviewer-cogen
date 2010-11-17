@@ -195,8 +195,12 @@ class Bytecode(object):
         pass
 
     def html_repr(self):
-        opcode = self.code.map[self.bytecode_no]
-        return '%s %s' % (self.bytecode_name, opcode.argstr)
+        if self.filename is not None:
+            code = self.getcode()
+            opcode = self.code.map[self.bytecode_no]
+            return '%s %s' % (self.bytecode_name, opcode.argstr)
+        else:
+            return self.bytecode_name
 
 class Function(object):
     filename = None
