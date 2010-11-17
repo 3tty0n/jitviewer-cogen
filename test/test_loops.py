@@ -26,10 +26,10 @@ def test_parse():
 def test_split():
     ops = parse('''
     [i0]
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD")
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #11 SUB")
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD", 0)
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #11 SUB", 0)
     i1 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #11 SUB")
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
     res = slice_debug_merge_points(ops.operations, LoopStorage())
@@ -42,12 +42,12 @@ def test_split():
 def test_inlined_call():
     ops = parse("""
     []
-    debug_merge_point('<code object inlined_call, file 'source.py', line 12> #28 CALL_FUNCTION')
+    debug_merge_point('<code object inlined_call, file 'source.py', line 12> #28 CALL_FUNCTION', 0)
     i18 = getfield_gc(p0, descr=<BoolFieldDescr pypy.interpreter.pyframe.PyFrame.inst_is_being_profiled 89>)
-    debug_merge_point('<code object inner, file 'source.py', line 9> #0 LOAD_FAST')
-    debug_merge_point('<code object inner, file 'source.py', line 9> #3 LOAD_CONST')
-    debug_merge_point('<code object inner, file 'source.py', line 9> #7 RETURN_VALUE')
-    debug_merge_point('<code object inlined_call, file 'source.py', line 12> #31 STORE_FAST')
+    debug_merge_point('<code object inner, file 'source.py', line 9> #0 LOAD_FAST', 1)
+    debug_merge_point('<code object inner, file 'source.py', line 9> #3 LOAD_CONST', 1)
+    debug_merge_point('<code object inner, file 'source.py', line 9> #7 RETURN_VALUE', 1)
+    debug_merge_point('<code object inlined_call, file 'source.py', line 12> #31 STORE_FAST', 0)
     """)
     res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert len(res.chunks) == 3 # two chunks + inlined call
@@ -60,10 +60,10 @@ def test_inlined_call():
 def test_name():
     ops = parse('''
     [i0]
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD")
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 201> #11 SUB")
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD", 0)
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 201> #11 SUB", 0)
     i1 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB")
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
     res = slice_debug_merge_points(ops.operations, LoopStorage())
@@ -77,10 +77,10 @@ def test_name_no_first():
     ops = parse('''
     [i0]
     i3 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD")
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 201> #11 SUB")
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD", 0)
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 201> #11 SUB", 0)
     i1 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB")
+    debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
     res = slice_debug_merge_points(ops.operations, LoopStorage())
@@ -90,10 +90,10 @@ def test_lineno():
     fname = str(py.path.local(__file__).join('..', 'x.py'))
     ops = parse('''
     [i0, i1]
-    debug_merge_point("<code object f, file '%(fname)s', line 2> #0 LOAD_FAST")
-    debug_merge_point("<code object f, file '%(fname)s', line 2> #3 LOAD_FAST")
-    debug_merge_point("<code object f, file '%(fname)s', line 2> #6 BINARY_ADD")
-    debug_merge_point("<code object f, file '%(fname)s', line 2> #7 RETURN_VALUE")
+    debug_merge_point("<code object f, file '%(fname)s', line 2> #0 LOAD_FAST", 0)
+    debug_merge_point("<code object f, file '%(fname)s', line 2> #3 LOAD_FAST", 0)
+    debug_merge_point("<code object f, file '%(fname)s', line 2> #6 BINARY_ADD", 0)
+    debug_merge_point("<code object f, file '%(fname)s', line 2> #7 RETURN_VALUE", 0)
     ''' % locals())
     res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert res.chunks[1].lineno == 3
@@ -102,11 +102,11 @@ def test_linerange():
     fname = str(py.path.local(__file__).join('..', 'x.py'))
     ops = parse('''
     [i0, i1]
-    debug_merge_point("<code object f, file '%(fname)s', line 5> #9 LOAD_FAST")
-    debug_merge_point("<code object f, file '%(fname)s', line 5> #12 LOAD_CONST")
-    debug_merge_point("<code object f, file '%(fname)s', line 5> #22 LOAD_CONST")
-    debug_merge_point("<code object f, file '%(fname)s', line 5> #28 LOAD_CONST")
-    debug_merge_point("<code object f, file '%(fname)s', line 5> #6 SETUP_LOOP")
+    debug_merge_point("<code object f, file '%(fname)s', line 5> #9 LOAD_FAST", 0)
+    debug_merge_point("<code object f, file '%(fname)s', line 5> #12 LOAD_CONST", 0)
+    debug_merge_point("<code object f, file '%(fname)s', line 5> #22 LOAD_CONST", 0)
+    debug_merge_point("<code object f, file '%(fname)s', line 5> #28 LOAD_CONST", 0)
+    debug_merge_point("<code object f, file '%(fname)s', line 5> #6 SETUP_LOOP", 0)
     ''' % locals())
     res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert res.linerange == (7, 9)
@@ -151,7 +151,7 @@ def test_adjust_bridges():
 
 def test_parsing_strliteral():
     loop = parse("""
-    debug_merge_point('StrLiteralSearch at 11/51 [17, 8, 3, 1, 1, 1, 1, 51, 0, 19, 51, 1]')
+    debug_merge_point('StrLiteralSearch at 11/51 [17, 8, 3, 1, 1, 1, 1, 51, 0, 19, 51, 1]', 0)
     """)
     ops = slice_debug_merge_points(loop.operations, LoopStorage())
     chunk = ops.chunks[0]

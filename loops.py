@@ -126,7 +126,7 @@ class SimpleParser(OpParser):
         if not argspec.strip():
             return [], None
         if opname == 'debug_merge_point':
-            return [argspec], None
+            return argspec.rsplit(", ", 1), None
         else:
             args = argspec.split(', ')
             descr = None
@@ -152,9 +152,11 @@ class Bytecode(object):
     bytecode_no = 0
     bytecode_name = None
     is_bytecode = True
+    inline_level = None
     
     def __init__(self, operations, storage):
         if operations[0].name == 'debug_merge_point':
+            self.inline_level = int(operations[0].args[1])
             m = re.search('<code object ([<>\w]+), file \'(.+?)\', line (\d+)> #(\d+) (\w+)',
                          operations[0].getarg(0))
             if m is None:
@@ -166,9 +168,6 @@ class Bytecode(object):
                 self.bytecode_no = int(bytecode_no)
         self.operations = operations
         self.storage = storage
-
-    def key(self):
-        return self.startlineno, self.name, self.filename
 
     def repr(self):
         if self.filename is None:
@@ -208,6 +207,7 @@ class Function(object):
     _linerange = None
     _lineset = None
     is_bytecode = False
+    inline_level = None
     
     def __init__(self, chunks, path, storage):
         self.path = path
@@ -217,11 +217,9 @@ class Function(object):
                 self.startlineno = chunk.startlineno
                 self.filename = chunk.filename
                 self.name = chunk.name
+                self.inline_level = chunk.inline_level
                 break
         self.storage = storage
-
-    def key(self):
-        return self.startlineno, self.name, self.filename
 
     def getlinerange(self):
         if self._linerange is None:
@@ -299,24 +297,19 @@ def slice_debug_merge_points(operations, storage):
     stack = []
 
     def getpath(stack):
-        return ",".join([str(len(v)) for _, v in stack])
+        return ",".join([str(len(v)) for v in stack])
 
     def append_to_res(bc):
         if not stack:
-            stack.append((bc.key(), []))
+            stack.append([])
         else:
-            if stack[-1][0] != bc.key():
-                previous_bytecode = stack[-1][1][-1]
-                # XXX PRETTY FRAGILE
-                # if any of those bytecodes were encountered and next bytecode
-                # is from somewhere else, then we need to pop one block
-                if (previous_bytecode.bytecode_name in
-                    ['RAISE_VARARGS', 'RETURN_VALUE', 'YIELD_VALUE']):
-                    _, last = stack.pop()
-                    stack[-1][1].append(Function(last, getpath(stack), storage))
+            if bc.inline_level + 1 != len(stack):
+                if bc.inline_level < len(stack):
+                    last = stack.pop()
+                    stack[-1].append(Function(last, getpath(stack), storage))
                 else:
-                    stack.append((bc.key(), []))
-        stack[-1][1].append(bc)
+                    stack.append([])
+        stack[-1].append(bc)
 
     so_far = []
     stack = []
@@ -333,10 +326,10 @@ def slice_debug_merge_points(operations, storage):
         # no ops whatsoever
         return Function([], getpath(stack), storage)
     while True:
-        _, next = stack.pop()
+        next = stack.pop()
         if not stack:
             return Function(next, getpath(stack), storage)
-        stack[-1][1].append(Function(next, getpath(stack), storage))
+        stack[-1].append(Function(next, getpath(stack), storage))
 
 def adjust_bridges(loop, bridges):
     """ Slice given loop according to given bridges to follow. Returns a plain
