@@ -17,16 +17,7 @@ def gather_all_code_objs(fname):
     """
     fname = str(fname)
     if fname.endswith('.pyc'):
-        f = open(fname)
-        magic = f.read(4)
-        f.read(4) # timestamp
-        if magic != imp.get_magic():
-            f.close()
-            code = compile(open(fname[:-1]).read(), fname, 'exec')
-        else:
-            code = marshal.loads(f.read())
-            f.close()
-            assert isinstance(code, types.CodeType)
+        code = compile(open(fname[:-1]).read(), fname, 'exec')
     elif fname.endswith('.py'):
         code = compile(open(fname).read(), fname, 'exec')
     else:
