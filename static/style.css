@@ -155,9 +155,7 @@ header,
 
 
 .guard {
-    background-color: #FFF5F5;
-    margin-left: 3em;
-	padding: 0 3px 1px 3px;
+    color: red;
 }
 span.dmp,
 span.guard,

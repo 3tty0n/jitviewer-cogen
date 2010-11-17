@@ -47,7 +47,10 @@ class Op(object):
         pass
 
     def html_repr(self):
-        return Html(getattr(self, 'repr_' + self.name, self.generic_repr)())
+        s = getattr(self, 'repr_' + self.name, self.generic_repr)()
+        if self.is_guard():
+            s = '<span class="guard">guard(</span>' + s + '<span class="guard">)</span>'
+        return Html(s)
 
     def getarg(self, i):
         return self._getvar(self.args[i])
@@ -115,11 +118,6 @@ class Op(object):
     def __repr__(self):
         return '<%s (%s)>' % (self.name, ', '.join([repr(a)
                                                     for a in self.args]))
-
-    def extra_style(self):
-        if self.name.startswith('guard_'):
-            return 'guard'
-        return ''
 
 class SimpleParser(OpParser):
     def parse_args(self, opname, argspec):
