@@ -50,9 +50,18 @@ class Server(object):
             up = '"' + ','.join(path[:-1]) + '"'
         else:
             up = '""'
+        callstack = []
+        path_so_far = []
         for e in path:
             if e:
+                callstack.append((','.join(path_so_far),
+                                  '%s in %s at %d' % (loop.name,
+                                                      loop.filename,
+                                                      loop.startlineno)))
                 loop = loop.chunks[int(e)]
+                path_so_far.append(e)
+        callstack.append((','.join(path_so_far), '%s in %s at %d' % (loop.name,
+                                        loop.filename, loop.startlineno)))
         
         startline, endline = loop.linerange
         if loop.filename is not None:
@@ -66,7 +75,7 @@ class Server(object):
                                            upper_path=up,
                                            show_upper_path=bool(path)),
              'scrollto': startline,
-             'callstack': None}
+             'callstack': callstack}
         return flask.jsonify(d)
 
 def start_browser(url):

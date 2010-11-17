@@ -13,6 +13,11 @@ function show_loop(no, path)
         $('#main').html(arg.html).ready(function() {
             $.scrollTo($('#line-' + arg.scrollto), 200);
         });
+        $('#callstack').html('')
+        for (var index in arg.callstack) {
+            var elem = arg.callstack[index];
+            $('#callstack').append('<div><a href="/" onClick="show_loop(' + no + ', \'' + elem[0] + '\'); return false">' + elem[1] + "</a></div>");
+        }
     });
 }
 

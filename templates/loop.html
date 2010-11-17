@@ -1,5 +1,5 @@
 {% if show_upper_path %}
-   <a href="/" onClick="show_loop({{current_loop}}, '{{upper_path}}'); return false">&lt;-- Up</a>
+   <a href="/" onClick="show_loop({{current_loop}}, {{upper_path}}); return false">&lt;-- Up</a>
 {% endif %}
 {% for sourceline in source.lines %}
    {% if sourceline.in_loop %}
