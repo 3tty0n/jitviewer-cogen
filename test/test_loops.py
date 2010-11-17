@@ -122,8 +122,15 @@ def test_linerange():
     assert res.lineset == set([7, 8, 9])
 
 def test_linerange_notstarts():
-    # XXX
-    pass
+    fname = str(py.path.local(__file__).join('..', 'x.py'))
+    ops = parse("""
+    [p6, p1]
+    debug_merge_point('<code object h, file '%(fname)s', line 11> #17 FOR_ITER', 0)
+    guard_class(p6, 144264192, descr=<Guard2>)
+    p12 = getfield_gc(p6, descr=<GcPtrFieldDescr pypy.objspace.std.iterobject.W_AbstractSeqIterObject.inst_w_seq 12>)
+    """ % locals())
+    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    assert res.lineset
 
 def test_reassign_loops():
     main = parse('''
