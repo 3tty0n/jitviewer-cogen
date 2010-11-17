@@ -4,18 +4,32 @@ from pypy.jit.metainterp.resoperation import rop, opname
 from disassembler import dis
 from pypy.jit.tool.oparser import OpParser
 
-def _new_binop(name):
-    def f(self):
-        return '%s = %s %s %s' % (self.getres(), self.getarg(0), name, self.getarg(1))
-    return f
-
 class Html(str):
     def __html__(self):
         return self
 
+    def plaintext(self):
+        # This is not a general way to strip tags, but it's good enough to use
+        # in tests
+        import re
+        s = re.sub('<.*?>', '', self)
+        s = s.replace("&lt;", "<")
+        s = s.replace("&gt;", ">")
+        s = s.replace("&amp;", "&")
+        return s
+
+
 def cssclass(cls, s, **kwds):
     attrs = ['%s="%s"' % (name, value) for name, value in kwds.iteritems()]
     return '<span class="%s" %s>%s</span>' % (cls, ' '.join(attrs), s)
+
+
+def _new_binop(name):
+    import cgi
+    name = cgi.escape(name)
+    def f(self):
+        return '%s = %s %s %s' % (self.getres(), self.getarg(0), name, self.getarg(1))
+    return f
 
 class Op(object):
     bridge = None
@@ -80,7 +94,6 @@ class Op(object):
         namespace = cssclass('namespace', namespace)
         classname = cssclass('classname', classname)
         field = cssclass('fieldname', field)
-        #obj = self.getarg(0)
         obj = self.getarg(0)
         return '%s = ((%s.%s)%s).%s' % (self.getres(), namespace, classname, obj, field)
     repr_getfield_gc_pure = repr_getfield_gc
@@ -146,7 +159,7 @@ class Bytecode(object):
                          operations[0].getarg(0))
             if m is None:
                 # a non-code loop, like StrLiteralSearch or something
-                self.bytecode_name = operations[0].getarg(0).split(" ")[0][1:]
+                self.bytecode_name = operations[0].args[0].split(" ")[0][1:]
             else:
                 self.name, self.filename, lineno, bytecode_no, self.bytecode_name = m.groups()
                 self.startlineno = int(lineno)

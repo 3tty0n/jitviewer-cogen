@@ -18,10 +18,10 @@ def test_parse():
     assert ops[1].name == 'guard_true'
     assert ops[1].descr is not None
     assert ops[0].res == 'i9'
-    assert ops[0].html_repr() == 'i9 = i7 < 1003'
+    assert ops[0].html_repr().plaintext() == 'i9 = i7 < 1003'
     assert ops[2].descr is not None
     assert len(ops[2].args) == 1
-    assert ops[2].html_repr() == 'i13 = ((pypysig_long_struct)151937600).value'
+    assert ops[2].html_repr().plaintext() == 'i13 = ((pypysig_long_struct)151937600).value'
 
 def test_split():
     ops = parse('''
@@ -150,10 +150,12 @@ def test_adjust_bridges():
     assert adjust_bridges(main, {'loop-13': True})[1].name == 'int_add'
 
 def test_parsing_strliteral():
-    ops = parse("""
+    loop = parse("""
     debug_merge_point('StrLiteralSearch at 11/51 [17, 8, 3, 1, 1, 1, 1, 51, 0, 19, 51, 1]')
-    """).operations
-    assert slice_debug_merge_points(ops, LoopStorage()).chunks[0].bytecode_name == 'StrLiteralSearch'
+    """)
+    ops = slice_debug_merge_points(loop.operations, LoopStorage())
+    chunk = ops.chunks[0]
+    assert chunk.bytecode_name == 'StrLiteralSearch'
 
 LINES = '''
 0:3
