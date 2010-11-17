@@ -49,7 +49,7 @@ class Op(object):
     def html_repr(self):
         s = getattr(self, 'repr_' + self.name, self.generic_repr)()
         if self.is_guard():
-            s = '<span class="guard">guard(</span>' + s + '<span class="guard">)</span>'
+            s = '<span class="guard">guard</span>(' + s + ')'
         return Html(s)
 
     def getarg(self, i):
