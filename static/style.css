@@ -155,7 +155,7 @@ header,
 
 
 .guard {
-    border: 1px solid #F00;
+    background-color: #FFF5F5;
     margin-left: 3em;
 	padding: 0 3px 1px 3px;
 }
@@ -166,8 +166,9 @@ span.single-operation,
 	display: inline-block;
 }
 
+
 .variable_highlight {
-    background-color: #FFA;
+    background-color: #BFF;
 }
 
 .namespace {
