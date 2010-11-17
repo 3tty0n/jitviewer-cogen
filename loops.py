@@ -244,7 +244,7 @@ class Function(object):
                 lineno = chunk.lineno
                 minline = min(minline, lineno)
                 maxline = max(maxline, lineno)
-                if chunk.line_starts_here:
+                if chunk.line_starts_here or len(chunk.operations) > 1:
                     self._lineset.add(lineno)
         if minline == sys.maxint:
             minline = 0

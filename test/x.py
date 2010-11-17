@@ -7,3 +7,6 @@ def g():
     while i < 10:
         a = 'foo'
         i += 1
+
+def h():
+    [x for x in range(10)]

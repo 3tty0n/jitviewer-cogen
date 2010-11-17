@@ -121,6 +121,10 @@ def test_linerange():
     assert res.linerange == (7, 9)
     assert res.lineset == set([7, 8, 9])
 
+def test_linerange_notstarts():
+    # XXX
+    pass
+
 def test_reassign_loops():
     main = parse('''
     [v0]
