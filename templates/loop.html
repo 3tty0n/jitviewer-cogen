@@ -1,5 +1,5 @@
 {% if show_upper_path %}
-   <a href="/" onClick="show_loop({{current_loop}}, {{upper_path}}); return false">&lt;-- Up</a>
+   <a href="/" onClick="show_loop({{current_loop}}, '{{upper_path}}'); return false">&lt;-- Up</a>
 {% endif %}
 {% for sourceline in source.lines %}
    {% if sourceline.in_loop %}
@@ -17,7 +17,7 @@
                       {% endif %}
                    {% endfor %}
                  {% else %}
-                   <a class="inlined_call" onClick="show_loop({{current_loop}}, {{chunk.path}}); return false" href="/">{{(chunk.html_repr())|safe}}</a><br/>
+                   <a class="inlined_call" onClick="show_loop({{current_loop}}, '{{chunk.path}}'); return false" href="/">{{(chunk.html_repr())|safe}}</a><br/>
                  {% endif %}
               {% endfor %}
           </div>
