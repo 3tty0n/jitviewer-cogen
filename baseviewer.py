@@ -37,7 +37,8 @@ class Server(object):
                 is_entry = True
             else:
                 is_entry = False
-            func = slice_debug_merge_points(loop.operations, self.storage)
+            func = slice_debug_merge_points(loop.operations, self.storage,
+                                            limit=1)
             func.count = loop.count
             loops.append((is_entry, index, func))
         loops.sort(lambda a, b: cmp(b[2].count, a[2].count))

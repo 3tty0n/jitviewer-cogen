@@ -298,7 +298,7 @@ def parse(input):
     return SimpleParser(input, None, {}, 'lltype', None,
                         nonstrict=True).parse()
 
-def slice_debug_merge_points(operations, storage):
+def slice_debug_merge_points(operations, storage, limit=None):
     """ Slice given operation list into a chain of Bytecode chunks.
     Also detect inlined functions and make them Function
     """
@@ -325,6 +325,8 @@ def slice_debug_merge_points(operations, storage):
         if op.name == 'debug_merge_point':
             if so_far:
                 append_to_res(Bytecode(so_far, storage))
+                if limit:
+                    break
                 so_far = []
         so_far.append(op)
     if so_far:
