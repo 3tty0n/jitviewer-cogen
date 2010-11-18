@@ -23,11 +23,14 @@ from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
+CUTOFF = 30
+
 class Server(object):
     def __init__(self, storage):
         self.storage = storage
 
     def index(self):
+        all = flask.request.args.get('all', None)
         loops = []
         for index, loop in enumerate(self.storage.loops):
             if 'entry bridge' in loop.comment:
@@ -38,7 +41,14 @@ class Server(object):
             func.count = loop.count
             loops.append((is_entry, index, func))
         loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
-        return flask.render_template('index.html', loops=loops)
+        if len(loops) > CUTOFF:
+            extra_data = "Show all (%d) loops" % len(loops)
+        else:
+            extra_data = ""
+        if not all:
+            loops = loops[:CUTOFF]
+        return flask.render_template('index.html', loops=loops,
+                                     extra_data=extra_data)
 
     def loop(self):
         no = int(flask.request.args.get('no', '0'))
