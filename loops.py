@@ -93,10 +93,16 @@ class Op(object):
 
     def repr_getfield_gc(self):
         fullname, field = self.descr.split(' ')[1].rsplit('.', 1)
-        namespace, classname = fullname.rsplit('.', 1)
+        names = fullname.rsplit('.', 1)
+        if len(names) == 2:
+            namespace, classname = names
+        else:
+            namespace = ''
+            classname = names[0]
         namespace = cssclass('namespace', namespace)
         classname = cssclass('classname', classname)
         field = cssclass('fieldname', field)
+            
         obj = self.getarg(0)
         return '%s = ((%s.%s)%s).%s' % (self.getres(), namespace, classname, obj, field)
     repr_getfield_gc_pure = repr_getfield_gc
