@@ -1,6 +1,6 @@
 
 import py
-from storage import LoopStorage
+from _jitviewer.storage import LoopStorage
 
 def test_load_codes():
     tmppath = py.test.ensuretemp('load_codes')

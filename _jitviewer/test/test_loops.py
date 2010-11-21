@@ -1,10 +1,11 @@
 
 from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
-from loops import parse, Bytecode, Function, slice_debug_merge_points,\
+from _jitviewer.loops import parse, Bytecode, Function,\
+     slice_debug_merge_points,\
      adjust_bridges, parse_log_counts
+from _jitviewer.storage import LoopStorage
 import py
-from storage import LoopStorage
 
 def test_parse():
     ops = parse('''

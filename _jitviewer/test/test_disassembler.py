@@ -1,5 +1,6 @@
 
-import disassembler, sys
+from _jitviewer import disassembler
+import sys
 import py
 
 def f(a, b):

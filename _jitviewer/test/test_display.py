@@ -1,5 +1,5 @@
 
-from display import CodeRepr
+from _jitviewer.display import CodeRepr
 
 class MockLoop(object):
     pass

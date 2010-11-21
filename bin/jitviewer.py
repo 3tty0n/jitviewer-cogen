@@ -1,7 +1,7 @@
 #!/usr/bin/env pypy-c
 """ A web-based browser of your log files. Run by
 
-baseviewer.py <path to your log file>
+jitviewer.py <path to your log file>
 
 and point your browser to http://localhost:5000
 
@@ -14,10 +14,10 @@ import cgi
 import flask
 import inspect
 from pypy.tool.logparser import parse_log_file, extract_category
-from loops import (parse, slice_debug_merge_points, adjust_bridges,
+from _jitviewer.loops import (parse, slice_debug_merge_points, adjust_bridges,
                    parse_log_counts)
-from storage import LoopStorage
-from display import CodeRepr, CodeReprNoFile
+from _jitviewer.storage import LoopStorage
+from _jitviewer.display import CodeRepr, CodeReprNoFile
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
