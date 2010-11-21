@@ -23,6 +23,11 @@ from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
+from jinja2 import Environment, FileSystemLoader
+
+from werkzeug import Response
+from flask.helpers import send_from_directory
+
 CUTOFF = 30
 
 class Server(object):
@@ -49,7 +54,7 @@ class Server(object):
         if not all:
             loops = loops[:CUTOFF]
         return flask.render_template('index.html', loops=loops,
-                                     extra_data=extra_data)
+                                    extra_data=extra_data)
 
     def loop(self):
         no = int(flask.request.args.get('no', '0'))
@@ -100,8 +105,14 @@ def start_browser(url):
     th.start()
     return th
 
-def main():
+class OverrideFlask(flask.Flask):
+    def __init__(self, *args, **kwargs):
+        self.root_path = kwargs.pop('root_path')
+        flask.Flask.__init__(self, *args, **kwargs)
 
+def main():
+    PATH = os.path.join(os.path.dirname(
+        os.path.dirname(__file__)))
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
@@ -114,7 +125,7 @@ def main():
     loops = [parse(l) for l in extract_category(log, "jit-log-opt-")]
     parse_log_counts(open(sys.argv[1] + '.count').readlines(), loops)
     storage.reconnect_loops(loops)
-    app = flask.Flask(__name__)
+    app = OverrideFlask('__name__', root_path=PATH)
     server = Server(storage)
     app.debug = True
     app.route('/')(server.index)
