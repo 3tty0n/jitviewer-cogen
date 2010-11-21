@@ -12,5 +12,4 @@ setup(name='JitViewer',
       scripts=['bin/jitviewer.py'],
       requires=['flask', 'pygments', 'simplejson'],
       include_package_data=True,
-      package_data={'': ['templates/*.html', 'static/*']},
-     )
+      package_data={'': ['templates/*.html', 'static/*']})
