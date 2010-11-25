@@ -281,7 +281,10 @@ class Function(object):
                 print >>out, "  ", source
             chunk.pretty_print(out)
 
-def parse_log_counts(lines, loops):
+def parse_log_counts(input, loops):
+    if not input:
+        return
+    lines = input[-1].splitlines()
     nums = []
     i = 0
     for line in lines:

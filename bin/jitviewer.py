@@ -44,7 +44,7 @@ class Server(object):
                 is_entry = False
             func = slice_debug_merge_points(loop.operations, self.storage,
                                             limit=1)
-            func.count = loop.count
+            func.count = getattr(loop, 'count', '?')
             loops.append((is_entry, index, func))
         loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
         if len(loops) > CUTOFF:
@@ -123,7 +123,7 @@ def main():
     extra_path = os.path.dirname(sys.argv[1])
     storage = LoopStorage(extra_path)
     loops = [parse(l) for l in extract_category(log, "jit-log-opt-")]
-    parse_log_counts(open(sys.argv[1] + '.count').readlines(), loops)
+    parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.reconnect_loops(loops)
     app = OverrideFlask('__name__', root_path=PATH)
     server = Server(storage)
