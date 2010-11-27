@@ -18,6 +18,7 @@ from _jitviewer.loops import (parse, slice_debug_merge_points, adjust_bridges,
                    parse_log_counts)
 from _jitviewer.storage import LoopStorage
 from _jitviewer.display import CodeRepr, CodeReprNoFile
+import _jitviewer
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
@@ -106,13 +107,16 @@ def start_browser(url):
     return th
 
 class OverrideFlask(flask.Flask):
+    root_path = property(lambda self: self._root_path, lambda *args: None)
+    
     def __init__(self, *args, **kwargs):
-        self.root_path = kwargs.pop('root_path')
+        self._root_path = kwargs.pop('root_path')
         flask.Flask.__init__(self, *args, **kwargs)
 
 def main():
     PATH = os.path.join(os.path.dirname(
-        os.path.dirname(__file__)))
+        os.path.dirname(_jitviewer.__file__)))
+    print PATH
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
