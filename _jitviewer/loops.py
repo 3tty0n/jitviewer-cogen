@@ -55,6 +55,9 @@ class Op(object):
     def getarg(self, i):
         return self._getvar(self.args[i])
 
+    def getargs(self):
+        return [self._getvar(v) for v in self.args]
+
     def getres(self):
         return self._getvar(self.res)
 
@@ -116,10 +119,11 @@ class Op(object):
         return '((%s)%s).%s = %s' % (name, self.getarg(0), field, self.getarg(1))
 
     def generic_repr(self):
+        arglist = ', '.join(self.getargs())
         if self.res is not None:
-            return '%s = %s(%s)' % (self.getres(), self.name, ', '.join(self.args))
+            return '%s = %s(%s)' % (self.getres(), self.name, arglist)
         else:
-            return '%s(%s)' % (self.name, ', '.join(self.args))
+            return '%s(%s)' % (self.name, arglist)
 
     def __repr__(self):
         return '<%s (%s)>' % (self.name, ', '.join([repr(a)

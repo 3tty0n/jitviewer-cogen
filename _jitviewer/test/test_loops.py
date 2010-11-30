@@ -3,7 +3,7 @@ from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
 from _jitviewer.loops import parse, Bytecode, Function,\
      slice_debug_merge_points,\
-     adjust_bridges, parse_log_counts
+     adjust_bridges, parse_log_counts, cssclass
 from _jitviewer.storage import LoopStorage
 import py
 
@@ -202,3 +202,15 @@ def test_parse_log_count():
     nums = parse_log_counts(LINES, loops)
     assert nums[5] == 2000
     assert loops[9].count == 2000
+
+def test_highlight_var():
+    ops = parse('''
+    [p0]
+    guard_class(p0, 144264192, descr=<Guard0>)
+    ''').operations
+    assert len(ops) == 1
+    op = ops[0]
+    assert op.name == 'guard_class'
+    html = op.html_repr()
+    p0 = cssclass('p0', 'p0', onmouseover="highlight_var(this)", onmouseout="disable_var(this)")
+    assert p0 in html
