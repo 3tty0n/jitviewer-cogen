@@ -67,7 +67,10 @@ class Op(object):
     def is_guard(self):
         return self._is_guard
 
-    for bin_op, name in [('<', 'int_lt'),
+    for bin_op, name in [('==', 'int_eq'),
+                         ('!=', 'int_ne'),
+                         ('==', 'float_eq'),
+                         ('!=', 'float_ne'),
                          ('>', 'int_gt'),
                          ('<=', 'int_le'),
                          ('>=', 'int_ge'),
@@ -75,6 +78,8 @@ class Op(object):
                          ('+', 'float_add'),
                          ('-', 'int_sub'),
                          ('-', 'float_sub'),
+                         ('*', 'int_mul'),
+                         ('*', 'float_mul'),
                          ('&', 'int_and')]:
         locals()['repr_' + name] = _new_binop(bin_op)
 
