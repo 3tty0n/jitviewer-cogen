@@ -314,7 +314,7 @@ def slice_debug_merge_points(operations, storage, limit=None):
         if not stack:
             stack.append([])
         else:
-            if bc.inline_level + 1 != len(stack):
+            if bc.inline_level is not None and bc.inline_level + 1 != len(stack):
                 if bc.inline_level < len(stack):
                     last = stack.pop()
                     stack[-1].append(Function(last, getpath(stack), storage))
