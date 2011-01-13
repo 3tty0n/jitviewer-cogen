@@ -48,7 +48,7 @@ class LoopStorage(object):
                     op, parent = guard_dict[no]
                     op.bridge = loop
                     op.percentage = ((getattr(loop, 'count', 1) * 100) /
-                                     getattr(parent, 'count', 1))
+                                     max(getattr(parent, 'count', 1), 1))
                     loop.no = no
                     continue
             res.append(loop)
