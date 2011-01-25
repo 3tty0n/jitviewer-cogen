@@ -9,7 +9,13 @@ Demo logfile available in this directory as 'log'.
 """
 
 import sys
-import os
+import os.path
+
+try:
+    import _jitviewer
+except ImportError:
+    sys.path.insert(0, os.path.abspath(os.path.join(__file__, '..', '..')))
+
 import cgi
 import flask
 import inspect
