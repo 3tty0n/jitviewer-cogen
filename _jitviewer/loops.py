@@ -72,6 +72,7 @@ class Op(object):
                          ('==', 'float_eq'),
                          ('!=', 'float_ne'),
                          ('>', 'int_gt'),
+                         ('<', 'int_lt'),
                          ('<=', 'int_le'),
                          ('>=', 'int_ge'),
                          ('+', 'int_add'),
