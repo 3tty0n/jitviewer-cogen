@@ -3,7 +3,7 @@ from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
 from _jitviewer.loops import parse, Bytecode, Function,\
      slice_debug_merge_points,\
-     adjust_bridges, cssclass
+     adjust_bridges, parse_log_counts, cssclass
 from _jitviewer.storage import LoopStorage
 import py
 
@@ -193,6 +193,15 @@ LINES = '''
 11:40
 12:0
 '''.split("\n")
+
+def test_parse_log_count():
+    class Loop(object):
+        pass
+    
+    loops = [Loop() for i in range(13)]
+    nums = parse_log_counts(LINES, loops)
+    assert nums[5] == 2000
+    assert loops[9].count == 2000
 
 def test_highlight_var():
     ops = parse('''
