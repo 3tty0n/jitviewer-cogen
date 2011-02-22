@@ -1,7 +1,7 @@
 #!/usr/bin/env pypy-c
 """ A web-based browser of your log files. Run by
 
-jitviewer.py <path to your log file>
+jitviewer.py <path to your log file> [port]
 
 and point your browser to http://localhost:5000
 
@@ -85,7 +85,7 @@ class Server(object):
                 path_so_far.append(e)
         callstack.append((','.join(path_so_far), '%s in %s at %d' % (loop.name,
                                         loop.filename, loop.startlineno)))
-        
+
         startline, endline = loop.linerange
         if loop.filename is not None:
             code = self.storage.load_code(loop.filename)[loop.startlineno]
@@ -114,7 +114,7 @@ def start_browser(url):
 
 class OverrideFlask(flask.Flask):
     root_path = property(lambda self: self._root_path, lambda *args: None)
-    
+
     def __init__(self, *args, **kwargs):
         self._root_path = kwargs.pop('root_path')
         flask.Flask.__init__(self, *args, **kwargs)
@@ -126,11 +126,15 @@ def main():
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 2 and len(sys.argv) != 3:
         print __doc__
         sys.exit(1)
     log = parse_log_file(sys.argv[1])
     extra_path = os.path.dirname(sys.argv[1])
+    if len(sys.argv) != 3:
+        port = 5000
+    else:
+        port = int(sys.argv[2])
     storage = LoopStorage(extra_path)
     loops = [parse(l) for l in extract_category(log, "jit-log-opt-")]
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
@@ -141,7 +145,7 @@ def main():
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
     #th = start_browser('http://localhost:5000/')
-    app.run(use_reloader=False, host='0.0.0.0')
+    app.run(use_reloader=False, host='0.0.0.0', port=port)
     #th.join()
 
 if __name__ == '__main__':
