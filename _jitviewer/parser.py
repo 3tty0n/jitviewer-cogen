@@ -143,21 +143,3 @@ def parse_log_counts(input, loops):
 def parse(input):
     return ParserWithHtmlRepr(input, None, {}, 'lltype', None,
                               nonstrict=True).parse()
-
-def adjust_bridges(loop, bridges):
-    """ Slice given loop according to given bridges to follow. Returns a plain
-    list of operations.
-    """
-    ops = loop.operations
-    res = []
-    i = 0
-    while i < len(ops):
-        op = ops[i]
-        if op.is_guard() and bridges.get('loop-' + str(op.guard_no), None):
-            res.append(op)
-            i = 0
-            ops = op.bridge.operations
-        else:
-            res.append(op)
-            i += 1
-    return res

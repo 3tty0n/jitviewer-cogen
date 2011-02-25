@@ -2,7 +2,7 @@ from pypy.tool.jitlogparser.storage import LoopStorage
 from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
 from _jitviewer.parser import parse, TraceForOpcodeHtml, FunctionHtml,\
-     adjust_bridges, parse_log_counts, cssclass
+     parse_log_counts, cssclass
 import py
 
 def test_parse():
@@ -152,21 +152,6 @@ def test_reassign_loops():
     assert len(loops[0].operations[0].bridge.operations) == 1
     assert loops[0].operations[0].bridge.no == 18
     assert loops[0].operations[0].percentage == 30
-
-def test_adjust_bridges():
-    main = parse('''
-    [v0]
-    guard_false(v0, descr=<Guard13>)
-    guard_true(v0, descr=<Guard5>)
-    ''')
-    bridge = parse('''
-    # bridge out of Guard 13
-    []
-    int_add(0, 1)
-    ''')
-    loops = LoopStorage().reconnect_loops([main, bridge])
-    assert adjust_bridges(main, {})[1].name == 'guard_true'
-    assert adjust_bridges(main, {'loop-13': True})[1].name == 'int_add'
 
 def test_parsing_strliteral():
     loop = parse("""

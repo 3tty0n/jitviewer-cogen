@@ -20,11 +20,12 @@ import cgi
 import flask
 import inspect
 from pypy.tool.logparser import parse_log_file, extract_category
-from _jitviewer.parser import (parse, FunctionHtml, adjust_bridges,
-                   parse_log_counts)
+from pypy.tool.jitlogparser.storage import LoopStorage
+from pypy.tool.jitlogparser.parser import adjust_bridges
+#
+from _jitviewer.parser import parse, FunctionHtml, parse_log_counts
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 import _jitviewer
-from pypy.tool.jitlogparser.storage import LoopStorage
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
