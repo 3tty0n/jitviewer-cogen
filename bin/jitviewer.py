@@ -23,7 +23,7 @@ from pypy.tool.logparser import parse_log_file, extract_category
 from pypy.tool.jitlogparser.storage import LoopStorage
 from pypy.tool.jitlogparser.parser import adjust_bridges
 #
-from _jitviewer.parser import parse, FunctionHtml, parse_log_counts
+from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml, parse_log_counts
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 import _jitviewer
 
@@ -137,7 +137,8 @@ def main():
     else:
         port = int(sys.argv[2])
     storage = LoopStorage(extra_path)
-    loops = [parse(l) for l in extract_category(log, "jit-log-opt-")]
+    loops = [ParserWithHtmlRepr.parse_from_input(l)
+             for l in extract_category(log, "jit-log-opt-")]
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.reconnect_loops(loops)
     app = OverrideFlask('__name__', root_path=PATH)

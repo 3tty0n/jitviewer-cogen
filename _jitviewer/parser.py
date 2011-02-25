@@ -139,7 +139,3 @@ def parse_log_counts(input, loops):
             loops[i].count = count
             i += 1
     return nums
-
-def parse(input):
-    return ParserWithHtmlRepr(input, None, {}, 'lltype', None,
-                              nonstrict=True).parse()
