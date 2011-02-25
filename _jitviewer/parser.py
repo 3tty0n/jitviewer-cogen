@@ -1,7 +1,8 @@
 import re, sys
-from pypy.jit.metainterp.resoperation import rop, opname
 from lib_pypy.disassembler import dis # imported from the pypy source tree
+from pypy.jit.metainterp.resoperation import rop, opname
 from pypy.jit.tool.oparser import OpParser
+from pypy.tool.jitlogparser.parser import Op
 
 class Html(str):
     def __html__(self):
@@ -30,41 +31,19 @@ def _new_binop(name):
         return '%s = %s %s %s' % (self.getres(), self.getarg(0), name, self.getarg(1))
     return f
 
-class Op(object):
-    bridge = None
-    
-    def __init__(self, name, args, res, descr):
-        self.name = name
-        self.args = args
-        self.res = res
-        self.descr = descr
-        self._is_guard = name.startswith('guard_')
-        if self._is_guard:
-            self.guard_no = int(self.descr[len('<Guard'):-1])
-
-    def setfailargs(self, _):
-        pass
+class OpHtml(Op):
+    """
+    Subclass of Op with human-friendly tml representation
+    """
 
     def html_repr(self):
-        s = getattr(self, 'repr_' + self.name, self.generic_repr)()
+        s = getattr(self, 'repr_' + self.name, self.repr)()
         if self.is_guard():
             s = '<span class="guard">guard</span>(' + s + ')'
         return Html(s)
 
-    def getarg(self, i):
-        return self._getvar(self.args[i])
-
-    def getargs(self):
-        return [self._getvar(v) for v in self.args]
-
-    def getres(self):
-        return self._getvar(self.res)
-
     def _getvar(self, v):
         return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
-
-    def is_guard(self):
-        return self._is_guard
 
     for bin_op, name in [('==', 'int_eq'),
                          ('!=', 'int_ne'),
@@ -123,16 +102,6 @@ class Op(object):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
         return '((%s)%s).%s = %s' % (name, self.getarg(0), field, self.getarg(1))
 
-    def generic_repr(self):
-        arglist = ', '.join(self.getargs())
-        if self.res is not None:
-            return '%s = %s(%s)' % (self.getres(), self.name, arglist)
-        else:
-            return '%s(%s)' % (self.name, arglist)
-
-    def __repr__(self):
-        return '<%s (%s)>' % (self.name, ', '.join([repr(a)
-                                                    for a in self.args]))
 
 class SimpleParser(OpParser):
     def parse_args(self, opname, argspec):
@@ -152,7 +121,7 @@ class SimpleParser(OpParser):
         return res
 
     def create_op(self, opnum, args, res, descr):
-        return Op(intern(opname[opnum].lower()), args, res, descr)
+        return OpHtml(intern(opname[opnum].lower()), args, res, descr)
 
 class NonCodeError(Exception):
     pass
