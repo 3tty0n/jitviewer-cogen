@@ -2,7 +2,7 @@ import re, sys
 from lib_pypy.disassembler import dis # imported from the pypy source tree
 from pypy.jit.metainterp.resoperation import rop, opname
 from pypy.jit.tool.oparser import OpParser
-from pypy.tool.jitlogparser.parser import Op
+from pypy.tool.jitlogparser import parser
 
 class Html(str):
     def __html__(self):
@@ -31,7 +31,7 @@ def _new_binop(name):
         return '%s = %s %s %s' % (self.getres(), self.getarg(0), name, self.getarg(1))
     return f
 
-class OpHtml(Op):
+class OpHtml(parser.Op):
     """
     Subclass of Op with human-friendly tml representation
     """
@@ -103,25 +103,9 @@ class OpHtml(Op):
         return '((%s)%s).%s = %s' % (name, self.getarg(0), field, self.getarg(1))
 
 
-class SimpleParser(OpParser):
-    def parse_args(self, opname, argspec):
-        if not argspec.strip():
-            return [], None
-        if opname == 'debug_merge_point':
-            return argspec.rsplit(", ", 1), None
-        else:
-            args = argspec.split(', ')
-            descr = None
-            if args[-1].startswith('descr='):
-                descr = args[-1][len('descr='):]
-                args = args[:-1]
-            return (args, descr)
+class ParserWithHtmlRepr(parser.SimpleParser):
+    Op = OpHtml
 
-    def box_for_var(self, res):
-        return res
-
-    def create_op(self, opnum, args, res, descr):
-        return OpHtml(intern(opname[opnum].lower()), args, res, descr)
 
 class NonCodeError(Exception):
     pass
@@ -276,8 +260,8 @@ def parse_log_counts(input, loops):
     return nums
 
 def parse(input):
-    return SimpleParser(input, None, {}, 'lltype', None,
-                        nonstrict=True).parse()
+    return ParserWithHtmlRepr(input, None, {}, 'lltype', None,
+                              nonstrict=True).parse()
 
 def slice_debug_merge_points(operations, storage, limit=None):
     """ Slice given operation list into a chain of Bytecode chunks.
