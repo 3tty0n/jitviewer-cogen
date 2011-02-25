@@ -20,7 +20,7 @@ import cgi
 import flask
 import inspect
 from pypy.tool.logparser import parse_log_file, extract_category
-from _jitviewer.parser import (parse, slice_debug_merge_points, adjust_bridges,
+from _jitviewer.parser import (parse, FunctionHtml, adjust_bridges,
                    parse_log_counts)
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 import _jitviewer
@@ -49,8 +49,8 @@ class Server(object):
                 is_entry = True
             else:
                 is_entry = False
-            func = slice_debug_merge_points(loop.operations, self.storage,
-                                            limit=1)
+            func = FunctionHtml.from_operations(loop.operations, self.storage,
+                                                limit=1)
             func.count = getattr(loop, 'count', '?')
             loops.append((is_entry, index, func))
         loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
@@ -67,7 +67,7 @@ class Server(object):
         no = int(flask.request.args.get('no', '0'))
         orig_loop = self.storage.loops[no]
         ops = adjust_bridges(orig_loop, flask.request.args)
-        loop = slice_debug_merge_points(ops, self.storage)
+        loop = FunctionHtml.from_operations(ops, self.storage)
         path = flask.request.args.get('path', '').split(',')
         if path:
             up = '"' + ','.join(path[:-1]) + '"'

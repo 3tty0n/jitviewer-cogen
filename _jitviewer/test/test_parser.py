@@ -1,8 +1,7 @@
 from pypy.tool.jitlogparser.storage import LoopStorage
 from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
-from _jitviewer.parser import parse, TraceForOpcodeHtml, Function,\
-     slice_debug_merge_points,\
+from _jitviewer.parser import parse, TraceForOpcodeHtml, FunctionHtml,\
      adjust_bridges, parse_log_counts, cssclass
 import py
 
@@ -28,7 +27,7 @@ def test_parse_non_code():
     []
     debug_merge_point("SomeRandomStuff", 0)
     ''')
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert len(res.chunks) == 1
     assert res.chunks[0].html_repr()
 
@@ -41,7 +40,7 @@ def test_split():
     debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 200> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert len(res.chunks) == 3
     assert len(res.chunks[0].operations) == 1
     assert len(res.chunks[1].operations) == 2
@@ -58,10 +57,10 @@ def test_inlined_call():
     debug_merge_point('<code object inner, file 'source.py', line 9> #7 RETURN_VALUE', 1)
     debug_merge_point('<code object inlined_call, file 'source.py', line 12> #31 STORE_FAST', 0)
     """)
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert len(res.chunks) == 3 # two chunks + inlined call
     assert isinstance(res.chunks[0], TraceForOpcodeHtml)
-    assert isinstance(res.chunks[1], Function)
+    assert isinstance(res.chunks[1], FunctionHtml)
     assert isinstance(res.chunks[2], TraceForOpcodeHtml)
     assert res.chunks[1].path == "1"
     assert len(res.chunks[1].chunks) == 3
@@ -75,7 +74,7 @@ def test_name():
     debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 202> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert res.repr() == res.chunks[0].repr()
     assert res.repr() == "stuff, file '/I/dont/exist.py', line 200"
     assert res.startlineno == 200
@@ -92,7 +91,7 @@ def test_name_no_first():
     debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 202> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert res.repr() == res.chunks[1].repr()
 
 def test_lineno():
@@ -104,7 +103,7 @@ def test_lineno():
     debug_merge_point("<code object f, file '%(fname)s', line 2> #6 BINARY_ADD", 0)
     debug_merge_point("<code object f, file '%(fname)s', line 2> #7 RETURN_VALUE", 0)
     ''' % locals())
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert res.chunks[1].lineno == 3
 
 def test_linerange():
@@ -117,7 +116,7 @@ def test_linerange():
     debug_merge_point("<code object f, file '%(fname)s', line 5> #28 LOAD_CONST", 0)
     debug_merge_point("<code object f, file '%(fname)s', line 5> #6 SETUP_LOOP", 0)
     ''' % locals())
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert res.linerange == (7, 9)
     assert res.lineset == set([7, 8, 9])
 
@@ -129,7 +128,7 @@ def test_linerange_notstarts():
     guard_class(p6, 144264192, descr=<Guard2>)
     p12 = getfield_gc(p6, descr=<GcPtrFieldDescr pypy.objspace.std.iterobject.W_AbstractSeqIterObject.inst_w_seq 12>)
     """ % locals())
-    res = slice_debug_merge_points(ops.operations, LoopStorage())
+    res = FunctionHtml.from_operations(ops.operations, LoopStorage())
     assert res.lineset
 
 def test_reassign_loops():
@@ -173,7 +172,7 @@ def test_parsing_strliteral():
     loop = parse("""
     debug_merge_point('StrLiteralSearch at 11/51 [17, 8, 3, 1, 1, 1, 1, 51, 0, 19, 51, 1]', 0)
     """)
-    ops = slice_debug_merge_points(loop.operations, LoopStorage())
+    ops = FunctionHtml.from_operations(loop.operations, LoopStorage())
     chunk = ops.chunks[0]
     assert chunk.bytecode_name == 'StrLiteralSearch'
 

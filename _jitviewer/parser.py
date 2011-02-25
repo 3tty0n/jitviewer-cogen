@@ -117,78 +117,12 @@ class TraceForOpcodeHtml(parser.TraceForOpcode):
         else:
             return self.bytecode_name
 
-class Function(object):
-    filename = None
-    name = None
-    startlineno = 0
-    _linerange = None
-    _lineset = None
-    is_bytecode = False
-    inline_level = None
+class FunctionHtml(parser.Function):
+    TraceForOpcode = TraceForOpcodeHtml
     
-    def __init__(self, chunks, path, storage):
-        self.path = path
-        self.chunks = chunks
-        for chunk in self.chunks:
-            if chunk.filename is not None:
-                self.startlineno = chunk.startlineno
-                self.filename = chunk.filename
-                self.name = chunk.name
-                self.inline_level = chunk.inline_level
-                break
-        self.storage = storage
-
-    def getlinerange(self):
-        if self._linerange is None:
-            self._compute_linerange()
-        return self._linerange
-    linerange = property(getlinerange)
-
-    def getlineset(self):
-        if self._lineset is None:
-            self._compute_linerange()
-        return self._lineset
-    lineset = property(getlineset)
-
-    def _compute_linerange(self):
-        self._lineset = set()
-        minline = sys.maxint
-        maxline = -1
-        for chunk in self.chunks:
-            if chunk.is_bytecode and chunk.filename is not None:
-                lineno = chunk.lineno
-                minline = min(minline, lineno)
-                maxline = max(maxline, lineno)
-                if chunk.line_starts_here or len(chunk.operations) > 1:
-                    self._lineset.add(lineno)
-        if minline == sys.maxint:
-            minline = 0
-            maxline = 0
-        self._linerange = minline, maxline
-
     def html_repr(self):
         return "inlined call to %s in %s" % (self.name, self.filename)
 
-    def repr(self):
-        if self.filename is None:
-            return "Unknown"
-        return "%s, file '%s', line %d" % (self.name, self.filename,
-                                           self.startlineno)
-        
-    def __repr__(self):
-        return "[%s]" % ", ".join([repr(chunk) for chunk in self.chunks])
-
-    def pretty_print(self, out):
-        print >>out, "Loop starting at %s in %s at %d" % (self.name,
-                                        self.filename, self.startlineno)
-        lineno = -1
-        for chunk in self.chunks:
-            if chunk.filename is not None and chunk.lineno != lineno:
-                lineno = chunk.lineno
-                source = chunk.getcode().source[chunk.lineno -
-                                                chunk.startlineno]
-                print >>out, "  ", source
-            chunk.pretty_print(out)
 
 def parse_log_counts(input, loops):
     if not input:
@@ -209,49 +143,6 @@ def parse_log_counts(input, loops):
 def parse(input):
     return ParserWithHtmlRepr(input, None, {}, 'lltype', None,
                               nonstrict=True).parse()
-
-def slice_debug_merge_points(operations, storage, limit=None):
-    """ Slice given operation list into a chain of Bytecode chunks.
-    Also detect inlined functions and make them Function
-    """
-    stack = []
-
-    def getpath(stack):
-        return ",".join([str(len(v)) for v in stack])
-
-    def append_to_res(bc):
-        if not stack:
-            stack.append([])
-        else:
-            if bc.inline_level is not None and bc.inline_level + 1 != len(stack):
-                if bc.inline_level < len(stack):
-                    last = stack.pop()
-                    stack[-1].append(Function(last, getpath(stack), storage))
-                else:
-                    stack.append([])
-        stack[-1].append(bc)
-
-    so_far = []
-    stack = []
-    for op in operations:
-        if op.name == 'debug_merge_point':
-            if so_far:
-                append_to_res(TraceForOpcodeHtml(so_far, storage))
-                if limit:
-                    break
-                so_far = []
-        so_far.append(op)
-    if so_far:
-        append_to_res(TraceForOpcodeHtml(so_far, storage))
-    # wrap stack back up
-    if not stack:
-        # no ops whatsoever
-        return Function([], getpath(stack), storage)
-    while True:
-        next = stack.pop()
-        if not stack:
-            return Function(next, getpath(stack), storage)
-        stack[-1].append(Function(next, getpath(stack), storage))
 
 def adjust_bridges(loop, bridges):
     """ Slice given loop according to given bridges to follow. Returns a plain
