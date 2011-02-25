@@ -1,7 +1,6 @@
-
 import re, sys
 from pypy.jit.metainterp.resoperation import rop, opname
-from disassembler import dis
+from lib_pypy.disassembler import dis # imported from the pypy source tree
 from pypy.jit.tool.oparser import OpParser
 
 class Html(str):
