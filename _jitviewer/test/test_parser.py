@@ -1,7 +1,7 @@
 
 from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
-from _jitviewer.loops import parse, Bytecode, Function,\
+from _jitviewer.parser import parse, Bytecode, Function,\
      slice_debug_merge_points,\
      adjust_bridges, parse_log_counts, cssclass
 from _jitviewer.storage import LoopStorage
