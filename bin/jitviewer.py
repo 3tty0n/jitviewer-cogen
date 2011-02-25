@@ -22,9 +22,9 @@ import inspect
 from pypy.tool.logparser import parse_log_file, extract_category
 from _jitviewer.parser import (parse, slice_debug_merge_points, adjust_bridges,
                    parse_log_counts)
-from _jitviewer.storage import LoopStorage
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 import _jitviewer
+from pypy.tool.jitlogparser.storage import LoopStorage
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
