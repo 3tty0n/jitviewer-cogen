@@ -1,8 +1,7 @@
-
+from pypy.tool.jitlogparser.storage import LoopStorage
 from pypy.jit.metainterp.resoperation import ResOperation, rop
 from pypy.jit.metainterp.history import ConstInt, Const
-from pypy.tool.jitlogparser.storage import LoopStorage
-from _jitviewer.parser import parse, Bytecode, Function,\
+from _jitviewer.parser import parse, TraceForOpcodeHtml, Function,\
      slice_debug_merge_points,\
      adjust_bridges, parse_log_counts, cssclass
 import py
@@ -36,10 +35,10 @@ def test_parse_non_code():
 def test_split():
     ops = parse('''
     [i0]
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD", 0)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #11 SUB", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 200> #10 ADD", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 200> #11 SUB", 0)
     i1 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #11 SUB", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 200> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
     res = slice_debug_merge_points(ops.operations, LoopStorage())
@@ -61,36 +60,36 @@ def test_inlined_call():
     """)
     res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert len(res.chunks) == 3 # two chunks + inlined call
-    assert isinstance(res.chunks[0], Bytecode)
+    assert isinstance(res.chunks[0], TraceForOpcodeHtml)
     assert isinstance(res.chunks[1], Function)
-    assert isinstance(res.chunks[2], Bytecode)
+    assert isinstance(res.chunks[2], TraceForOpcodeHtml)
     assert res.chunks[1].path == "1"
     assert len(res.chunks[1].chunks) == 3
     
 def test_name():
     ops = parse('''
     [i0]
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD", 0)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 201> #11 SUB", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 200> #10 ADD", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 201> #11 SUB", 0)
     i1 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 202> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
     res = slice_debug_merge_points(ops.operations, LoopStorage())
     assert res.repr() == res.chunks[0].repr()
-    assert res.repr() == "stuff, file '/tmp/x.py', line 200"
+    assert res.repr() == "stuff, file '/I/dont/exist.py', line 200"
     assert res.startlineno == 200
-    assert res.filename == '/tmp/x.py'
+    assert res.filename == '/I/dont/exist.py'
     assert res.name == 'stuff'
 
 def test_name_no_first():
     ops = parse('''
     [i0]
     i3 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 200> #10 ADD", 0)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 201> #11 SUB", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 200> #10 ADD", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 201> #11 SUB", 0)
     i1 = int_add(i0, 1)
-    debug_merge_point("<code object stuff, file '/tmp/x.py', line 202> #11 SUB", 0)
+    debug_merge_point("<code object stuff, file '/I/dont/exist.py', line 202> #11 SUB", 0)
     i2 = int_add(i1, 1)
     ''')
     res = slice_debug_merge_points(ops.operations, LoopStorage())

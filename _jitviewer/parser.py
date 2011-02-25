@@ -107,60 +107,7 @@ class ParserWithHtmlRepr(parser.SimpleParser):
     Op = OpHtml
 
 
-class NonCodeError(Exception):
-    pass
-
-class Bytecode(object):
-    filename = None
-    startlineno = 0
-    name = None
-    code = None
-    bytecode_no = 0
-    bytecode_name = None
-    is_bytecode = True
-    inline_level = None
-    
-    def __init__(self, operations, storage):
-        if operations[0].name == 'debug_merge_point':
-            self.inline_level = int(operations[0].args[1])
-            m = re.search('<code object ([<>\w]+), file \'(.+?)\', line (\d+)> #(\d+) (\w+)',
-                         operations[0].getarg(0))
-            if m is None:
-                # a non-code loop, like StrLiteralSearch or something
-                self.bytecode_name = operations[0].args[0].split(" ")[0][1:]
-            else:
-                self.name, self.filename, lineno, bytecode_no, self.bytecode_name = m.groups()
-                self.startlineno = int(lineno)
-                self.bytecode_no = int(bytecode_no)
-        self.operations = operations
-        self.storage = storage
-
-    def repr(self):
-        if self.filename is None:
-            return "Unknown"
-        return "%s, file '%s', line %d" % (self.name, self.filename,
-                                           self.startlineno)
-
-    def getcode(self):
-        if self.code is None:
-            self.code = dis(self.storage.load_code(self.filename)[self.startlineno])
-        return self.code
-
-    def getlineno(self):
-        code = self.getcode()
-        return code.map[self.bytecode_no].lineno
-    lineno = property(getlineno)
-
-    def getline_starts_here(self):
-        code = self.getcode()
-        return code.map[self.bytecode_no].line_starts_here
-    line_starts_here = property(getline_starts_here)
-
-    def __repr__(self):
-        return "[%s]" % ", ".join([repr(op) for op in self.operations])
-
-    def pretty_print(self, out):
-        pass
+class TraceForOpcodeHtml(parser.TraceForOpcode):
 
     def html_repr(self):
         if self.filename is not None:
@@ -289,13 +236,13 @@ def slice_debug_merge_points(operations, storage, limit=None):
     for op in operations:
         if op.name == 'debug_merge_point':
             if so_far:
-                append_to_res(Bytecode(so_far, storage))
+                append_to_res(TraceForOpcodeHtml(so_far, storage))
                 if limit:
                     break
                 so_far = []
         so_far.append(op)
     if so_far:
-        append_to_res(Bytecode(so_far, storage))
+        append_to_res(TraceForOpcodeHtml(so_far, storage))
     # wrap stack back up
     if not stack:
         # no ops whatsoever
