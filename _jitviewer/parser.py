@@ -33,7 +33,7 @@ def _new_binop(name):
 
 class OpHtml(parser.Op):
     """
-    Subclass of Op with human-friendly tml representation
+    Subclass of Op with human-friendly html representation
     """
 
     def html_repr(self):
