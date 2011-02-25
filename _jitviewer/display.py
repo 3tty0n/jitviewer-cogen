@@ -1,6 +1,5 @@
-
 from pypy.jit.metainterp.resoperation import rop
-from loops import Bytecode
+
 
 class LineRepr(object):
     """ A representation of a single line
