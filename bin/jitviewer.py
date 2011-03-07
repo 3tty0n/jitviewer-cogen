@@ -1,11 +1,14 @@
 #!/usr/bin/env pypy-c
 """ A web-based browser of your log files. Run by
 
-jitviewer.py <path to your log file> [port]
+    jitviewer.py <path to your log file> [port]
 
 and point your browser to http://localhost:5000
-
 Demo logfile available in this directory as 'log'.
+
+To produce the logfile for your program, run:
+
+    PYPYLOG=jit-log-opt:mylogfile.log pypy-c myapp.py
 """
 
 import sys
