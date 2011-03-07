@@ -8,7 +8,7 @@ Demo logfile available in this directory as 'log'.
 
 To produce the logfile for your program, run:
 
-    PYPYLOG=jit-log-opt:mylogfile.log pypy-c myapp.py
+    PYPYLOG=jit-log-opt,jit-backend-counts:mylogfile.log pypy-c myapp.py
 """
 
 import sys
