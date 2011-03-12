@@ -12,7 +12,8 @@ or
 
     python setup.py develop
 
-It also requires pypy to be importable (as in source code).
+It also requires pypy to be importable (as in source code), you can do this
+by setting your ``PYTHONPATH`` enviromental variable.
 
 Finally, run it:
 
