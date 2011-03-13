@@ -16,6 +16,17 @@ try:
 except ImportError:
     sys.path.insert(0, os.path.abspath(os.path.join(__file__, '..', '..')))
 
+try:
+    import pypy
+except ImportError:
+    import __pypy__
+    sys.path.append(os.path.join(__pypy__.__file__, '..', '..', '..'))
+    try:
+        import pypy
+    except ImportError:
+        raise ImportError('Could not import pypy module, make sure to '
+            'add the pypy module to PYTHONPATH')
+
 import cgi
 import flask
 import inspect
