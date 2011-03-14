@@ -41,6 +41,9 @@ from flask.helpers import send_from_directory
 
 CUTOFF = 30
 
+class CannotFindFile(Exception):
+    pass
+
 class Server(object):
     def __init__(self, storage):
         self.storage = storage
@@ -123,6 +126,13 @@ class OverrideFlask(flask.Flask):
         self._root_path = kwargs.pop('root_path')
         flask.Flask.__init__(self, *args, **kwargs)
 
+class CheckingLoopStorage(LoopStorage):
+    def disassemble_code(self, fname, startlineno):
+        result = super(CheckingLoopStorage, self).disassemble_code(fname, startlineno)
+        if result is None and fname is not None:
+            raise CannotFindFile(fname)
+        return result
+
 def main():
     PATH = os.path.join(os.path.dirname(
         os.path.dirname(_jitviewer.__file__)))
@@ -139,7 +149,7 @@ def main():
         port = 5000
     else:
         port = int(sys.argv[2])
-    storage = LoopStorage(extra_path)
+    storage = CheckingLoopStorage(extra_path)
     loops = [ParserWithHtmlRepr.parse_from_input(l)
              for l in extract_category(log, "jit-log-opt-")]
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
