@@ -104,6 +104,10 @@ class OpHtml(parser.Op):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
         return '((%s)%s).%s = %s' % (name, self.getarg(0), field, self.getarg(1))
 
+    def repr_jump(self):
+        no = int(re.search("\d+", self.descr).group(0))
+        return ("<a href='' onclick='show_loop(%d);return false'>" % no +
+                self.repr() + "</a>")
 
 class ParserWithHtmlRepr(parser.SimpleParser):
     Op = OpHtml
