@@ -92,7 +92,9 @@ class OpHtml(parser.Op):
             
         obj = self.getarg(0)
         return '%s = ((%s.%s)%s).%s' % (self.getres(), namespace, classname, obj, field)
-    repr_getfield_gc_pure = repr_getfield_gc
+
+    def repr_getfield_gc_pure(self):
+        return self.repr_getfield_gc() + " [pure]"
 
     def repr_setfield_raw(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
