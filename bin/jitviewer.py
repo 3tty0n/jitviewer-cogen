@@ -68,7 +68,8 @@ class Server(object):
             else:
                 is_entry = False
             func = FunctionHtml.from_operations(loop.operations, self.storage,
-                                                limit=1)
+                                                limit=1,
+                                                inputargs=loop.inputargs)
             func.count = getattr(loop, 'count', '?')
             loops.append((is_entry, index, func))
         loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
@@ -85,7 +86,8 @@ class Server(object):
         no = int(flask.request.args.get('no', '0'))
         orig_loop = self.storage.loops[no]
         ops = adjust_bridges(orig_loop, flask.request.args)
-        loop = FunctionHtml.from_operations(ops, self.storage)
+        loop = FunctionHtml.from_operations(ops, self.storage,
+                                            inputargs=orig_loop.inputargs)
         path = flask.request.args.get('path', '').split(',')
         if path:
             up = '"' + ','.join(path[:-1]) + '"'

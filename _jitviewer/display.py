@@ -1,5 +1,5 @@
 from pypy.jit.metainterp.resoperation import rop
-
+from _jitviewer.parser import cssclass
 
 class LineRepr(object):
     """ A representation of a single line
@@ -24,6 +24,10 @@ class CodeRepr(object):
     def __init__(self, source, code, loop):
         lineset = loop.lineset
         self.lines = []
+        html = []
+        for v in loop.inputargs:
+            html.append(cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)'))
+        self.inputargs = " ".join(html)
         self.firstlineno = code.co_firstlineno
         for i, line in enumerate(source.split("\n")):
             no = i + code.co_firstlineno

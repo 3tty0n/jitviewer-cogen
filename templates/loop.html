@@ -1,6 +1,7 @@
 {% if show_upper_path %}
    <a href="/" onClick="show_loop({{current_loop}}, {{upper_path}}); return false">&lt;-- Up</a>
 {% endif %}
+<br/>{{ source.inputargs|safe }}
 {% for sourceline in source.lines %}
    {% if sourceline.in_loop %}
        <div id="line-{{loop.index + source.firstlineno - 1}}" class="source visible">{{sourceline.line}}</div>
