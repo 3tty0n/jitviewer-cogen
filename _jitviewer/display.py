@@ -5,7 +5,7 @@ class LineRepr(object):
     """ A representation of a single line
     """
     def __init__(self, line, in_loop, chunks=None):
-        self.line = line
+        self.line = line.decode("utf-8")
         self.in_loop = in_loop
         if chunks is None:
             self.chunks = []
