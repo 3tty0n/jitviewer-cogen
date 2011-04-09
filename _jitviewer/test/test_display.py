@@ -2,7 +2,7 @@
 from _jitviewer.display import CodeRepr
 
 class MockLoop(object):
-    pass
+    inputargs = []
 
 class MockCode(object):
     pass
