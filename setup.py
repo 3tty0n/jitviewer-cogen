@@ -10,6 +10,6 @@ setup(name='JitViewer',
       url='http://pypy.org',
       packages=['_jitviewer'],
       scripts=['bin/jitviewer.py'],
-      requires=['flask', 'pygments', 'simplejson'],
+      install_requires=['flask', 'pygments', 'simplejson'],
       include_package_data=True,
       package_data={'': ['templates/*.html', 'static/*']})
