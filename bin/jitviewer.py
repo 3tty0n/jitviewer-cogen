@@ -140,8 +140,8 @@ class OverrideFlask(flask.Flask):
         flask.Flask.__init__(self, *args, **kwargs)
 
 class CheckingLoopStorage(LoopStorage):
-    def disassemble_code(self, fname, startlineno):
-        result = super(CheckingLoopStorage, self).disassemble_code(fname, startlineno)
+    def disassemble_code(self, fname, startlineno, name):
+        result = super(CheckingLoopStorage, self).disassemble_code(fname, startlineno, name)
         if result is None and fname is not None:
             raise CannotFindFile(fname)
         return result
