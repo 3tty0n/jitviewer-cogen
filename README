@@ -1,5 +1,5 @@
 You need to use PyPy to run this.  To get started, using a recent virtualenv
-(1.5.0 or newer), virtualenvwrapper, and a recent PyPy (trunk) create a
+(1.6.1 or newer), virtualenvwrapper, and a recent PyPy (1.5 or trunk) to create a
 virtualenv:
 
     mkvirtualenv --python=/path/to/pypy-c pypy-viewer

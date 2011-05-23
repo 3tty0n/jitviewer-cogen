@@ -108,7 +108,8 @@ class Server(object):
 
         startline, endline = loop.linerange
         if loop.filename is not None:
-            code = self.storage.load_code(loop.filename)[(loop.startlineno, loop.name)]
+            code = self.storage.load_code(loop.filename)[(loop.startlineno,
+                                                          loop.name)]
             source = CodeRepr(inspect.getsource(code), code, loop)
         else:
             source = CodeReprNoFile(loop)
