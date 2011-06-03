@@ -55,6 +55,10 @@ CUTOFF = 30
 class CannotFindFile(Exception):
     pass
 
+class DummyFunc(object):
+    def repr(self):
+        return '???'
+
 class Server(object):
     def __init__(self, storage):
         self.storage = storage
@@ -67,9 +71,12 @@ class Server(object):
                 is_entry = True
             else:
                 is_entry = False
-            func = FunctionHtml.from_operations(loop.operations, self.storage,
-                                                limit=1,
-                                                inputargs=loop.inputargs)
+            try:
+                func = FunctionHtml.from_operations(loop.operations, self.storage,
+                                                    limit=1,
+                                                    inputargs=loop.inputargs)
+            except CannotFindFile:
+                func = DummyFunc()
             func.count = getattr(loop, 'count', '?')
             loops.append((is_entry, index, func))
         loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
