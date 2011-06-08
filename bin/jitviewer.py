@@ -1,9 +1,16 @@
 #!/usr/bin/env pypy-c
 """ A web-based browser of your log files. Run by
 
-    jitviewer.py <path to your log file> [port]
+    jitviewer.py <path to your log file> [port] [--server]
 
-and point your browser to http://localhost:5000
+By default, this script will also start a lightweight PyQT/QWebKit based
+browser pointing at the jitviewer.  This assumes that CPython is installed in
+/usr/bin/python, and that PyQT with WebKit support is installed.
+
+If you want to run only the server, you can pass the --server option.  In this
+case, you can access the jitviewer by visiting http://localhost:5000 with your
+favorite browser.
+
 Demo logfile available in this directory as 'log'.
 
 To produce the logfile for your program, run:
@@ -33,6 +40,8 @@ except ImportError:
 import cgi
 import flask
 import inspect
+import threading
+import time
 from pypy.tool.logparser import parse_log_file, extract_category
 from pypy.tool.jitlogparser.storage import LoopStorage
 from pypy.tool.jitlogparser.parser import adjust_bridges
@@ -129,23 +138,27 @@ class Server(object):
              'callstack': callstack}
         return flask.jsonify(d)
 
-def start_browser(url):
-    import time
-    import webbrowser
-    import threading
-    def run():
-        time.sleep(0.5) # give the server some time to start
-        webbrowser.open(url)
-    th = threading.Thread(target=run)
-    th.start()
-    return th
 
 class OverrideFlask(flask.Flask):
     root_path = property(lambda self: self._root_path, lambda *args: None)
 
     def __init__(self, *args, **kwargs):
         self._root_path = kwargs.pop('root_path')
+        self.servers = []
+        self.evil_monkeypatch()
         flask.Flask.__init__(self, *args, **kwargs)
+
+    def evil_monkeypatch(self):
+        """
+        Evil way to fish the server started by flask, necessary to be able to shut
+        it down cleanly."""
+        from SocketServer import BaseServer
+        orig___init__ = BaseServer.__init__
+        def __init__(self2, *args, **kwds):
+            self.servers.append(self2)
+            orig___init__(self2, *args, **kwds)
+        BaseServer.__init__ = __init__
+
 
 class CheckingLoopStorage(LoopStorage):
     def disassemble_code(self, fname, startlineno, name):
@@ -154,6 +167,7 @@ class CheckingLoopStorage(LoopStorage):
             raise CannotFindFile(fname)
         return result
 
+
 def main():
     PATH = os.path.join(os.path.dirname(
         os.path.dirname(_jitviewer.__file__)))
@@ -161,11 +175,18 @@ def main():
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
+    #
+    server_mode = False
+    if '--server' in sys.argv:
+        server_mode = True
+        sys.argv.remove('--server')
+    #
     if len(sys.argv) != 2 and len(sys.argv) != 3:
         print __doc__
         sys.exit(1)
-    log = parse_log_file(sys.argv[1])
-    extra_path = os.path.dirname(sys.argv[1])
+    filename = sys.argv[1]
+    log = parse_log_file(filename)
+    extra_path = os.path.dirname(filename)
     if len(sys.argv) != 3:
         port = 5000
     else:
@@ -180,9 +201,38 @@ def main():
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
-    #th = start_browser('http://localhost:5000/')
-    app.run(use_reloader=False, host='0.0.0.0', port=port)
-    #th.join()
+    def run():
+        app.run(use_reloader=False, host='0.0.0.0', port=port)
+
+    if server_mode:
+        run()
+    else:
+        url = "http://localhost:%d/" % port
+        run_server_and_browser(app, run, url, filename)
+
+def run_server_and_browser(app, run, url, filename):
+    # start the HTTP server in another thread
+    th = threading.Thread(target=run)
+    th.start()
+    #
+    # start the webkit browser in the main thread (actually, it's a subprocess, but still)
+    time.sleep(0.5) # give the server some time to start
+    ret = start_browser(url, filename)
+    #
+    # shutdown the HTPP server and wait until it completes
+    app.servers[0].shutdown()
+    th.join()
+
+def start_browser(url, filename):
+    import subprocess
+    qwebview_py = os.path.join(os.path.dirname(__file__), 'qwebview.py')
+    title = "jitviewer: " + filename
+    try:
+        return subprocess.check_call(['/usr/bin/python', qwebview_py, url, title])
+    except Exception, e:
+        print 'Cannot start the builtin browser: %s' % e
+        print "Please point your browser to: %s" % url
+        raw_input("Press enter to quit and kill the server")
 
 if __name__ == '__main__':
     main()
