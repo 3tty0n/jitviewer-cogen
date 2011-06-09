@@ -18,7 +18,7 @@ def main():
 
     app = QApplication(sys.argv)
     web = QWebView()
-    web.resize(1300, 1000)
+    web.resize(1320, 1000)
     web.setWindowTitle(title)
     web.load(QUrl(url))
     web.show()
