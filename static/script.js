@@ -11,7 +11,7 @@ function show_loop(no, path)
     }
     $.getJSON('/loop', glob_bridge_state, function(arg) {
         $('#main').html(arg.html).ready(function() {
-            $.scrollTo($('#line-' + arg.scrollto), 200);
+            $.scrollTo($('#line-' + arg.scrollto), 200, {axis:'y'});
         });
         $('#callstack').html('')
         for (var index in arg.callstack) {
@@ -52,7 +52,7 @@ function replace_from(elem, bridge_id)
                     }
                 }
             }
-            $.scrollTo($("#loop-" + bridge_id));
+            $.scrollTo($("#loop-" + bridge_id), {axis:'y'});
         });
     });
 }
