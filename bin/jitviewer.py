@@ -96,8 +96,11 @@ class Server(object):
             extra_data = ""
         if not all:
             loops = loops[:CUTOFF]
+
+        qt_workaround = ('Qt/4.7.2' in flask.request.user_agent.string)
         return flask.render_template('index.html', loops=loops,
                                      filename=self.filename,
+                                     qt_workaround=qt_workaround,
                                      extra_data=extra_data)
 
     def loop(self):
