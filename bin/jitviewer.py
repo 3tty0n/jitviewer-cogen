@@ -211,17 +211,18 @@ def main():
         run_server_and_browser(app, run, url, filename)
 
 def run_server_and_browser(app, run, url, filename):
-    # start the HTTP server in another thread
-    th = threading.Thread(target=run)
-    th.start()
-    #
-    # start the webkit browser in the main thread (actually, it's a subprocess, but still)
-    time.sleep(0.5) # give the server some time to start
-    ret = start_browser(url, filename)
-    #
-    # shutdown the HTPP server and wait until it completes
-    app.servers[0].shutdown()
-    th.join()
+    try:
+        # start the HTTP server in another thread
+        th = threading.Thread(target=run)
+        th.start()
+        #
+        # start the webkit browser in the main thread (actually, it's a subprocess)
+        time.sleep(0.5) # give the server some time to start
+        ret = start_browser(url, filename)
+    finally:
+        # shutdown the HTPP server and wait until it completes
+        app.servers[0].shutdown()
+        th.join()
 
 def start_browser(url, filename):
     import subprocess
