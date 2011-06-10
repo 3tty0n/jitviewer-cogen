@@ -6,6 +6,8 @@ a,abbr,address,article,aside,audio,b,blockquote,body,canvas,caption,cite,code,dd
 -----------------------------------------*/
 @font-face {
   font-family: 'DroidSansMono';
+  font-weight: normal;
+  font-style: normal;
   src: url("DroidSansMono.ttf") format("truetype");
 }
 
