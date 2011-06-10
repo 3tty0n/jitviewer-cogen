@@ -23,6 +23,10 @@ body {
 #single_loop {
     float: right; /*fijal, Po co ci to?*/
 }
+
+a:visited {
+    color: blue;
+}
 /* End of General Layout & Typography 
 -----------------------------------------*/
 
@@ -114,7 +118,7 @@ header,
 }
 
 .visible {
-    color: blue;
+    color: #099;
 }
 
 .operations {
