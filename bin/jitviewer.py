@@ -69,7 +69,8 @@ class DummyFunc(object):
         return '???'
 
 class Server(object):
-    def __init__(self, storage):
+    def __init__(self, filename, storage):
+        self.filename = filename
         self.storage = storage
 
     def index(self):
@@ -96,7 +97,8 @@ class Server(object):
         if not all:
             loops = loops[:CUTOFF]
         return flask.render_template('index.html', loops=loops,
-                                    extra_data=extra_data)
+                                     filename=self.filename,
+                                     extra_data=extra_data)
 
     def loop(self):
         no = int(flask.request.args.get('no', '0'))
@@ -197,7 +199,7 @@ def main():
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.reconnect_loops(loops)
     app = OverrideFlask('__name__', root_path=PATH)
-    server = Server(storage)
+    server = Server(filename, storage)
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
