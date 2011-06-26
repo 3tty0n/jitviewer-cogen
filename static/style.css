@@ -163,8 +163,13 @@ header,
 .guard {
     color: red;
 }
+.call {
+    font-size: 12px;
+    font-weight: bold;
+}
 span.dmp,
 span.guard,
+span.call,
 span.single-operation,
 .inlined_call {
 	display: inline-block;

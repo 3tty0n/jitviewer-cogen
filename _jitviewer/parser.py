@@ -40,6 +40,8 @@ class OpHtml(parser.Op):
         s = getattr(self, 'repr_' + self.name, self.repr)()
         if self.is_guard():
             s = '<span class="guard">guard</span>(' + s + ')'
+        elif 'call' in self.name:
+            s = '<span class="call">' + s + '</span>'
         return Html(s)
 
     def _getvar(self, v):
