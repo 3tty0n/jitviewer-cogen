@@ -127,13 +127,14 @@ class Server(object):
         callstack.append((','.join(path_so_far), '%s in %s at %d' % (loop.name,
                                         loop.filename, loop.startlineno)))
 
-        startline, endline = loop.linerange
-        if loop.filename is not None:
+        if not loop.has_valid_code() or loop.filename is None:
+            startline = 0
+            source = CodeReprNoFile(loop)
+        else:
+            startline, endline = loop.linerange
             code = self.storage.load_code(loop.filename)[(loop.startlineno,
                                                           loop.name)]
             source = CodeRepr(inspect.getsource(code), code, loop)
-        else:
-            source = CodeReprNoFile(loop)
         d = {'html': flask.render_template('loop.html',
                                            source=source,
                                            current_loop=no,
@@ -168,8 +169,8 @@ class OverrideFlask(flask.Flask):
 class CheckingLoopStorage(LoopStorage):
     def disassemble_code(self, fname, startlineno, name):
         result = super(CheckingLoopStorage, self).disassemble_code(fname, startlineno, name)
-        if result is None and fname is not None:
-            raise CannotFindFile(fname)
+        #if result is None and fname is not None:
+        #    raise CannotFindFile(fname)
         return result
 
 

@@ -118,6 +118,8 @@ class TraceForOpcodeHtml(parser.TraceForOpcode):
     def html_repr(self):
         if self.filename is not None:
             code = self.getcode()
+            if code is None:
+                return self.bytecode_name
             opcode = self.code.map[self.bytecode_no]
             return '%s %s' % (self.bytecode_name, opcode.argstr)
         else:
