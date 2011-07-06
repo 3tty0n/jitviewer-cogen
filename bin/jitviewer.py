@@ -1,4 +1,4 @@
-#!/usr/bin/env pypy-c
+#!/usr/bin/env pypy
 """ A web-based browser of your log files. Run by
 
     jitviewer.py <path to your log file> [port] [--server]
@@ -175,8 +175,7 @@ class CheckingLoopStorage(LoopStorage):
 
 
 def main():
-    PATH = os.path.join(os.path.dirname(
-        os.path.dirname(_jitviewer.__file__)))
+    PATH = os.path.join(os.path.dirname((_jitviewer.__file__)))
     print PATH
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
