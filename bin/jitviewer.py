@@ -37,7 +37,6 @@ except ImportError:
         raise ImportError('Could not import pypy module, make sure to '
             'add the pypy module to PYTHONPATH')
 
-import cgi
 import flask
 import inspect
 import threading
@@ -49,15 +48,6 @@ from pypy.tool.jitlogparser.parser import adjust_bridges
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml, parse_log_counts
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 import _jitviewer
-
-from pygments import highlight
-from pygments.lexers import PythonLexer
-from pygments.formatters import HtmlFormatter
-
-from jinja2 import Environment, FileSystemLoader
-
-from werkzeug import Response
-from flask.helpers import send_from_directory
 
 CUTOFF = 30
 
@@ -223,7 +213,7 @@ def run_server_and_browser(app, run, url, filename):
         #
         # start the webkit browser in the main thread (actually, it's a subprocess)
         time.sleep(0.5) # give the server some time to start
-        ret = start_browser(url, filename)
+        start_browser(url, filename)
     finally:
         # shutdown the HTPP server and wait until it completes
         app.servers[0].shutdown()
@@ -238,7 +228,10 @@ def start_browser(url, filename):
     except Exception, e:
         print 'Cannot start the builtin browser: %s' % e
         print "Please point your browser to: %s" % url
-        raw_input("Press enter to quit and kill the server")
+        try:
+            raw_input("Press enter to quit and kill the server")
+        except KeyboardInterrupt:
+            pass
 
 if __name__ == '__main__':
     main()
