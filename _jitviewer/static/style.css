@@ -144,7 +144,7 @@ header,
 .asm {
     white-space: pre;
     margin-left: 4em;
-    color: #bbb;
+    color: #666;
 }
 
 .inlined_call {

@@ -19,6 +19,8 @@ function show_loop(no, path)
             $('#callstack').append('<div><a href="/" onClick="show_loop(' + no + ', \'' + elem[0] + '\'); return false">' + elem[1] + "</a></div>");
         }
         $(".asm").hide();
+        $('#asmtoggler').html("Show assembler");
+        $('#optoggler').html("Hide operations");
     });
 }
 
