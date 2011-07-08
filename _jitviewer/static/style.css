@@ -141,6 +141,12 @@ header,
     margin-left: 3em;
 }
 
+.asm {
+    white-space: pre;
+    margin-left: 4em;
+    color: #bbb;
+}
+
 .inlined_call {
     font-size: 12px;
     font-weight: bold;

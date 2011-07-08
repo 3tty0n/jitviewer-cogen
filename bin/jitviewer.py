@@ -43,7 +43,7 @@ import threading
 import time
 from pypy.tool.logparser import parse_log_file, extract_category
 from pypy.tool.jitlogparser.storage import LoopStorage
-from pypy.tool.jitlogparser.parser import adjust_bridges
+from pypy.tool.jitlogparser.parser import adjust_bridges, import_log
 #
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml, parse_log_counts
 from _jitviewer.display import CodeRepr, CodeReprNoFile
@@ -180,15 +180,13 @@ def main():
         print __doc__
         sys.exit(1)
     filename = sys.argv[1]
-    log = parse_log_file(filename)
     extra_path = os.path.dirname(filename)
     if len(sys.argv) != 3:
         port = 5000
     else:
         port = int(sys.argv[2])
     storage = CheckingLoopStorage(extra_path)
-    loops = [ParserWithHtmlRepr.parse_from_input(l)
-             for l in extract_category(log, "jit-log-opt-")]
+    log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.reconnect_loops(loops)
     app = OverrideFlask('__name__', root_path=PATH)
