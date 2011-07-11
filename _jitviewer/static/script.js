@@ -18,6 +18,9 @@ function show_loop(no, path)
             var elem = arg.callstack[index];
             $('#callstack').append('<div><a href="/" onClick="show_loop(' + no + ', \'' + elem[0] + '\'); return false">' + elem[1] + "</a></div>");
         }
+        $(".asm").hide();
+        $('#asmtoggler').html("Show assembler");
+        $('#optoggler').html("Hide operations");
     });
 }
 
@@ -57,9 +60,17 @@ function replace_from(elem, bridge_id)
     });
 }
 
-function toggle()
+function toggle(name, clsname, v)
 {
-    $('.operations').toggle();
+    var e = $("#" + name);
+    var e2 = $("." + clsname);
+    if (e.html().search("Show") != -1) {
+        e.html("Hide " + v);
+        e2.show();
+    } else {
+        e.html("Show " + v);
+        e2.hide();
+    }
 }
 
 function highlight_var(elem)

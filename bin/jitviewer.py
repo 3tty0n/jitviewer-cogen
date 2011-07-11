@@ -1,4 +1,4 @@
-#!/usr/bin/env pypy-c
+#!/usr/bin/env pypy
 """ A web-based browser of your log files. Run by
 
     jitviewer.py <path to your log file> [port] [--server]
@@ -37,27 +37,17 @@ except ImportError:
         raise ImportError('Could not import pypy module, make sure to '
             'add the pypy module to PYTHONPATH')
 
-import cgi
 import flask
 import inspect
 import threading
 import time
 from pypy.tool.logparser import parse_log_file, extract_category
 from pypy.tool.jitlogparser.storage import LoopStorage
-from pypy.tool.jitlogparser.parser import adjust_bridges
+from pypy.tool.jitlogparser.parser import adjust_bridges, import_log
 #
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml, parse_log_counts
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 import _jitviewer
-
-from pygments import highlight
-from pygments.lexers import PythonLexer
-from pygments.formatters import HtmlFormatter
-
-from jinja2 import Environment, FileSystemLoader
-
-from werkzeug import Response
-from flask.helpers import send_from_directory
 
 CUTOFF = 30
 
@@ -127,13 +117,14 @@ class Server(object):
         callstack.append((','.join(path_so_far), '%s in %s at %d' % (loop.name,
                                         loop.filename, loop.startlineno)))
 
-        startline, endline = loop.linerange
-        if loop.filename is not None:
+        if not loop.has_valid_code() or loop.filename is None:
+            startline = 0
+            source = CodeReprNoFile(loop)
+        else:
+            startline, endline = loop.linerange
             code = self.storage.load_code(loop.filename)[(loop.startlineno,
                                                           loop.name)]
             source = CodeRepr(inspect.getsource(code), code, loop)
-        else:
-            source = CodeReprNoFile(loop)
         d = {'html': flask.render_template('loop.html',
                                            source=source,
                                            current_loop=no,
@@ -168,14 +159,13 @@ class OverrideFlask(flask.Flask):
 class CheckingLoopStorage(LoopStorage):
     def disassemble_code(self, fname, startlineno, name):
         result = super(CheckingLoopStorage, self).disassemble_code(fname, startlineno, name)
-        if result is None and fname is not None:
-            raise CannotFindFile(fname)
+        #if result is None and fname is not None:
+        #    raise CannotFindFile(fname)
         return result
 
 
 def main():
-    PATH = os.path.join(os.path.dirname(
-        os.path.dirname(_jitviewer.__file__)))
+    PATH = os.path.join(os.path.dirname((_jitviewer.__file__)))
     print PATH
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
@@ -190,15 +180,13 @@ def main():
         print __doc__
         sys.exit(1)
     filename = sys.argv[1]
-    log = parse_log_file(filename)
     extra_path = os.path.dirname(filename)
     if len(sys.argv) != 3:
         port = 5000
     else:
         port = int(sys.argv[2])
     storage = CheckingLoopStorage(extra_path)
-    loops = [ParserWithHtmlRepr.parse_from_input(l)
-             for l in extract_category(log, "jit-log-opt-")]
+    log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.reconnect_loops(loops)
     app = OverrideFlask('__name__', root_path=PATH)
@@ -223,7 +211,7 @@ def run_server_and_browser(app, run, url, filename):
         #
         # start the webkit browser in the main thread (actually, it's a subprocess)
         time.sleep(0.5) # give the server some time to start
-        ret = start_browser(url, filename)
+        start_browser(url, filename)
     finally:
         # shutdown the HTPP server and wait until it completes
         app.servers[0].shutdown()
@@ -238,7 +226,10 @@ def start_browser(url, filename):
     except Exception, e:
         print 'Cannot start the builtin browser: %s' % e
         print "Please point your browser to: %s" % url
-        raw_input("Press enter to quit and kill the server")
+        try:
+            raw_input("Press enter to quit and kill the server")
+        except KeyboardInterrupt:
+            pass
 
 if __name__ == '__main__':
     main()

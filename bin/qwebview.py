@@ -14,7 +14,7 @@ def main():
         title = sys.argv[2]
     else:
         print >> sys.stderr, "Usage: qwebview.py URL [title]"
-        return 1
+        return 2
 
     app = QApplication(sys.argv)
     web = QWebView()
