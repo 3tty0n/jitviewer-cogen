@@ -96,6 +96,8 @@ class Server(object):
     def loop(self):
         no = int(flask.request.args.get('no', '0'))
         orig_loop = self.storage.loops[no]
+        if hasattr(orig_loop, 'force_asm'):
+            orig_loop.force_asm()
         ops = adjust_bridges(orig_loop, flask.request.args)
         loop = FunctionHtml.from_operations(ops, self.storage,
                                             inputargs=orig_loop.inputargs)
