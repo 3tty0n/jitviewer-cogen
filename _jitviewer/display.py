@@ -1,4 +1,3 @@
-from pypy.jit.metainterp.resoperation import rop
 from _jitviewer.parser import cssclass
 
 class LineRepr(object):

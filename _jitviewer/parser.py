@@ -1,7 +1,4 @@
-import re, sys
-from lib_pypy.disassembler import dis # imported from the pypy source tree
-from pypy.jit.metainterp.resoperation import rop, opname
-from pypy.jit.tool.oparser import OpParser
+import re
 from pypy.tool.jitlogparser import parser
 
 class Html(str):
@@ -11,7 +8,6 @@ class Html(str):
     def plaintext(self):
         # This is not a general way to strip tags, but it's good enough to use
         # in tests
-        import re
         s = re.sub('<.*?>', '', self)
         s = s.replace("&lt;", "<")
         s = s.replace("&gt;", ">")
