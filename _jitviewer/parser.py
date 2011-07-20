@@ -116,8 +116,6 @@ class ParserWithHtmlRepr(parser.SimpleParser):
 class TraceForOpcodeHtml(parser.TraceForOpcode):
 
     def html_repr(self):
-        #import pdb
-        #pdb.set_trace()
         if self.filename is not None:
             code = self.getcode()
             if code is None:
