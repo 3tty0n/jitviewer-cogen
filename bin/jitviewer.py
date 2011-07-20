@@ -157,15 +157,6 @@ class OverrideFlask(flask.Flask):
             orig___init__(self2, *args, **kwds)
         BaseServer.__init__ = __init__
 
-
-class CheckingLoopStorage(LoopStorage):
-    def disassemble_code(self, fname, startlineno, name):
-        result = super(CheckingLoopStorage, self).disassemble_code(fname, startlineno, name)
-        #if result is None and fname is not None:
-        #    raise CannotFindFile(fname)
-        return result
-
-
 def main():
     PATH = os.path.join(os.path.dirname((_jitviewer.__file__)))
     print PATH
@@ -187,7 +178,7 @@ def main():
         port = 5000
     else:
         port = int(sys.argv[2])
-    storage = CheckingLoopStorage(extra_path)
+    storage = LoopStorage(extra_path)
     log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.reconnect_loops(loops)

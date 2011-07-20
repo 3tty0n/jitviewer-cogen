@@ -35,3 +35,8 @@ def test_highlight_var():
     html = op.html_repr()
     p0 = cssclass('p0', 'p0', onmouseover="highlight_var(this)", onmouseout="disable_var(this)")
     assert p0 in html
+
+def test_cssclass():
+    s = cssclass('asd$%', 'v')
+    print s.__class__, s
+    assert '$' not in s

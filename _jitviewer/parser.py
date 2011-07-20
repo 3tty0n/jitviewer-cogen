@@ -1,4 +1,5 @@
 import re
+import cgi
 from pypy.tool.jitlogparser import parser
 
 class Html(str):
@@ -16,12 +17,13 @@ class Html(str):
 
 
 def cssclass(cls, s, **kwds):
+    cls = re.sub("[^\w]", "_", cls)
     attrs = ['%s="%s"' % (name, value) for name, value in kwds.iteritems()]
-    return '<span class="%s" %s>%s</span>' % (cls, ' '.join(attrs), s)
+    return '<span class="%s" %s>%s</span>' % (cls, ' '.join(attrs),
+                                              cgi.escape(s))
 
 
 def _new_binop(name):
-    import cgi
     name = cgi.escape(name)
     def f(self):
         return '%s = %s %s %s' % (self.getres(), self.getarg(0), name, self.getarg(1))
@@ -114,6 +116,8 @@ class ParserWithHtmlRepr(parser.SimpleParser):
 class TraceForOpcodeHtml(parser.TraceForOpcode):
 
     def html_repr(self):
+        #import pdb
+        #pdb.set_trace()
         if self.filename is not None:
             code = self.getcode()
             if code is None:
