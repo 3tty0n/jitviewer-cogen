@@ -35,6 +35,11 @@ function document_ready()
             show_loop(val);
         }
     }
+    $("#inp-bar").focus();
+    $("#inp-bar").bind("click keyup", function() {
+        var value = $("#inp-bar")[0].value;
+        
+    });
 }
 
 function replace_from(elem, bridge_id)
