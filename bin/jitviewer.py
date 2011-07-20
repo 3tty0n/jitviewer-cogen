@@ -37,11 +37,15 @@ except ImportError:
         raise ImportError('Could not import pypy module, make sure to '
             'add the pypy module to PYTHONPATH')
 
+import jinja2
+if jinja2.__version__ < '2.6':
+    raise ImportError("Required jinja version is 2.6 (the git tip), older versions might segfault PyPy")
+
 import flask
 import inspect
 import threading
 import time
-from pypy.tool.logparser import parse_log_file, extract_category
+from pypy.tool.logparser import extract_category
 from pypy.tool.jitlogparser.storage import LoopStorage
 from pypy.tool.jitlogparser.parser import adjust_bridges, import_log
 #
