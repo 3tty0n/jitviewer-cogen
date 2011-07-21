@@ -38,7 +38,14 @@ function document_ready()
     $("#inp-bar").focus();
     $("#inp-bar").bind("click keyup", function() {
         var value = $("#inp-bar")[0].value;
-        
+        $(".loopitem").each(function (i, l) {
+            glob = l;
+            if (l.getAttribute('name').search(value) != -1) {
+                $(l).show();
+            } else {
+                $(l).hide();
+            }
+        });
     });
 }
 
