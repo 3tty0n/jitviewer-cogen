@@ -29,9 +29,9 @@
     <ul>
       {% for is_entry_bridge, index, item in loops %}
       {% if is_entry_bridge %}
-        <li class="loopitem" id="loop-{{index}}" name={{item.repr()}}><span>Entry bridge: <a href="/" onClick="show_loop({{index}}); return false">{{item.repr()}}</a> run {{item.count}} times</span></li>
+        <li class="loopitem" id="loop-{{index}}" name="{{item.repr()}}"><span>Entry bridge: <a href="/" onClick="show_loop({{index}}); return false">{{item.repr()}}</a> run {{item.count}} times</span></li>
       {% else %}
-        <li class="loopitem" id="loop-{{index}}" name={{item.repr()}}><span><a href="/" onClick="show_loop({{index}}); return false">{{item.repr()}}</a> run {{item.count}} times</span></li>
+        <li class="loopitem" id="loop-{{index}}" name="{{item.repr()}}"><span><a href="/" onClick="show_loop({{index}}); return false">{{item.repr()}}</a> run {{item.count}} times</span></li>
       {% endif %}
       {% endfor %}
     </ul>
