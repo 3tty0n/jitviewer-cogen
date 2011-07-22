@@ -34,12 +34,16 @@ class OpHtml(parser.Op):
     Subclass of Op with human-friendly html representation
     """
 
+    def html_class(self):
+        if self.is_guard():
+            return "single-operation guard"
+        elif 'call' in self.name:
+            return "single-operation call"
+        else:
+            return "single-operation"
+
     def html_repr(self):
         s = getattr(self, 'repr_' + self.name, self.repr)()
-        if self.is_guard():
-            s = '<span class="guard">guard</span>(' + s + ')'
-        elif 'call' in self.name:
-            s = '<span class="call">' + s + '</span>'
         return Html(s)
 
     def _getvar(self, v):
@@ -108,6 +112,12 @@ class OpHtml(parser.Op):
         no = int(re.search("\d+", self.descr).group(0))
         return ("<a href='' onclick='show_loop(%d);return false'>" % no +
                 self.repr() + "</a>")
+
+    def getdescr(self):
+        return cgi.escape(self.descr)
+
+    #def repr_call_assembler(self):
+    #    xxxx
 
 class ParserWithHtmlRepr(parser.SimpleParser):
     Op = OpHtml

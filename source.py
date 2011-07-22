@@ -18,14 +18,20 @@ def inlined_call():
 
 inlined_call()
 
+def uninlined_call():
+    s = 0
+    for i in range(3):
+        s += 1
+    return s
+
 def bridge():
     s = 0
     i = 0
     while i < 10000:
         if i % 2:
-            s += 1
+            s += uninlined_call()
         else:
-            s += 2
+            s += 1
         i += 1
     return s
 
