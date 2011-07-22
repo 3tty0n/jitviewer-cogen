@@ -198,6 +198,16 @@ span.single-operation,
     color: #00A;
 }
 
+.selected {
+    background-color: #aa6;
+    -moz-border-radius: 3px;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
+		-moz-box-shadow: 0px 0px 7px #cacaca;
+		-webkit-box-shadow: 0px 0px 7px #cacaca;
+		box-shadow: 0px 0px 7px #cacaca;
+}
+
 /* End of Formatting 
 -----------------------------------------*/
 

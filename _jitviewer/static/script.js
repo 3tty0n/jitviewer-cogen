@@ -3,12 +3,14 @@ var glob_bridge_state = {};
 
 function show_loop(no, path)
 {
+    $("#loop-" + glob_bridge_state.no).removeClass("selected");
     glob_bridge_state.no = no;
     if (path) {
         glob_bridge_state.path = path;
     } else {
         delete glob_bridge_state.path;
     }
+    $("#loop-" + no).addClass("selected");
     $.getJSON('/loop', glob_bridge_state, function(arg) {
         $('#main').html(arg.html).ready(function() {
             $.scrollTo($('#line-' + arg.scrollto), 200, {axis:'y'});
