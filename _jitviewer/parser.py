@@ -113,6 +113,8 @@ class OpHtml(parser.Op):
         return ("<a href='' onclick='show_loop(%d);return false'>" % no +
                 self.repr() + "</a>")
 
+    repr_call_assembler = repr_jump
+
     def getdescr(self):
         return cgi.escape(self.descr)
 
