@@ -67,16 +67,16 @@ class OpHtml(parser.Op):
         locals()['repr_' + name] = _new_binop(bin_op)
 
     def repr_guard_true(self):
-        return '%s is true' % self.getarg(0)
+        return 'guard(%s is true)' % self.getarg(0)
 
     def repr_guard_false(self):
-        return '%s is false' % self.getarg(0)
+        return 'guard(%s is false)' % self.getarg(0)
 
     def repr_guard_value(self):
-        return '%s is %s' % (self.getarg(0), self.getarg(1))
+        return 'guard(%s == %s)' % (self.getarg(0), self.getarg(1))
 
     def repr_guard_isnull(self):
-        return '%s is null' % self.getarg(0)
+        return 'guard(%s is null)' % self.getarg(0)
 
     def repr_getfield_raw(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
