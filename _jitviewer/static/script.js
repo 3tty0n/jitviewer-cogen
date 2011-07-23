@@ -3,6 +3,8 @@ var glob_bridge_state = {};
 
 function show_loop(no, path)
 {
+    $("#loop-" + glob_bridge_state.no).removeClass("selected");
+    $("#loop-" + no).addClass("selected");
     $("#title-text").html($("#loop-" + no).attr('name'));
     $("#title").show();
     glob_bridge_state.no = no;
