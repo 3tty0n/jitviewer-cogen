@@ -3,17 +3,23 @@ var glob_bridge_state = {};
 
 function show_loop(no, path)
 {
-    $("#loop-" + glob_bridge_state.no).removeClass("selected");
+    $("#title-text").html($("#loop-" + no).attr('name'));
+    $("#title").show();
     glob_bridge_state.no = no;
     if (path) {
         glob_bridge_state.path = path;
     } else {
         delete glob_bridge_state.path;
     }
-    $("#loop-" + no).addClass("selected");
     $.getJSON('/loop', glob_bridge_state, function(arg) {
         $('#main').html(arg.html).ready(function() {
-            $.scrollTo($('#line-' + arg.scrollto), 200, {axis:'y'});
+            var scrollto;
+            if (arg.scrollto == 0) {
+                scrollto = 0;
+            } else {
+                scrollto = arg.scrollto - 1;
+            }
+            $.scrollTo($('#line-' + scrollto), 200, {axis:'y'});
         });
         $('#callstack').html('')
         for (var index in arg.callstack) {
