@@ -1,5 +1,8 @@
 
-var glob_bridge_state = {};
+var glob_bridge_state = {
+    'asm': false,
+    'op': true,
+};
 
 function show_loop(no, path)
 {
@@ -28,9 +31,9 @@ function show_loop(no, path)
             var elem = arg.callstack[index];
             $('#callstack').append('<div><a href="/" onClick="show_loop(' + no + ', \'' + elem[0] + '\'); return false">' + elem[1] + "</a></div>");
         }
-        $(".asm").hide();
-        $('#asmtoggler').html("Show assembler");
-        $('#optoggler').html("Hide operations");
+        if (!glob_bridge_state.asm) {
+            $(".asm").hide();
+        }
     });
 }
 
@@ -77,20 +80,25 @@ function replace_from(elem, bridge_id)
                     }
                 }
             }
+            if (!glob_bridge_state.asm) {
+                $(".asm").hide();
+            }
             $.scrollTo($("#loop-" + bridge_id), {axis:'y'});
         });
     });
 }
 
-function toggle(name, clsname, v)
+function asmtoggle()
 {
-    var e = $("#" + name);
-    var e2 = $("." + clsname);
+    var e = $("#asmtoggler");
+    var e2 = $(".asm");
     if (e.html().search("Show") != -1) {
-        e.html("Hide " + v);
+        glob_bridge_state.asm = true;
+        e.html("Hide assembler");
         e2.show();
     } else {
-        e.html("Show " + v);
+        glob_bridge_state.asm = false;
+        e.html("Show assembler");
         e2.hide();
     }
 }
