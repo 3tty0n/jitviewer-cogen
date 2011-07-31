@@ -1,15 +1,14 @@
 #!/usr/bin/env pypy
 """ A web-based browser of your log files. Run by
 
-    jitviewer.py <path to your log file> [port] [--server]
+    jitviewer.py <path to your log file> [port] [--qt]
 
-By default, this script will also start a lightweight PyQT/QWebKit based
+By default the script will run a web server, point your browser to
+http://localhost:5000
+
+If you pass --qt, this script will also start a lightweight PyQT/QWebKit based
 browser pointing at the jitviewer.  This assumes that CPython is installed in
 /usr/bin/python, and that PyQT with WebKit support is installed.
-
-If you want to run only the server, you can pass the --server option.  In this
-case, you can access the jitviewer by visiting http://localhost:5000 with your
-favorite browser.
 
 Demo logfile available in this directory as 'log'.
 
@@ -175,10 +174,10 @@ def main():
         print "Please run it using pypy-c"
         sys.exit(1)
     #
-    server_mode = False
-    if '--server' in sys.argv:
-        server_mode = True
-        sys.argv.remove('--server')
+    server_mode = True
+    if '--qt' in sys.argv:
+        server_mode = False
+        sys.argv.remove('--qt')
     #
     if len(sys.argv) != 2 and len(sys.argv) != 3:
         print __doc__
