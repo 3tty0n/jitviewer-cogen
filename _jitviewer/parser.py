@@ -148,14 +148,14 @@ def parse_log_counts(input, loops):
     if not input:
         return
     lines = input[-1].splitlines()
-    nums = []
-    i = 0
+    mapping = {}
+    for loop in loops:
+        com = loop.comment
+        if 'Loop' in com:
+            mapping['loop ' + re.search('Loop (\d+)', com).group(1)] = loop
+        else:
+            mapping['bridge ' + re.search('Guard (\d+)', com).group(1)] = loop
     for line in lines:
         if line:
-            num, count = line.split(':')
-            assert int(num) == i
-            count = int(count)
-            nums.append(count)
-            loops[i].count = count
-            i += 1
-    return nums
+            num, count = line.split(':', 2)
+            mapping[num].count = int(count)
