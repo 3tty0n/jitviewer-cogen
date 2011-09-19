@@ -1,6 +1,9 @@
 You need to use PyPy to run this.  To get started, using a recent virtualenv
-(1.6.1 or newer), virtualenvwrapper, and a recent PyPy (1.5 or trunk) to create a
-virtualenv:
+(1.6.1 or newer), virtualenvwrapper, and a recent PyPy (1.5 or trunk).
+
+On Mac OSX you will also need to install binutils, to make objdump available.
+
+To create a virtualenv:
 
     mkvirtualenv --python=/path/to/pypy pypy-viewer
 
