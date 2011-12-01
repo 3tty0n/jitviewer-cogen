@@ -192,7 +192,7 @@ def main():
     log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.reconnect_loops(loops)
-    app = OverrideFlask('__name__', root_path=PATH)
+    app = OverrideFlask('jitviewer', root_path=PATH)
     server = Server(filename, storage)
     app.debug = True
     app.route('/')(server.index)
