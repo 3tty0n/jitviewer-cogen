@@ -136,7 +136,10 @@ class Server(object):
                 except (IOError, OSError):
                     source = CodeReprNoFile(loop)
             else:
-                source = CodeRepr(inspect.getsource(code), code, loop)
+                try:
+                    source = CodeRepr(inspect.getsource(code), code, loop)
+                except:
+                    source = CodeReprNoFile(loop)
         d = {'html': flask.render_template('loop.html',
                                            source=source,
                                            current_loop=no,
