@@ -46,9 +46,10 @@ import threading
 import time
 from pypy.tool.logparser import extract_category
 from pypy.tool.jitlogparser.storage import LoopStorage
-from pypy.tool.jitlogparser.parser import adjust_bridges, import_log
+from pypy.tool.jitlogparser.parser import adjust_bridges, import_log,\
+     parse_log_counts
 #
-from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml, parse_log_counts
+from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 import _jitviewer
 
