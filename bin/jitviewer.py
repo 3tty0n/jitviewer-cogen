@@ -172,8 +172,7 @@ class OverrideFlask(flask.Flask):
         BaseServer.__init__ = __init__
 
 def main():
-    PATH = os.path.join(os.path.dirname((_jitviewer.__file__)))
-    print PATH
+    PATH = os.path.dirname(os.path.dirname((_jitviewer.__file__)))
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
