@@ -10,18 +10,20 @@
               {% for chunk in sourceline.chunks %}
                  {% if chunk.is_bytecode %}
                    <span class="{{chunk.cssclass}}">{{chunk.html_repr()}}</span><br/>
-                   {% for op in chunk.operations[1:] %}
-                      {% if op.bridge %}
-                        <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="/" onClick="replace_from(this, {{op.bridge.no}}); return false">&gt;&gt;show bridge</a> (taken {{op.percentage}}%)<br/>
-                        {% if op.asm %}
-                          <p class="asm">{{op.asm}}</p>
-                        {% endif %}
-                      {% else %}
-                        <span class="{{op.html_class()}}">{{op.html_repr()}}</span><br/>
-                        {% if op.asm %}
+                   {% for op in chunk.operations %}
+                      {% if op.name != "debug_merge_point" %}
+                        {% if op.bridge %}
+                          <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="/" onClick="replace_from(this, {{op.bridge.no}}); return false">&gt;&gt;show bridge</a> (taken {{op.percentage}}%)<br/>
+                          {% if op.asm %}
                             <p class="asm">{{op.asm}}</p>
+                          {% endif %}
+                        {% else %}
+                          <span class="{{op.html_class()}}">{{op.html_repr()}}</span><br/>
+                          {% if op.asm %}
+                              <p class="asm">{{op.asm}}</p>
+                          {% endif %}
                         {% endif %}
-                      {% endif %}
+                     {% endif %}
                    {% endfor %}
                  {% else %}
                    <a class="inlined_call" onClick="show_loop({{current_loop}}, '{{chunk.path}}'); return false" href="/">{{(chunk.html_repr())|safe}}</a><br/>

@@ -46,8 +46,8 @@ class OpHtml(parser.Op):
         s = getattr(self, 'repr_' + self.name, self.repr)()
         return Html(s)
 
-    def _getvar(self, v):
-        return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
+    #def _getvar(self, v):
+    #    return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
 
     for bin_op, name in [('==', 'int_eq'),
                          ('!=', 'int_ne'),
