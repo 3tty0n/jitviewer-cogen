@@ -2,20 +2,6 @@ import re
 import cgi
 from pypy.tool.jitlogparser import parser
 
-class Html(str):
-    def __html__(self):
-        return self
-
-    def plaintext(self):
-        # This is not a general way to strip tags, but it's good enough to use
-        # in tests
-        s = re.sub('<.*?>', '', self)
-        s = s.replace("&lt;", "<")
-        s = s.replace("&gt;", ">")
-        s = s.replace("&amp;", "&")
-        return s
-
-
 def cssclass(cls, s, **kwds):
     cls = re.sub("[^\w]", "_", cls)
     attrs = ['%s="%s"' % (name, value) for name, value in kwds.iteritems()]
@@ -26,8 +12,14 @@ def cssclass(cls, s, **kwds):
 def _new_binop(name):
     name = cgi.escape(name)
     def f(self):
-        return '%s = %s %s %s' % (self.getres(), self.getarg(0), name, self.getarg(1))
+        return '%s = %s %s %s' % (self.wrap_html(self.res),
+                                  self.wrap_html(self.args[0]),
+                                  name, self.wrap_html(self.args[1]))
     return f
+
+class Html(str):
+    def __html__(self):
+        return self
 
 class OpHtml(parser.Op):
     """
@@ -43,11 +35,11 @@ class OpHtml(parser.Op):
             return "single-operation"
 
     def html_repr(self):
-        s = getattr(self, 'repr_' + self.name, self.repr)()
+        s = getattr(self, 'repr_' + self.name, self.default_repr)()
         return Html(s)
 
-    #def _getvar(self, v):
-    #    return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
+    def wrap_html(self, v):
+        return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
 
     for bin_op, name in [('==', 'int_eq'),
                          ('!=', 'int_ne'),
@@ -67,20 +59,22 @@ class OpHtml(parser.Op):
         locals()['repr_' + name] = _new_binop(bin_op)
 
     def repr_guard_true(self):
-        return 'guard(%s is true)' % self.getarg(0)
+        return 'guard(%s is true)' % self.wrap_html(self.args[0])
 
     def repr_guard_false(self):
-        return 'guard(%s is false)' % self.getarg(0)
+        return 'guard(%s is false)' % self.wrap_html(self.args[0])
 
     def repr_guard_value(self):
-        return 'guard(%s == %s)' % (self.getarg(0), self.getarg(1))
+        return 'guard(%s == %s)' % (self.wrap_html(self.args[0]),
+                                    self.wrap_html(self.args[1]))
 
     def repr_guard_isnull(self):
-        return 'guard(%s is null)' % self.getarg(0)
+        return 'guard(%s is null)' % self.wrap_html(self.args[0])
 
     def repr_getfield_raw(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '%s = ((%s)%s).%s' % (self.getres(), name, self.getarg(0), field[2:])
+        return '%s = ((%s)%s).%s' % (self.wrap_html(self.res), name,
+                                     self.wrap_html(self.args[0]), field[2:])
 
     def repr_getfield_gc(self):
         fullname, field = self.descr.split(' ')[1].rsplit('.', 1)
@@ -95,28 +89,39 @@ class OpHtml(parser.Op):
         field = cssclass('fieldname', field)
             
         obj = self.getarg(0)
-        return '%s = ((%s.%s)%s).%s' % (self.getres(), namespace, classname, obj, field)
+        return '%s = ((%s.%s)%s).%s' % (self.wrap_html(self.res),
+                                        namespace, classname, obj, field)
 
     def repr_getfield_gc_pure(self):
         return self.repr_getfield_gc() + " [pure]"
 
     def repr_setfield_raw(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '((%s)%s).%s = %s' % (name, self.getarg(0), field[2:], self.getarg(1))
+        return '((%s)%s).%s = %s' % (name, self.wrap_html(self.args[0]),
+                                     field[2:], self.wrap_html(self.args[1]))
 
     def repr_setfield_gc(self):
         name, field = self.descr.split(' ')[1].rsplit('.', 1)
-        return '((%s)%s).%s = %s' % (name, self.getarg(0), field, self.getarg(1))
+        return '((%s)%s).%s = %s' % (name, self.wrap_html(self.args[0]),
+                                     field, self.wrap_html(self.args[1]))
 
     def repr_jump(self):
         no = int(re.search("\d+", self.descr).group(0))
         return ("<a href='' onclick='show_loop(%d);return false'>" % no +
-                self.repr() + "</a>")
+                self.default_repr() + "</a>")
+
+    def default_repr(self):
+        args = [self.wrap_html(arg) for arg in self.args]
+        if self.descr is not None:
+            args.append('descr=%s' % cgi.escape(self.descr))
+        arglist = ', '.join(args)
+        if self.res is not None:
+            return '%s = %s(%s)' % (self.wrap_html(self.res), self.name,
+                                    arglist)
+        else:
+            return '%s(%s)' % (self.name, arglist)
 
     repr_call_assembler = repr_jump
-
-    def getdescr(self):
-        return cgi.escape(self.descr)
 
     #def repr_call_assembler(self):
     #    xxxx
