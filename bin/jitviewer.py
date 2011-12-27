@@ -71,14 +71,14 @@ class Server(object):
         all = flask.request.args.get('all', None)
         loops = []
         for index, loop in enumerate(self.storage.loops):
-            if 'entry bridge' in loop.comment:
-                is_entry = True
-            else:
-                is_entry = False
+            is_entry = False
             try:
+                start, stop = loop.comment.find('('), loop.comment.rfind(')')
+                name = loop.comment[start + 1:stop]
                 func = FunctionHtml.from_operations(loop.operations, self.storage,
                                                     limit=1,
-                                                    inputargs=loop.inputargs)
+                                                    inputargs=loop.inputargs,
+                                                    loopname=name)
             except CannotFindFile:
                 func = DummyFunc()
             func.count = getattr(loop, 'count', '?')
