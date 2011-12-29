@@ -33,7 +33,7 @@ class CodeRepr(object):
             in_loop = no in lineset
             self.lines.append(LineRepr(line, in_loop))
 
-        last_lineno = -1
+        last_lineno = self.firstlineno
         for chunk in loop.chunks:
             if chunk.is_bytecode:
                 chunk.cssclass = 'dmp '
@@ -42,7 +42,7 @@ class CodeRepr(object):
                 else:
                     chunk.cssclass += 'nonempty'
                 no = chunk.lineno
-                if no < last_lineno:
+                if no is None or no < last_lineno:
                     no = last_lineno
                 else:
                     last_lineno = no
