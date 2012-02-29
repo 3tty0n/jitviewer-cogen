@@ -4,13 +4,13 @@ var glob_bridge_state = {
     'op': true,
 };
 
-function show_loop(no, path)
+function show_loop(name, path)
 {
-    $("#loop-" + glob_bridge_state.no).removeClass("selected");
-    $("#loop-" + no).addClass("selected");
-    $("#title-text").html($("#loop-" + no).attr('name'));
+    $("#loop-" + glob_bridge_state.name).removeClass("selected");
+    $("#loop-" + name).addClass("selected");
+    $("#title-text").html($("#loop-" + name).attr('name'));
     $("#title").show();
-    glob_bridge_state.no = no;
+    glob_bridge_state.name = name;
     if (path) {
         glob_bridge_state.path = path;
     } else {
@@ -29,7 +29,7 @@ function show_loop(no, path)
         $('#callstack').html('')
         for (var index in arg.callstack) {
             var elem = arg.callstack[index];
-            $('#callstack').append('<div><a href="/" onClick="show_loop(' + no + ', \'' + elem[0] + '\'); return false">' + elem[1] + "</a></div>");
+            $('#callstack').append('<div><a href="/" onClick="show_loop(' + name + ', \'' + elem[0] + '\'); return false">' + elem[1] + "</a></div>");
         }
         if (!glob_bridge_state.asm) {
             $(".asm").hide();

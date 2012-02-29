@@ -13,7 +13,7 @@
                    {% for op in chunk.operations %}
                       {% if op.name != "debug_merge_point" %}
                         {% if op.bridge %}
-                          <span id="loop-{{op.bridge.no}}" class="guard single-operation">{{op.html_repr()}}</span> <a href="/" onClick="replace_from(this, {{op.bridge.no}}); return false">&gt;&gt;show bridge</a> (taken {{op.percentage}}%)<br/>
+                          <span class="guard single-operation">{{op.html_repr()}}</span><a href="/" onClick="show_loop('{{op.bridge}}'); return false">&nbsp;show bridge</a>&nbsp; (run {{op.count}} times)<br/>
                           {% if op.asm %}
                             <p class="asm">{{op.asm}}</p>
                           {% endif %}
@@ -26,7 +26,7 @@
                      {% endif %}
                    {% endfor %}
                  {% else %}
-                   <a class="inlined_call" onClick="show_loop({{current_loop}}, '{{chunk.path}}'); return false" href="/">{{(chunk.html_repr())|safe}}</a><br/>
+                   <a class="inlined_call" onClick="show_loop('{{current_loop}}', '{{chunk.path}}'); return false" href="/">{{(chunk.html_repr())|safe}}</a><br/>
                  {% endif %}
               {% endfor %}
           </div>

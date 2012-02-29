@@ -62,6 +62,21 @@ class DummyFunc(object):
     def repr(self):
         return '???'
 
+def mangle_descr(descr):
+    if descr.startswith('TargetToken('):
+        return descr[len('TargetToken('):-1]
+    if descr.startswith('<Guard'):
+        return 'bridge-' + descr[len('<Guard'):-1]
+    if descr.startswith('<Loop'):
+        return 'entry-' + descr[len('<Loop'):-1]
+    return descr.replace(" ", '-')
+
+def create_loop_dict(loops):
+    d = {}
+    for loop in loops:
+        d[mangle_descr(loop.descr)] = loop
+    return d
+
 class Server(object):
     def __init__(self, filename, storage):
         self.filename = filename
@@ -71,7 +86,6 @@ class Server(object):
         all = flask.request.args.get('all', None)
         loops = []
         for index, loop in enumerate(self.storage.loops):
-            is_entry = False
             try:
                 start, stop = loop.comment.find('('), loop.comment.rfind(')')
                 name = loop.comment[start + 1:stop]
@@ -82,8 +96,9 @@ class Server(object):
             except CannotFindFile:
                 func = DummyFunc()
             func.count = getattr(loop, 'count', '?')
-            loops.append((is_entry, index, func))
-        loops.sort(lambda a, b: cmp(b[2].count, a[2].count))
+            func.descr = mangle_descr(loop.descr)
+            loops.append(func)
+        loops.sort(lambda a, b: cmp(b.count, a.count))
         if len(loops) > CUTOFF:
             extra_data = "Show all (%d) loops" % len(loops)
         else:
@@ -98,11 +113,18 @@ class Server(object):
                                      extra_data=extra_data)
 
     def loop(self):
-        no = int(flask.request.args.get('no', '0'))
-        orig_loop = self.storage.loops[no]
+        name = mangle_descr(flask.request.args['name'])
+        orig_loop = self.storage.loop_dict[name]
         if hasattr(orig_loop, 'force_asm'):
             orig_loop.force_asm()
-        ops = adjust_bridges(orig_loop, flask.request.args)
+        ops = orig_loop.operations
+        for op in ops:
+            if op.is_guard():
+                descr = mangle_descr(op.descr)
+                subloop = self.storage.loop_dict.get(descr, None)
+                if subloop is not None:
+                    op.bridge = descr
+                    op.count = getattr(subloop, 'count', '?')
         loop = FunctionHtml.from_operations(ops, self.storage,
                                             inputargs=orig_loop.inputargs)
         path = flask.request.args.get('path', '').split(',')
@@ -143,7 +165,7 @@ class Server(object):
                 #    source = CodeReprNoFile(loop)
         d = {'html': flask.render_template('loop.html',
                                            source=source,
-                                           current_loop=no,
+                                           current_loop=name,
                                            upper_path=up,
                                            show_upper_path=bool(path)),
              'scrollto': startline,
@@ -191,7 +213,9 @@ def main():
     storage = LoopStorage(extra_path)
     log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
-    storage.reconnect_loops(loops)
+    storage.loops = [loop for loop in loops
+                     if not loop.descr.startswith('bridge')]
+    storage.loop_dict = create_loop_dict(loops)
     app = OverrideFlask('_jitviewer')
     server = Server(filename, storage)
     app.debug = True

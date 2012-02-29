@@ -106,9 +106,8 @@ class OpHtml(parser.Op):
                                      field, self.wrap_html(self.args[1]))
 
     def repr_jump(self):
-        no = int(re.search("\d+", self.descr).group(0))
-        return ("<a href='' onclick='show_loop(%d);return false'>" % no +
-                self.default_repr() + "</a>")
+        return ("<a href='' onclick='show_loop(\"%s\");return false'>" % self.descr
+                + self.default_repr() + "</a>")
 
     def default_repr(self):
         args = [self.wrap_html(arg) for arg in self.args]
@@ -122,6 +121,7 @@ class OpHtml(parser.Op):
             return '%s(%s)' % (self.name, arglist)
 
     repr_call_assembler = repr_jump
+    repr_label = repr_jump
 
     #def repr_call_assembler(self):
     #    xxxx
