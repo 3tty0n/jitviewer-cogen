@@ -224,6 +224,10 @@ span.single-operation,
     display: none;
 }
 
+.bridgelink {
+    font-weight: bold;
+}
+
 /* End of Formatting 
 -----------------------------------------*/
 
