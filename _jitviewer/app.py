@@ -125,6 +125,11 @@ class Server(object):
                 if subloop is not None:
                     op.bridge = descr
                     op.count = getattr(subloop, 'count', '?')
+                    if (hasattr(subloop, 'count') and
+                        hasattr(orig_loop, 'count')):
+                        op.percentage = subloop.count / orig_loop.count
+                    else:
+                        op.percentage = '?'
         loop = FunctionHtml.from_operations(ops, self.storage,
                                             inputargs=orig_loop.inputargs)
         path = flask.request.args.get('path', '').split(',')

@@ -43,3 +43,12 @@ def inlined_str_stuff():
         re.search('3', elem)
 
 inlined_str_stuff()
+
+def double_loop():
+    s = 0
+    for i in range(10000):
+        for k in range(100):
+            s += i + k
+    return s
+
+double_loop()
