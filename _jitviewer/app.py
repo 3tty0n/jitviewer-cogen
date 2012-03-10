@@ -14,7 +14,7 @@ Demo logfile available in this directory as 'log'.
 
 To produce the logfile for your program, run:
 
-    PYPYLOG=jit-log-opt,jit-backend:mylogfile.log pypy myapp.py
+    PYPYLOG=jit-log-opt,jit-backend:mylogfile.pypylog pypy myapp.py
 """
 
 import sys
