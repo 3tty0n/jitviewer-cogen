@@ -127,7 +127,7 @@ class Server(object):
                     op.count = getattr(subloop, 'count', '?')
                     if (hasattr(subloop, 'count') and
                         hasattr(orig_loop, 'count')):
-                        op.percentage = subloop.count / orig_loop.count
+                        op.percentage = int((float(subloop.count) / orig_loop.count)*100)
                     else:
                         op.percentage = '?'
         loop = FunctionHtml.from_operations(ops, self.storage,
