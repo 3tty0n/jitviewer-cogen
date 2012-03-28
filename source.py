@@ -3,7 +3,7 @@ import re
 
 def f():
     i = 0
-    while i < 1003:
+    while i < 1103:
         i += 1
 
 f()
@@ -13,7 +13,7 @@ def inner(i):
 
 def inlined_call():
     i = 0
-    while i < 1003:
+    while i < 1103:
         i = inner(i)
 
 inlined_call()
