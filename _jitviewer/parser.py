@@ -31,6 +31,8 @@ class OpHtml(parser.Op):
             return "single-operation guard"
         elif 'call' in self.name:
             return "single-operation call"
+        elif self.name.startswith('new'):
+            return 'single-operation new'
         else:
             return "single-operation"
 

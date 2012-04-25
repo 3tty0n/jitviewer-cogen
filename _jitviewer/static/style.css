@@ -178,6 +178,10 @@ header,
     font-size: 12px;
     font-weight: bold;
 }
+.new {
+    font-size: 12px;
+    font-weight: bold;
+}
 span.dmp,
 span.guard,
 span.call,
