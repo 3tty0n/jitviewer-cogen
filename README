@@ -1,5 +1,8 @@
 You need to use PyPy to run this.  To get started, using a recent virtualenv
-(1.6.1 or newer), virtualenvwrapper, and a recent PyPy (1.5 or trunk).
+(1.6.1 or newer), virtualenvwrapper, and a recent PyPy.
+
+PyPy versions correspond to jitviewer tags, so pypy-1.9 tag in jitviewer
+means it works with pypy 1.9.
 
 On Mac OSX you will also need to install binutils, to make objdump available.
 
