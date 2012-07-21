@@ -193,25 +193,25 @@ class OverrideFlask(flask.Flask):
             orig___init__(self2, *args, **kwds)
         BaseServer.__init__ = __init__
 
-def main(run_app=True):
+def main(argv, run_app=True):
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
     #
     server_mode = True
-    if '--qt' in sys.argv:
+    if '--qt' in argv:
         server_mode = False
-        sys.argv.remove('--qt')
+        argv.remove('--qt')
     #
-    if len(sys.argv) != 2 and len(sys.argv) != 3:
+    if len(argv) != 2 and len(argv) != 3:
         print __doc__
         sys.exit(1)
-    filename = sys.argv[1]
+    filename = argv[1]
     extra_path = os.path.dirname(filename)
-    if len(sys.argv) != 3:
+    if len(argv) != 3:
         port = 5000
     else:
-        port = int(sys.argv[2])
+        port = int(argv[2])
     storage = LoopStorage(extra_path)
     log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
