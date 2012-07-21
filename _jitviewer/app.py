@@ -193,7 +193,7 @@ class OverrideFlask(flask.Flask):
             orig___init__(self2, *args, **kwds)
         BaseServer.__init__ = __init__
 
-def main():
+def main(run_app=True):
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
@@ -223,14 +223,17 @@ def main():
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
-    def run():
-        app.run(use_reloader=False, host='0.0.0.0', port=port)
+    if run_app:
+        def run():
+            app.run(use_reloader=False, host='0.0.0.0', port=port)
 
-    if server_mode:
-        run()
+        if server_mode:
+            run()
+        else:
+            url = "http://localhost:%d/" % port
+            run_server_and_browser(app, run, url, filename)
     else:
-        url = "http://localhost:%d/" % port
-        run_server_and_browser(app, run, url, filename)
+        return app
 
 def run_server_and_browser(app, run, url, filename):
     try:
