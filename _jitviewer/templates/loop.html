@@ -9,7 +9,7 @@
           <div class="operations">
               {% for chunk in sourceline.chunks %}
                  {% if chunk.is_bytecode %}
-                   <span class="{{chunk.cssclass}}">{{chunk.html_repr()}}</span><br/>
+                   <span class="{{chunk.cssclass}}"><span class="bytecodepos">{{chunk.bytecode_no}} </span>{{chunk.html_repr()}}</span><br/>
                    {% for op in chunk.operations %}
                       {% if op.name != "debug_merge_point" %}
                         {% if op.bridge %}
