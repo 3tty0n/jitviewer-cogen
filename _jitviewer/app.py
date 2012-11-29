@@ -147,7 +147,7 @@ class Server(object):
                                                       loop.startlineno)))
                 loop = loop.chunks[int(e)]
                 path_so_far.append(e)
-        callstack.append((','.join(path_so_far), '%s in %s at %d' % (loop.name,
+        callstack.append((','.join(path_so_far), '%s in %s:%d' % (loop.name,
                                         loop.filename, loop.startlineno)))
 
         if not loop.has_valid_code() or loop.filename is None:
