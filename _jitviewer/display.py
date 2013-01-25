@@ -48,10 +48,4 @@ class CodeRepr(object):
                     last_lineno = no
             else:
                 no = last_lineno
-            try:
-                self.lines[no - self.firstlineno].chunks.append(chunk)
-            except IndexError:
-                self.lines[-1].chunks.append(chunk) # too bad, just stash it there
-
-        
-
+            self.lines[no - self.firstlineno].chunks.append(chunk)
