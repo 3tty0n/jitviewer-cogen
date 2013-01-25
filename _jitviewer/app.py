@@ -44,9 +44,9 @@ import flask
 import inspect
 import threading
 import time
-from pypy.tool.logparser import extract_category
-from pypy.tool.jitlogparser.storage import LoopStorage
-from pypy.tool.jitlogparser.parser import adjust_bridges, import_log,\
+from rpython.tool.logparser import extract_category
+from rpython.tool.jitlogparser.storage import LoopStorage
+from rpython.tool.jitlogparser.parser import adjust_bridges, import_log,\
      parse_log_counts
 #
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
