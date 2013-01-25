@@ -1,6 +1,7 @@
 
 var glob_bridge_state = {
     'asm': false,
+    'bytecodepos': false,
     'op': true,
 };
 
@@ -33,6 +34,9 @@ function show_loop(name, path)
         }
         if (!glob_bridge_state.asm) {
             $(".asm").hide();
+        }
+        if (!glob_bridge_state.bytecodepos) {
+            $(".bytecodepos").hide();
         }
     });
 }
@@ -83,6 +87,9 @@ function replace_from(elem, bridge_id)
             if (!glob_bridge_state.asm) {
                 $(".asm").hide();
             }
+            if (!glob_bridge_state.bytecodepos) {
+                $(".bytecodepos").hide();
+            }
             $.scrollTo($("#loop-" + bridge_id), {axis:'y'});
         });
     });
@@ -99,6 +106,21 @@ function asmtoggle()
     } else {
         glob_bridge_state.asm = false;
         e.html("Show assembler");
+        e2.hide();
+    }
+}
+
+function bytecodepos_toggle()
+{
+    var e = $("#bytecodepos_toggler");
+    var e2 = $(".bytecodepos");
+    if (e.html().search("Show") != -1) {
+        glob_bridge_state.bytecodepos = true;
+        e.html("Hide bytecode position");
+        e2.show();
+    } else {
+        glob_bridge_state.bytecodepos = false;
+        e.html("Show bytecode position");
         e2.hide();
     }
 }
