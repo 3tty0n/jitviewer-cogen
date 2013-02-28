@@ -44,7 +44,10 @@ import flask
 import inspect
 import threading
 import time
-from rpython.tool.logparser import extract_category
+try:
+    from rpython.tool.logparser import extract_category
+except ImportError:
+    from pypy.tool.logparser import extract_category
 from pypy.tool.jitlogparser.storage import LoopStorage
 from pypy.tool.jitlogparser.parser import adjust_bridges, import_log,\
      parse_log_counts
