@@ -4,7 +4,11 @@ from pypy.tool.jitlogparser import parser
 
 def cssclass(cls, s, **kwds):
     cls = re.sub("[^\w]", "_", cls)
-    attrs = ['%s="%s"' % (name, value) for name, value in kwds.iteritems()]
+    attrs = []
+    if 'data' in kwds:
+        data = kwds.pop('data')
+        attrs += ['data-%s="%s"' % (name, value) for name, value in data.iteritems()]
+    attrs += ['%s="%s"' % (name, value) for name, value in kwds.iteritems()]
     return '<span class="%s" %s>%s</span>' % (cls, ' '.join(attrs),
                                               cgi.escape(s))
 
@@ -41,7 +45,8 @@ class OpHtml(parser.Op):
         return Html(s)
 
     def wrap_html(self, v):
-        return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
+        #return cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)')
+        return cssclass(v, v, data={'name': v})
 
     for bin_op, name in [('==', 'int_eq'),
                          ('!=', 'int_ne'),
@@ -108,7 +113,7 @@ class OpHtml(parser.Op):
                                      field, self.wrap_html(self.args[1]))
 
     def repr_jump(self):
-        return ("<a href='' onclick='show_loop(\"%s\");return false'>" % self.descr
+        return ("<a href='#' data-name='%s'>" % self.descr
                 + self.default_repr() + "</a>")
 
     def default_repr(self):

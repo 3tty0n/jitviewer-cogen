@@ -110,7 +110,7 @@ class Server(object):
             loops = loops[:CUTOFF]
 
         qt_workaround = ('Qt/4.7.2' in flask.request.user_agent.string)
-        return flask.render_template('index.html', loops=loops,
+        return flask.render_template("index.html", loops=loops,
                                      filename=self.filename,
                                      qt_workaround=qt_workaround,
                                      extra_data=extra_data)
@@ -228,7 +228,7 @@ def main(argv, run_app=True):
     app.route('/loop')(server.loop)
     if run_app:
         def run():
-            app.run(use_reloader=False, host='0.0.0.0', port=port)
+            app.run(use_reloader=True, host='0.0.0.0', port=port)
 
         if server_mode:
             run()

@@ -7,18 +7,21 @@
       <link rel="stylesheet" type="text/css" href="/static/qt_workaround.css"/>
   {% endif %}
 
-  <script src="/static/jquery.min.js"></script>
+  <script src="/static/jquery/jquery-1.9.1.min.js"></script>
+  <script src="/static/jquery/jquery-migrate-1.1.1.min.js"></script>
+  <script src="/static/canjs/1.1.4/can.jquery.js"></script>
+  <script src="/static/canjs/1.1.4/can.construct.proxy.js"></script>
   <script src="/static/jquery.scrollTo-1.4.2-min.js"></script>
-  <script src="/static/script.js"></script>
+  <script src="/static/app.js"></script>
   <script>
-    $(document).ready(document_ready);
+      $(document).ready(function(){ new JITViewer("body", {}); });
   </script>
 </head>
 <body>
   <header>
     <span>Menu</span><br/>
-    <a id="asmtoggler" href="/" onClick="asmtoggle(); return false">Show assembler</a><br>
-    <a id="bytecodepos_toggler" href="/" onClick="bytecodepos_toggle(); return false">Show bytecode position</a>
+    <a id="asmtoggler" href="#">Show assembler [a]</a><br>
+    <a id="bytecodepos_toggler" href="#">Show bytecode position [b]</a>
     <div id="callstack">
     </div>
   </header>
@@ -26,12 +29,12 @@
     <span id="title-text">JIT viewer</span>
   </div>
   <div id="filter">
-    Filter: <input id="inp-bar" type="text" size="80"></input>
+      Filter [/]: <input id="inp-bar" type="text" size="80"></input>
   <div>
   <div id="loops">
     <ul>
       {% for item in loops %}
-      <li class="loopitem" id="{{item.descr}}" name="{{item.repr()}}"><span><a href="/" onClick="show_loop('{{item.descr}}'); return false">{{item.repr()}}</a> run {{item.count}} times</span></li>
+      <li class="loopitem" id="{{item.descr}}" name="{{item.repr()}}"><span><a href="#" data-name="{{ item.descr }}">{{item.repr()}}</a> run {{item.count}} times</span></li>
       {% endfor %}
     </ul>
     {% if extra_data %}
