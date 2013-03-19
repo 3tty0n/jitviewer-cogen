@@ -25,7 +25,8 @@ class CodeRepr(object):
         self.lines = []
         html = []
         for v in loop.inputargs:
-            html.append(cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)'))
+            #html.append(cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)'))
+            html.append(cssclass(v, v, data={'name': v}))
         self.inputargs = " ".join(html)
         self.firstlineno = code.co_firstlineno
         for i, line in enumerate(source.split("\n")):
