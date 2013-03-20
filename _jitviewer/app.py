@@ -220,6 +220,7 @@ def main(argv, run_app=True):
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.loops = [loop for loop in loops
                      if not loop.descr.startswith('bridge')]
+    storage.reconnect_loops(storage.loops)
     storage.loop_dict = create_loop_dict(loops)
     app = OverrideFlask('_jitviewer')
     server = Server(filename, storage)
