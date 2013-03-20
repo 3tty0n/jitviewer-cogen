@@ -13,7 +13,7 @@
                    {% for op in chunk.operations %}
                       {% if op.name != "debug_merge_point" %}
                         {% if op.bridge %}
-                        <span class="guard single-operation">{{op.html_repr()}}</span><a class="bridgelink" data-name="{{ op.bridge }}" href="#">&nbsp;show bridge</a>&nbsp; (run {{op.count}} times, ~{{op.percentage}}%)<br/>
+                        <span class="guard single-operation">{{op.html_repr()}}</span><a class="bridgelink" data-name="{{ op.bridge.descr }}" href="#">&nbsp;show bridge</a>&nbsp; (run {{op.count}} times, ~{{op.percentage}}%)<br/>
                           {% if op.asm %}
                             <p class="asm">{{op.asm}}</p>
                           {% endif %}
