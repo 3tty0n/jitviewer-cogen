@@ -52,3 +52,16 @@ def double_loop():
     return s
 
 double_loop()
+
+def _inlined_bridge(i):
+    if i % 2:
+        s = 1
+    else:
+        s = 2
+    return s
+
+def inlined_bridge():
+    for i in range(10000):
+        _inlined_bridge(i)
+
+inlined_bridge()
