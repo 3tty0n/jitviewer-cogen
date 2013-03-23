@@ -1,6 +1,12 @@
 #!/usr/bin/env pypy-c
 
+import os
 from setuptools import setup
+
+rest = []
+for dirname, _, filenames in os.walk(os.path.join(os.path.join(os.path.dirname(__file__), '_jitviewer'), 'static')):
+    for x in filenames:
+        rest.append(os.path.join(dirname, x))
 
 setup(name='JitViewer',
       version='0.1',
@@ -12,5 +18,5 @@ setup(name='JitViewer',
       scripts=['bin/jitviewer.py', 'bin/qwebview.py'],
       install_requires=['flask', 'pygments', 'simplejson', 'Jinja2>=2.6'],
       include_package_data=True,
-      package_data={'': ['templates/*.html', 'static/*']},
+      package_data={'': ['templates/*.html'] + rest},
       zip_safe=False)
