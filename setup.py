@@ -9,7 +9,6 @@ for dirname, _, filenames in os.walk(os.path.join(base, 'static')):
     dirname = os.path.relpath(dirname, base)
     for x in filenames:
         rest.append(os.path.join(dirname, x))
-print rest
 
 setup(name='JitViewer',
       version='0.1',
