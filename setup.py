@@ -4,9 +4,12 @@ import os
 from setuptools import setup
 
 rest = []
-for dirname, _, filenames in os.walk(os.path.join(os.path.join(os.path.dirname(__file__), '_jitviewer'), 'static')):
+base = os.path.join(os.path.dirname(__file__), '_jitviewer')
+for dirname, _, filenames in os.walk(os.path.join(base, 'static')):
+    dirname = os.path.relpath(dirname, base)
     for x in filenames:
         rest.append(os.path.join(dirname, x))
+print rest
 
 setup(name='JitViewer',
       version='0.1',
