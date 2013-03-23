@@ -5,22 +5,33 @@ MainDisplay = can.Control({
     "a[data-name] click": function(el, ev) {
         ev.preventDefault();
         var name = el.data('name');
+        var path = el.data('path');
         if(name) {
-            can.route.attr('name', name);
+            can.route.attr({'name': name, 'path': path});
+        }
+    },
+    ".operations a.inlined_call click": function(el, ev) {
+        ev.preventDefault();
+        var name = el.data('name');
+        var path = el.data('path');
+        if(name) {
+            can.route.attr({'name': name, 'path': path});
         }
     },
     ".operations a.bridgelink click": function(el, ev) {
         ev.preventDefault();
         var name = el.data('name');
+        var path = el.data('path');
         if(name) {
-            can.route.attr('name', name);
+            can.route.attr({'name': name, 'path': path});
         }
     },
     ".operations .single-operation a click": function(el, ev) {
         ev.preventDefault();
         var name = el.data('name');
+        var path = el.data('path');
         if(name) {
-            can.route.attr('name', name);
+            can.route.attr({'name': name, 'path': path});
         }
     },
     ".operations .single-operation span mouseenter": function(el, ev) {
@@ -53,7 +64,7 @@ JITViewer = can.Control({
         //console.log('route index');
     },
     'items/:name route': function(data) {
-        this.show_loop(data.name);
+        this.show_loop(data.name, data.path);
     },
     "#inp-bar focusin": function(el, ev){
         this.filter_active = true;
@@ -135,14 +146,18 @@ JITViewer = can.Control({
     "#loops .loopitem a click": function(el, ev){
         ev.preventDefault();
         var name = el.data('name');
-        can.route.attr('name', name);
-        //this.show_loop(name);
+        var path = el.data('path');
+        if(name) {
+            can.route.attr({'name': name, 'path': path});
+        }
     },
     "#callstack a click": function(el, ev){
         ev.preventDefault();
         var name = el.data('name');
-        can.route.attr('name', name);
-        //this.show_loop(name);
+        var path = el.data('path');
+        if(name) {
+            can.route.attr({'name': name, 'path': path});
+        }
     },
     check_selfreferencing: function(){
         var self = this;
@@ -181,20 +196,6 @@ JITViewer = can.Control({
         }
     },
     show_loop: function(name, path){
-        /*
-        if(this.current_line) {
-            $("#loop-" + this.current_line).removeClass("selected");
-        }
-        $("#loop-" + name).addClass("selected");
-        $("#title-text").html($("#loop-" + name).attr('name'));
-        $("#title").show();
-        glob_bridge_state.name = name;
-        if (path) {
-            glob_bridge_state.path = path;
-        } else {
-            delete glob_bridge_state.path;
-        }
-        */
         var self = this;
         var data = {
             'asm': this.state_asm,
