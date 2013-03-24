@@ -5,7 +5,7 @@ MainDisplay = can.Control({
     "a[data-name] click": function(el, ev) {
         ev.preventDefault();
         var name = el.data('name');
-        var path = el.data('path');
+        var path = el.data('path') || "";
         if(name) {
             can.route.attr({'name': name, 'path': path});
         }
@@ -13,7 +13,7 @@ MainDisplay = can.Control({
     ".operations a.inlined_call click": function(el, ev) {
         ev.preventDefault();
         var name = el.data('name');
-        var path = el.data('path');
+        var path = el.data('path') || "";
         if(name) {
             can.route.attr({'name': name, 'path': path});
         }
@@ -21,7 +21,7 @@ MainDisplay = can.Control({
     ".operations a.bridgelink click": function(el, ev) {
         ev.preventDefault();
         var name = el.data('name');
-        var path = el.data('path');
+        var path = el.data('path') || "";
         if(name) {
             can.route.attr({'name': name, 'path': path});
         }
@@ -29,7 +29,7 @@ MainDisplay = can.Control({
     ".operations .single-operation a click": function(el, ev) {
         ev.preventDefault();
         var name = el.data('name');
-        var path = el.data('path');
+        var path = el.data('path') || "";
         if(name) {
             can.route.attr({'name': name, 'path': path});
         }
@@ -146,7 +146,8 @@ JITViewer = can.Control({
     "#loops .loopitem a click": function(el, ev){
         ev.preventDefault();
         var name = el.data('name');
-        var path = el.data('path');
+        var path = el.data('path') || "";
+        console.log("loop:", name, path);
         if(name) {
             can.route.attr({'name': name, 'path': path});
         }
@@ -154,7 +155,7 @@ JITViewer = can.Control({
     "#callstack a click": function(el, ev){
         ev.preventDefault();
         var name = el.data('name');
-        var path = el.data('path');
+        var path = el.data('path') || "";
         if(name) {
             can.route.attr({'name': name, 'path': path});
         }
