@@ -69,7 +69,7 @@ def mangle_descr(descr):
     if descr.startswith('TargetToken('):
         return descr[len('TargetToken('):-1]
     if descr.startswith('<Guard'):
-        return 'bridge-' + descr[len('<Guard'):-1]
+        return 'bridge-' + str(int(descr[len('<Guard0x'):-1], 16))
     if descr.startswith('<Loop'):
         return 'entry-' + descr[len('<Loop'):-1]
     return descr.replace(" ", '-')
@@ -220,7 +220,6 @@ def main(argv, run_app=True):
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.loops = [loop for loop in loops
                      if not loop.descr.startswith('bridge')]
-    storage.reconnect_loops(storage.loops)
     storage.loop_dict = create_loop_dict(loops)
     app = OverrideFlask('_jitviewer')
     server = Server(filename, storage)
@@ -229,7 +228,7 @@ def main(argv, run_app=True):
     app.route('/loop')(server.loop)
     if run_app:
         def run():
-            app.run(use_reloader=True, host='0.0.0.0', port=port)
+            app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', True)), host='0.0.0.0', port=port)
 
         if server_mode:
             run()
