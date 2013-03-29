@@ -161,11 +161,14 @@ class Server(object):
             try:
                 code = self.storage.load_code(loop.filename)[(loop.startlineno,
                                                               loop.name)]
-                if code.co_name == '<module>' and code.co_firstlineno == 1:
+                if code.co_name == '<module>':
                     with open(code.co_filename) as f:
-                        source = CodeRepr(f.read(), code, loop)
+                        source = f.readlines()
+                    striplines = max(code.co_firstlineno - 1, 0)
+                    source = ''.join(source[striplines:])
                 else:
-                    source = CodeRepr(inspect.getsource(code), code, loop)
+                    source = inspect.getsource(code)
+                source = CodeRepr(source, code, loop)
             except (IOError, OSError):
                 source = CodeReprNoFile(loop)
         d = {'html': flask.render_template('loop.html',

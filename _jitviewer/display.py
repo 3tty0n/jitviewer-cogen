@@ -49,4 +49,9 @@ class CodeRepr(object):
                     last_lineno = no
             else:
                 no = last_lineno
-            self.lines[no - self.firstlineno].chunks.append(chunk)
+            i = no - self.firstlineno
+            if i < 0:
+                i = 0
+            while len(self.lines) <= i:
+                self.lines.append(LineRepr('# missing line', False))
+            self.lines[i].chunks.append(chunk)
