@@ -19,7 +19,9 @@ or
     python setup.py develop
 
 It also requires pypy to be importable (as in source code), you can do this
-by setting your ``PYTHONPATH`` enviromental variable.
+by setting your ``PYTHONPATH`` enviroment variable.  Make sure that this
+source code is (roughly) the same version as the binary pypy that produced
+the log file.
 
 Finally, run it:
 
