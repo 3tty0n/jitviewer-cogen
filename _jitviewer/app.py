@@ -21,11 +21,6 @@ import sys
 import os.path
 
 try:
-    import _jitviewer
-except ImportError:
-    sys.path.insert(0, os.path.abspath(os.path.join(__file__, '..', '..')))
-
-try:
     import pypy
 except ImportError:
     import __pypy__
