@@ -3,16 +3,21 @@
 DESCR = """Jit Viewer: A web-based browser for PyPy log files"""
 
 EPILOG = """
-Typical usage with existing log file:
-
-    jitviewer.py --log <path to your log file>
-
 Typical usage with no existing log file:
 
     jitviewer.py --collect pypy <your script> <arg1> ... <argn>
 
-By default the script will run a web server, point your browser to
+Typical usage with existing log file:
+
+    jitviewer.py --log <path to your log file>
+
+where you collected a logfile by setting PYPYLOG, e.g.:
+
+    PYPYLOG=jit-log-opt,jit-backend:<path to your log file> pypy arg1 ... argn
+
+By default jitviewer will run a web server. Point your browser to:
 http://localhost:5000
+
 """
 
 import sys
