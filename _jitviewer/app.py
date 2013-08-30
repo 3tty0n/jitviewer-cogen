@@ -193,21 +193,22 @@ class OverrideFlask(flask.Flask):
             orig___init__(self2, *args, **kwds)
         BaseServer.__init__ = __init__
 
-def collect_log(args, logpath="log.pypylog"):
+def collect_log(args):
     """ Collect a log file using pypy """
+    import tempfile, subprocess
 
-    # XXX Randomise log file name
-
-    import subprocess
+    # create a temp file, possibly racey, but very unlikey
+    (fd, path) = tempfile.mkstemp(prefix="jitviewer-")
+    os.close(fd) # just the filename we want
 
     # possibly make this configurable if someone asks...
-    os.environ["PYPYLOG"] = "jit-log-opt,jit-backend:%s" % (logpath, )
-    print("Collecting log...")
+    os.environ["PYPYLOG"] = "jit-log-opt,jit-backend:%s" % (path, )
+    print("Collecting log in '%s'..." % path)
     p = subprocess.Popen(args, env=os.environ).communicate()
 
     # We don't check the return status. The user may want to see traces
     # for a failing program!
-    return os.path.abspath(logpath)
+    return os.path.abspath(path)
 
 def main(argv, run_app=True):
     if not '__pypy__' in sys.builtin_module_names:
