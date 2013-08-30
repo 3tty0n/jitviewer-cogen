@@ -197,14 +197,14 @@ def collect_log(args, logpath="log.pypylog"):
     """ Collect a log file using pypy """
 
     # XXX Randomise log file name
-    # XXX Search path
 
     import subprocess
 
-    p = subprocess.Popen(args,
-            env={"PYPYLOG" : "jit-log-opt,jit-backend:%s" % (logpath, )}
-    )
-    p.communicate()
+    # possibly make this configurable if someone asks...
+    os.environ["PYPYLOG"] = "jit-log-opt,jit-backend:%s" % (logpath, )
+    print("Collecting log...")
+    p = subprocess.Popen(args, env=os.environ).communicate()
+
     # We don't check the return status. The user may want to see traces
     # for a failing program!
     return os.path.abspath(logpath)
