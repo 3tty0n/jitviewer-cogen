@@ -194,26 +194,64 @@ class OverrideFlask(flask.Flask):
             orig___init__(self2, *args, **kwds)
         BaseServer.__init__ = __init__
 
+def collect_log(interp, args, logpath="log.pypylog"):
+    """ Collect a log file using pypy """
+
+    # XXX Randomise log file name
+    # XXX Search path
+
+    import subprocess
+    print("prog: %s    args: %s" % (interp, args))
+
+    p = subprocess.Popen([interp] + args, 
+            env={"PYPYLOG" : "jit-log-opt,jit-backend:%s" % (logpath, )}
+    )
+    p.communicate()
+    # We don't check the return status. The user may want to see traces
+    # for a failing program!
+    return os.path.abspath(logpath)
+
 def main(argv, run_app=True):
     if not '__pypy__' in sys.builtin_module_names:
         print "Please run it using pypy-c"
         sys.exit(1)
     #
+    # XXX use argparse
     server_mode = True
+    collect_mode = False
     if '--qt' in argv:
         server_mode = False
         argv.remove('--qt')
+    if '--collect' in argv:
+        prog_args = argv[argv.index('--collect')+1:]
+        prog = prog_args[0]
+        args = prog_args[1:]
+        collect_mode = True
+        argv.remove('--collect')
     #
-    if len(argv) != 2 and len(argv) != 3:
+    if not collect_mode and len(argv) != 2 and len(argv) != 3:
         print __doc__
         sys.exit(1)
-    filename = argv[1]
-    extra_path = os.path.dirname(filename)
-    if len(argv) != 3:
-        port = 5000
+
+    if collect_mode:
+        print("YO COLLECT MODE")
+        print(72 * ":")
+        filename = collect_log(prog, args)
+        port = 5000 # XXX ugh
     else:
-        port = int(argv[2])
+        print("FUDGE")
+        print(72 * ":")
+        # XXX we really need argparse, as we cant specify port if collecting now
+        filename = argv[1]
+
+        if len(argv) != 3:
+            port = 5000
+        else:
+            port = int(argv[2])
+
+    extra_path = os.path.dirname(filename)
     storage = LoopStorage(extra_path)
+
     log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.loops = [loop for loop in loops
@@ -226,7 +264,7 @@ def main(argv, run_app=True):
     app.route('/loop')(server.loop)
     if run_app:
         def run():
-            app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', True)), host='0.0.0.0', port=port)
+            app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', False)), host='0.0.0.0', port=port)
 
         if server_mode:
             run()
