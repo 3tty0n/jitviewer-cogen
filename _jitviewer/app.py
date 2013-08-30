@@ -1,20 +1,18 @@
 #!/usr/bin/env pypy
-""" A web-based browser of your log files. Run by
 
-    jitviewer.py <path to your log file> [port] [--qt]
+DESCR = """Jit Viewer: A web-based browser for PyPy log files"""
+
+EPILOG = """
+Typical usage with existing log file:
+
+    jitviewer.py --log <path to your log file>
+
+Typical usage with no existing log file:
+
+    jitviewer.py --collect pypy <your script> <arg1> ... <argn>
 
 By default the script will run a web server, point your browser to
 http://localhost:5000
-
-If you pass --qt, this script will also start a lightweight PyQT/QWebKit based
-browser pointing at the jitviewer.  This assumes that CPython is installed in
-/usr/bin/python, and that PyQT with WebKit support is installed.
-
-Demo logfile available in this directory as 'log'.
-
-To produce the logfile for your program, run:
-
-    PYPYLOG=jit-log-opt,jit-backend:mylogfile.pypylog pypy myapp.py
 """
 
 import sys
@@ -216,27 +214,32 @@ def main(argv, run_app=True):
         print "Please run it using pypy-c"
         sys.exit(1)
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+            description = DESCR,
+            epilog = EPILOG,
+            formatter_class=argparse.RawDescriptionHelpFormatter
+    )
 
-    parser.add_argument("-l", "--log", help="Specify logfile")
-    parser.add_argument("-c", "--collect", nargs="*", help="Collect logfile now")
-    parser.add_argument("-p", "--port", help="Select HTTP port")
-    parser.add_argument("-q", "--qt", action="store_true", help="Use QT")
+    parser.add_argument("-l", "--log", help="specify existing logfile")
+    parser.add_argument("-c", "--collect", nargs="*", help="collect logfile now", metavar="ARG")
+    parser.add_argument("-p", "--port", help="select HTTP port", type=int)
+    parser.add_argument("-q", "--qt", action="store_true", help="use embedded QT browser")
 
     args = parser.parse_args()
 
-    if args.port is not None:
-        port = int(args.port)
-    else:
-        port = 5000
+    if args.port is None:
+        args.port = 5000
 
     if args.collect is not None:
         if len(args.collect) == 0:
             print("*Error: Please specify invokation to collect log")
             sys.exit(1)
         filename = collect_log(args.collect)
-    else:
+    elif args.log is not None:
         filename = args.log
+    else:
+        print("*Error: Please specify either --log or --collect")
+        sys.exit(1)
 
     extra_path = os.path.dirname(filename)
     storage = LoopStorage(extra_path)
@@ -253,12 +256,12 @@ def main(argv, run_app=True):
     app.route('/loop')(server.loop)
     if run_app:
         def run():
-            app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', False)), host='0.0.0.0', port=port)
+            app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', False)), host='0.0.0.0', port=args.port)
 
         if not args.qt:
             run()
         else:
-            url = "http://localhost:%d/" % port
+            url = "http://localhost:%d/" % args.port
             run_server_and_browser(app, run, url, filename)
     else:
         return app
