@@ -15,8 +15,11 @@ where you collected a logfile by setting PYPYLOG, e.g.:
 
     PYPYLOG=jit-log-opt,jit-backend:<path to your log file> pypy arg1 ... argn
 
-By default jitviewer will run a web server. Point your browser to:
-http://localhost:5000
+When using an existing logfile, the source code of the logged script must be
+in the same location as the logfile.
+
+Once invoked, jitviewer will run a web server. By default the the server
+listens on http://localhost:5000
 
 """
 
@@ -202,6 +205,8 @@ def collect_log(args):
     """ Collect a log file using pypy """
     import tempfile, subprocess
 
+    print("Collecting log with: %s" % ' '.join(args))
+
     # create a temp file, possibly racey, but very unlikey
     (fd, path) = tempfile.mkstemp(prefix="jitviewer-")
     os.close(fd) # just the filename we want
@@ -237,17 +242,21 @@ def main(argv, run_app=True):
         args.port = 5000
 
     if args.collect is not None:
-        if len(args.collect) == 0:
-            print("*Error: Please specify invokation to collect log")
+        if len(args.collect) < 2:
+            print("*Error: Please correctly specify invokation to collect log")
             sys.exit(1)
         filename = collect_log(args.collect)
+        extra_path = os.path.dirname(args.collect[1]) # add dirname of script to extra_path
     elif args.log is not None:
         filename = args.log
+        # preserving behaviour before argparse
+        # XXX not robust as it could be. Assumes the logfile is in the same
+        # dir as the source code, may not be the case.
+        extra_path = os.path.dirname(filename)
     else:
         print("*Error: Please specify either --log or --collect")
         sys.exit(1)
 
-    extra_path = os.path.dirname(filename)
     storage = LoopStorage(extra_path)
 
     log, loops = import_log(filename, ParserWithHtmlRepr)
