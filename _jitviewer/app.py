@@ -232,7 +232,7 @@ def main(argv, run_app=True):
     )
 
     parser.add_argument("-l", "--log", help="specify existing logfile")
-    parser.add_argument("-c", "--collect", nargs="*", help="collect logfile now", metavar="ARG")
+    parser.add_argument("-c", "--collect", nargs=argparse.REMAINDER, help="collect logfile now", metavar="ARG")
     parser.add_argument("-p", "--port", help="select HTTP port", type=int)
     parser.add_argument("-q", "--qt", action="store_true", help="use embedded QT browser")
 
