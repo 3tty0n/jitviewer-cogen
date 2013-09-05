@@ -1,4 +1,5 @@
 #!/usr/bin/env pypy
+from _jitviewer.misc import failout
 
 DESCR = """Jit Viewer: A web-based browser for PyPy log files"""
 
@@ -221,10 +222,6 @@ def collect_log(args):
     return os.path.abspath(path)
 
 def main(argv, run_app=True):
-    if not '__pypy__' in sys.builtin_module_names:
-        print "Please run it using pypy-c"
-        sys.exit(1)
-
     parser = argparse.ArgumentParser(
             description = DESCR,
             epilog = EPILOG,
