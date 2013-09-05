@@ -1,5 +1,5 @@
 #!/usr/bin/env pypy
-from _jitviewer.misc import failout
+from misc import failout
 
 DESCR = """Jit Viewer: A web-based browser for PyPy log files"""
 
@@ -240,8 +240,7 @@ def main(argv, run_app=True):
 
     if args.collect is not None:
         if len(args.collect) < 1:
-            print("*Error: Please correctly specify invokation to collect log")
-            sys.exit(1)
+            failout("please correctly specify invokation to collect log")
         filename = collect_log(args.collect)
         extra_path = os.path.dirname(args.collect[0]) # add dirname of script to extra_path
     elif args.log is not None:
@@ -251,8 +250,7 @@ def main(argv, run_app=True):
         # dir as the source code, may not be the case.
         extra_path = os.path.dirname(filename)
     else:
-        print("*Error: Please specify either --log or --collect")
-        sys.exit(1)
+        failout("please specify either --log or --collect")
 
     storage = LoopStorage(extra_path)
 
