@@ -36,12 +36,12 @@ except ImportError:
     try:
         import pypy
     except ImportError:
-        raise ImportError('Could not import pypy module, make sure to '
+        failout('Could not import pypy module, make sure to '
             'add the pypy module to PYTHONPATH')
 
 import jinja2
 if jinja2.__version__ < '2.6':
-    raise ImportError("Required jinja version is 2.6 (the git tip), older versions might segfault PyPy")
+    failout("Required jinja version is 2.6 (the git tip), older versions might segfault PyPy")
 
 import flask
 import inspect
