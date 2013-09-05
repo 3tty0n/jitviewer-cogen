@@ -5,7 +5,7 @@ DESCR = """Jit Viewer: A web-based browser for PyPy log files"""
 EPILOG = """
 Typical usage with no existing log file:
 
-    jitviewer.py --collect pypy <your script> <arg1> ... <argn>
+    jitviewer.py --collect <your script> <arg1> ... <argn>
 
 Typical usage with existing log file:
 
@@ -214,7 +214,7 @@ def collect_log(args):
     # possibly make this configurable if someone asks...
     os.environ["PYPYLOG"] = "jit-log-opt,jit-backend:%s" % (path, )
     print("Collecting log in '%s'..." % path)
-    p = subprocess.Popen(args, env=os.environ).communicate()
+    p = subprocess.Popen([sys.executable] + args, env=os.environ).communicate()
 
     # We don't check the return status. The user may want to see traces
     # for a failing program!
@@ -242,11 +242,11 @@ def main(argv, run_app=True):
         args.port = 5000
 
     if args.collect is not None:
-        if len(args.collect) < 2:
+        if len(args.collect) < 1:
             print("*Error: Please correctly specify invokation to collect log")
             sys.exit(1)
         filename = collect_log(args.collect)
-        extra_path = os.path.dirname(args.collect[1]) # add dirname of script to extra_path
+        extra_path = os.path.dirname(args.collect[0]) # add dirname of script to extra_path
     elif args.log is not None:
         filename = args.log
         # preserving behaviour before argparse
