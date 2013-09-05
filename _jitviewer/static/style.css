@@ -232,17 +232,16 @@ span.single-operation,
     font-weight: bold;
 }
 
+.menu {
+    background: #cccccc;
+    text-color: red;
+}
+
+h1 {
+    padding: 10px 10px 10px 10px;
+    background: #ffcc66;
+    font-size: 25px;
+}
+
 /* End of Formatting 
 -----------------------------------------*/
-
-
-
-
-
-
-
-
-
-
-
-

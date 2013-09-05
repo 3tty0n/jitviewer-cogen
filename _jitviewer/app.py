@@ -1,29 +1,32 @@
 #!/usr/bin/env pypy
-""" A web-based browser of your log files. Run by
+from misc import failout
 
-    jitviewer.py <path to your log file> [port] [--qt]
+DESCR = """Jit Viewer: A web-based browser for PyPy log files"""
 
-By default the script will run a web server, point your browser to
-http://localhost:5000
+EPILOG = """
+Typical usage with no existing log file:
 
-If you pass --qt, this script will also start a lightweight PyQT/QWebKit based
-browser pointing at the jitviewer.  This assumes that CPython is installed in
-/usr/bin/python, and that PyQT with WebKit support is installed.
+    jitviewer.py --collect <your script> <arg1> ... <argn>
 
-Demo logfile available in this directory as 'log'.
+Typical usage with existing log file:
 
-To produce the logfile for your program, run:
+    jitviewer.py --log <path to your log file>
 
-    PYPYLOG=jit-log-opt,jit-backend:mylogfile.pypylog pypy myapp.py
+where you collected a logfile by setting PYPYLOG, e.g.:
+
+    PYPYLOG=jit-log-opt,jit-backend:<path to your log file> pypy arg1 ... argn
+
+When using an existing logfile, the source code of the logged script must be
+in the same location as the logfile.
+
+Once invoked, jitviewer will run a web server. By default the the server
+listens on http://localhost:5000
+
 """
 
 import sys
 import os.path
-
-try:
-    import _jitviewer
-except ImportError:
-    sys.path.insert(0, os.path.abspath(os.path.join(__file__, '..', '..')))
+import argparse
 
 try:
     import pypy
@@ -33,12 +36,12 @@ except ImportError:
     try:
         import pypy
     except ImportError:
-        raise ImportError('Could not import pypy module, make sure to '
+        failout('Could not import pypy module, make sure to '
             'add the pypy module to PYTHONPATH')
 
 import jinja2
 if jinja2.__version__ < '2.6':
-    raise ImportError("Required jinja version is 2.6 (the git tip), older versions might segfault PyPy")
+    failout("Required jinja version is 2.6 (the git tip), older versions might segfault PyPy")
 
 import flask
 import inspect
@@ -199,26 +202,58 @@ class OverrideFlask(flask.Flask):
             orig___init__(self2, *args, **kwds)
         BaseServer.__init__ = __init__
 
+def collect_log(args):
+    """ Collect a log file using pypy """
+    import tempfile, subprocess
+
+    print("Collecting log with: %s" % ' '.join(args))
+
+    # create a temp file, possibly racey, but very unlikey
+    (fd, path) = tempfile.mkstemp(prefix="jitviewer-")
+    os.close(fd) # just the filename we want
+
+    # possibly make this configurable if someone asks...
+    os.environ["PYPYLOG"] = "jit-log-opt,jit-backend:%s" % (path, )
+    print("Collecting log in '%s'..." % path)
+    p = subprocess.Popen([sys.executable] + args, env=os.environ).communicate()
+
+    # We don't check the return status. The user may want to see traces
+    # for a failing program!
+    return os.path.abspath(path)
+
 def main(argv, run_app=True):
-    if not '__pypy__' in sys.builtin_module_names:
-        print "Please run it using pypy-c"
-        sys.exit(1)
-    #
-    server_mode = True
-    if '--qt' in argv:
-        server_mode = False
-        argv.remove('--qt')
-    #
-    if len(argv) != 2 and len(argv) != 3:
-        print __doc__
-        sys.exit(1)
-    filename = argv[1]
-    extra_path = os.path.dirname(filename)
-    if len(argv) != 3:
-        port = 5000
+    parser = argparse.ArgumentParser(
+            description = DESCR,
+            epilog = EPILOG,
+            formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    parser.add_argument("-l", "--log", help="specify existing logfile")
+    parser.add_argument("-c", "--collect", nargs=argparse.REMAINDER, help="collect logfile now", metavar="ARG")
+    parser.add_argument("-p", "--port", help="select HTTP port", type=int)
+    parser.add_argument("-q", "--qt", action="store_true", help="use embedded QT browser")
+
+    args = parser.parse_args()
+
+    if args.port is None:
+        args.port = 5000
+
+    if args.collect is not None:
+        if len(args.collect) < 1:
+            failout("please correctly specify invokation to collect log")
+        filename = collect_log(args.collect)
+        extra_path = os.path.dirname(args.collect[0]) # add dirname of script to extra_path
+    elif args.log is not None:
+        filename = args.log
+        # preserving behaviour before argparse
+        # XXX not robust as it could be. Assumes the logfile is in the same
+        # dir as the source code, may not be the case.
+        extra_path = os.path.dirname(filename)
     else:
-        port = int(argv[2])
+        failout("please specify either --log or --collect")
+
     storage = LoopStorage(extra_path)
+
     log, loops = import_log(filename, ParserWithHtmlRepr)
     parse_log_counts(extract_category(log, 'jit-backend-count'), loops)
     storage.loops = [loop for loop in loops
@@ -231,12 +266,12 @@ def main(argv, run_app=True):
     app.route('/loop')(server.loop)
     if run_app:
         def run():
-            app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', True)), host='0.0.0.0', port=port)
+            app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', False)), host='0.0.0.0', port=args.port)
 
-        if server_mode:
+        if not args.qt:
             run()
         else:
-            url = "http://localhost:%d/" % port
+            url = "http://localhost:%d/" % args.port
             run_server_and_browser(app, run, url, filename)
     else:
         return app
