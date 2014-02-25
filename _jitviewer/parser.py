@@ -1,6 +1,9 @@
 import re
 import cgi
-from pypy.tool.jitlogparser import parser
+try:
+    from rpython.tool.jitlogparser import parser
+except ImportError:
+    from pypy.tool.jitlogparser import parser
 
 def cssclass(cls, s, **kwds):
     cls = re.sub("[^\w]", "_", cls)

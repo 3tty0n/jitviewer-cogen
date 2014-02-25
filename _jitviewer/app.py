@@ -29,12 +29,12 @@ import os.path
 import argparse
 
 try:
-    import pypy
+    import rpython
 except ImportError:
     import __pypy__
     sys.path.append(os.path.join(__pypy__.__file__, '..', '..', '..'))
     try:
-        import pypy
+        import rpython
     except ImportError:
         failout('Could not import pypy module, make sure to '
             'add the pypy module to PYTHONPATH')
@@ -47,13 +47,21 @@ import flask
 import inspect
 import threading
 import time
+
 try:
     from rpython.tool.logparser import extract_category
 except ImportError:
     from pypy.tool.logparser import extract_category
-from pypy.tool.jitlogparser.storage import LoopStorage
-from pypy.tool.jitlogparser.parser import adjust_bridges, import_log,\
-     parse_log_counts
+try:
+    from rpython.tool.jitlogparser.storage import LoopStorage
+except ImportError:
+    from pypy.tool.jitlogparser.storage import LoopStorage
+try:
+    from rpython.tool.jitlogparser.parser import adjust_bridges, import_log,\
+         parse_log_counts
+except ImportError:
+    from pypy.tool.jitlogparser.parser import adjust_bridges, import_log,\
+         parse_log_counts
 #
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
 from _jitviewer.display import CodeRepr, CodeReprNoFile
