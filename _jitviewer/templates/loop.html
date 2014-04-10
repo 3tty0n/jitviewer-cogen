@@ -3,7 +3,7 @@
 {% endif %}
 <br/>{{ source.inputargs|safe }}
 {% for sourceline in source.lines %}
-   {% if sourceline.in_loop %}
+   {% if sourceline.in_loop or sourceline.chunks %}
        <div id="line-{{loop.index + source.firstlineno - 1}}" class="source visible">{{sourceline.line}}</div>
        {% if sourceline.chunks %}
           <div class="operations">
