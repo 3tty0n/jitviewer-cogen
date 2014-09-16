@@ -31,13 +31,8 @@ import argparse
 try:
     import rpython
 except ImportError:
-    import __pypy__
-    sys.path.append(os.path.join(__pypy__.__file__, '..', '..', '..'))
-    try:
-        import rpython
-    except ImportError:
-        failout('Could not import pypy module, make sure to '
-            'add the pypy module to PYTHONPATH')
+    failout('Could not import the rpython module, make sure to add the '
+            'rpython module to PYTHONPATH')
 
 import jinja2
 if jinja2.__version__ < '2.6':
