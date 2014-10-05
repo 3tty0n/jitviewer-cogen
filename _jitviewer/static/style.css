@@ -235,6 +235,11 @@ span.single-operation,
 .menu {
     background: #cccccc;
     text-color: red;
+    padding-left: 5px;
+}
+header>a,
+header>div {
+    padding-left: 5px;
 }
 
 h1 {
