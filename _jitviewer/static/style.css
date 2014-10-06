@@ -18,7 +18,7 @@ body {
 	line-height: 22px;
 	
 	margin-left: 0px;
-	margin-top: 60px;
+	margin-top: 0px;
 }
 #single_loop {
     float: right; /*fijal, Po co ci to?*/
@@ -32,6 +32,7 @@ a:visited {
 
 #filter {
     margin-left: 15px;
+    margin-top: 15px;
 }
 
 
@@ -76,8 +77,8 @@ header {
 	width: 360px;
 	
 	position: fixed;
-	top: 30px;
-	left: 920px;
+	top: 10px;
+	right: 10px;
 	
 	padding: 5px;
     border: 1px solid #cacaca;
@@ -235,6 +236,11 @@ span.single-operation,
 .menu {
     background: #cccccc;
     text-color: red;
+    padding-left: 5px;
+}
+header>a,
+header>div {
+    padding-left: 5px;
 }
 
 h1 {
