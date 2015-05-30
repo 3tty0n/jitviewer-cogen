@@ -100,7 +100,8 @@ class OpHtml(parser.Op):
             
         obj = self.getarg(0)
         return '%s = ((%s.%s)%s).%s' % (self.wrap_html(self.res),
-                                        namespace, classname, obj, field)
+                                        namespace, classname,
+                                        self.wrap_html(obj), field)
 
     def repr_getfield_gc_pure(self):
         return self.repr_getfield_gc() + " [pure]"
