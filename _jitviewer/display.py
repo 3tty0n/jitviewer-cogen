@@ -26,6 +26,7 @@ class CodeRepr(object):
         html = []
         for v in loop.inputargs:
             #html.append(cssclass(v, v, onmouseover='highlight_var(this)', onmouseout='disable_var(this)'))
+            v = str(v)
             html.append(cssclass(v, v, data={'name': v}))
         self.inputargs = " ".join(html)
         self.firstlineno = code.co_firstlineno
