@@ -11,7 +11,7 @@ for dirname, _, filenames in os.walk(os.path.join(base, 'static')):
         rest.append(os.path.join(dirname, x))
 
 setup(name='JitViewer',
-      version='0.1',
+      version='0.2',
       description="Viewer for pypy's jit traces",
       author='Maciej Fijalkowski, Antonio Cuni and the PyPy team',
       author_email='fijall@gmail.com',
