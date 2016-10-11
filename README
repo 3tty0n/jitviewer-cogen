@@ -1,10 +1,10 @@
-
 PLEASE NOTE! **THIS REPO IS DEPRECATED**
 
-Head over to [this repo](https://github.com/vmprof) instead!
+Head over to https://github.com/vmprof instead!
 
 The code is now hosted on GitHub, and split into three parts. The client Python library (vmprof-python),
 the server (vmprof-server) and a repo to do integration testing!
+
 
 Old JitViewer
 =============
