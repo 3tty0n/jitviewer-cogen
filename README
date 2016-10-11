@@ -1,18 +1,16 @@
 
 PLEASE NOTE! This repo is:
 
-```
-      _                               _           _ 
-     | |                             | |         | |
-   __| | ___ _ __  _ __ ___  ___ __ _| |_ ___  __| |
-  / _` |/ _ \ '_ \| '__/ _ \/ __/ _` | __/ _ \/ _` |
- | (_| |  __/ |_) | | |  __/ (_| (_| | ||  __/ (_| |
-  \__,_|\___| .__/|_|  \___|\___\__,_|\__\___|\__,_|
-	    | |                                     
-	    |_|                                     
-```
+          _                               _           _ 
+         | |                             | |         | |
+       __| | ___ _ __  _ __ ___  ___ __ _| |_ ___  __| |
+      / _` |/ _ \ '_ \| '__/ _ \/ __/ _` | __/ _ \/ _` |
+     | (_| |  __/ |_) | | |  __/ (_| (_| | ||  __/ (_| |
+      \__,_|\___| .__/|_|  \___|\___\__,_|\__\___|\__,_|
+                | |                                     
+                |_|                                     
 
-[Please head over to https://github.com/vmprof](https://github.com/vmprof)
+[Go here instead](https://github.com/vmprof)
 
 The code is now hosted on GitHub, and split into three parts. The client Python library (vmprof-python),
 the server (vmprof-server) and a repo to do integration testing!
