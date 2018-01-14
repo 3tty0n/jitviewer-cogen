@@ -35,8 +35,8 @@ except ImportError:
             'rpython module to PYTHONPATH')
 
 import jinja2
-if jinja2.__version__ < '2.6':
-    failout("Required jinja version is 2.6 (the git tip), older versions might segfault PyPy")
+if map(int, jinja2.__version__.split('.')) < map(int, '2.6'.split('.')):
+    failout("Required jinja version is 2.6, got %s older versions might segfault PyPy" % jinja2.__version__)
 
 import flask
 import inspect
