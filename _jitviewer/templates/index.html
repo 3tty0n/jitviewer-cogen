@@ -45,6 +45,17 @@
       <a href="/?all=true">{{extra_data}}</a>
     {% endif %}
   </div>
+  {% if jitcodes %}
+  <div id="jitcodes">
+    <h2>Residual JitCode dumps</h2>
+    <ul>
+      {% for dump in jitcodes %}
+      <li><a href="/jitcode/{{ loop.index0 }}">{{ dump.name }}</a>
+          ({{ dump.blocks|length }} bytecodes, {{ dump.size }} bytes)</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
   <div id="main">
   </div>
 </body>

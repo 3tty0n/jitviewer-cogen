@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>PyPy JIT Viewer: jitcode {{ dump.name }}</title>
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/pygments.css"/>
+</head>
+<body>
+  <h1>JitCode {{ dump.name }}</h1>
+  <div>
+    <a href="/">&lt;-- back to loops</a><br/>
+    {{ dump.size }} bytes,
+    regs i={{ dump.num_regs[0] }} r={{ dump.num_regs[1] }} f={{ dump.num_regs[2] }},
+    consts i={{ dump.num_consts[0] }} r={{ dump.num_consts[1] }} f={{ dump.num_consts[2] }},
+    PyCode {{ dump.pycode_ref }}<br/>
+    {% if code %}
+      matched to <b>{{ code.name }}</b> in {{ code.filename }}:{{ code.startlineno }}
+    {% else %}
+      no Python code object matched
+      {% if candidates %}
+        &mdash; pick one:
+        {% for fname, lineno, name in candidates %}
+          <a href="?code={{ loop.index0 }}">{{ name }} ({{ fname }}:{{ lineno }})</a>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  </div>
+  <table class="jitcode">
+    {% for row in rows %}
+    <tr>
+      <td class="jitcode-bytecode">
+        <div class="jitcode-pc">PC {{ row.pc }}{% if row.lineno %} (line {{ row.lineno }}){% endif %}</div>
+        <pre>{{ row.source }}</pre>
+        <pre>{{ row.dis }}</pre>
+      </td>
+      <td><pre>{{ row.html|safe }}</pre></td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

@@ -37,3 +37,24 @@ the log file.
 For usage information, invoke jitviewer.py with --help.
 
 An example log file is shipped with the jitviewer source code.
+Residual JitCode view
+=====================
+
+Logs that contain the ``jit-jitcode-dump`` category (emitted by the online
+cogen when it generates a program-specialised JitCode) get an extra section
+on the index page listing every dumped JitCode.  Following such a link opens
+``/jitcode/<index>``, which shows one row per Python bytecode: on the left
+the source line and the dis-style bytecode, on the right the residual JitCode
+block verbatim, with the constants the cogen folded in from the program
+(bytecode PCs, co_consts indices, the PyCode reference) highlighted.
+
+Collect such a log with, for example::
+
+    PYPYLOG=jit-log-opt,jit-backend-counts,jit-jitcode-dump:mylog pypy prog.py
+
+``jit-log-opt`` is what supplies the Python code objects used to align the
+dump with the source; without it the page still renders the JitCode, but no
+source or bytecode column.  A dump is matched to a code object by checking
+that every block's bytecode offset exists in that code object, preferring the
+smallest such code object; use the links in the page header to pick another
+one by hand.

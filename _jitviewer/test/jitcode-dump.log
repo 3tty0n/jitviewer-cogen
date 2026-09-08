@@ -1,0 +1,538 @@
+[1fe3d41] {jit-jitcode-dump
+jitcode linked-pypy-runtime-cogen: 2220 bytes, regs i=7 r=7 f=1, consts i=25 r=3 f=0
+    0: int_copy 0 -> %i1
+    3: int_copy 0 -> %i3
+    6: ref_copy $ref(0x0) -> %r3
+    9: ref_copy $ref(0x0) -> %r5
+   12: -live- @0
+   15: int_guard_value %i0
+   17: -live- @0
+   20: jit_merge_point 54 [$0, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+   33: -live- @0
+   36: setfield_vable_i %r1 $0 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+   41: -live- @0
+   44: getarrayitem_vable_r %r1 $0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+   52: -live- @5
+   55: goto_if_not_ptr_iszero %r0 L80
+   59: int_copy 0 -> %i1
+   62: ref_copy $ref(0xad64e31a0) -> %r0
+   65: ref_copy %r1 -> %r3
+   68: inline_call_ir_v <JitCode _load_fast_failed__AccessDirect_None> [%i1] [%r1]
+   75: -live- @10
+   78: raise $ref(0x10383fc68)
+   80: int_copy 3 -> %i1
+   83: ref_copy %r1 -> %r3
+   86: -live- @5
+   89: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+   94: assert_not_none %r0
+   96: -live- @13
+   99: setarrayitem_vable_r %r1 %i1 %r0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  107: int_add %i1 1 -> %i1
+  111: -live- @18
+  114: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+  119: ref_copy %r3 -> %r1
+  122: goto L125
+  125: int_copy 0 -> %i1
+  128: int_copy 0 -> %i3
+  131: ref_copy $ref(0x0) -> %r3
+  134: ref_copy $ref(0x0) -> %r5
+  137: pe_bailout_point 54 [$3, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  150: -live- @0
+  153: setfield_vable_i %r1 $3 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  158: -live- @0
+  161: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_pycode 64> -> %r3
+  166: -live- @0
+  169: ref_guard_value %r3
+  171: getfield_gc_r_pure %r3 <FieldP pypy.interpreter.pycode.PyCode.inst_co_consts_w 112 pure> -> %r3
+  176: getarrayitem_gc_r_pure %r3 $1 <ArrayP 8> -> %r3
+  182: -live- @0
+  185: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  190: assert_not_none %r3
+  192: -live- @18
+  195: setarrayitem_vable_r %r1 %i1 %r3 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  203: int_add %i1 1 -> %i1
+  207: -live- @18
+  210: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+  215: goto L218
+  218: int_copy 0 -> %i1
+  221: int_copy 0 -> %i3
+  224: ref_copy $ref(0x0) -> %r3
+  227: ref_copy $ref(0x0) -> %r5
+  230: pe_bailout_point 54 [$6, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  243: -live- @0
+  246: setfield_vable_i %r1 $6 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  251: inline_call_ir_v <JitCode COMPARE_OP__AccessDirect_None> [$2, $9] [%r1]
+  259: -live- @0
+  262: goto L265
+  265: int_copy 0 -> %i1
+  268: int_copy 0 -> %i3
+  271: ref_copy $ref(0x0) -> %r3
+  274: ref_copy $ref(0x0) -> %r5
+  277: pe_bailout_point 54 [$9, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  290: -live- @0
+  293: setfield_vable_i %r1 $9 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  298: -live- @0
+  301: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  306: int_sub %i1 1 -> %i1
+  310: -live- @18
+  313: getarrayitem_vable_r %r1 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r3
+  321: -live- @18
+  324: setarrayitem_vable_r %r1 %i1 $ref(0x0) <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  332: -live- @18
+  335: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+  340: assert_not_none %r3
+  342: -live- @0
+  345: goto_if_not_ptr_nonzero %r3 L402
+  349: int_copy 12 -> %i1
+  352: ref_copy %r3 -> %r0
+  355: -live- @5
+  358: guard_class %r0 -> %i3
+  361: -live- @23
+  364: goto_if_not_int_eq %i3 $4332254360 L390
+  369: getfield_gc_i_pure %r3 <FieldS pypy.objspace.std.intobject.W_IntObject.inst_intval 8 pure> -> %i3
+  374: int_is_true %i3 -> %i3
+  377: -live- @23
+  380: goto_if_not %i3 L387
+  384: goto L808
+  387: goto L408
+  390: inline_call_r_i <JitCode is_true> [%r3] -> %i3
+  396: -live- @23
+  399: goto L377
+  402: int_copy 12 -> %i1
+  405: goto L390
+  408: int_copy 0 -> %i1
+  411: int_copy 0 -> %i3
+  414: ref_copy $ref(0x0) -> %r3
+  417: ref_copy $ref(0x0) -> %r5
+  420: pe_bailout_point 54 [$12, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  433: -live- @0
+  436: setfield_vable_i %r1 $12 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  441: -live- @0
+  444: getarrayitem_vable_r %r1 $0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+  452: -live- @5
+  455: goto_if_not_ptr_iszero %r0 L480
+  459: int_copy 0 -> %i1
+  462: ref_copy $ref(0xad64e31a0) -> %r0
+  465: ref_copy %r1 -> %r3
+  468: inline_call_ir_v <JitCode _load_fast_failed__AccessDirect_None> [%i1] [%r1]
+  475: -live- @10
+  478: raise $ref(0x10383fc68)
+  480: int_copy 15 -> %i1
+  483: ref_copy %r1 -> %r3
+  486: -live- @5
+  489: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  494: assert_not_none %r0
+  496: -live- @13
+  499: setarrayitem_vable_r %r1 %i1 %r0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  507: int_add %i1 1 -> %i1
+  511: -live- @18
+  514: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+  519: ref_copy %r3 -> %r1
+  522: goto L525
+  525: int_copy 0 -> %i1
+  528: int_copy 0 -> %i3
+  531: ref_copy $ref(0x0) -> %r3
+  534: ref_copy $ref(0x0) -> %r5
+  537: pe_bailout_point 54 [$15, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  550: -live- @0
+  553: setfield_vable_i %r1 $15 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  558: -live- @0
+  561: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_pycode 64> -> %r3
+  566: -live- @0
+  569: ref_guard_value %r3
+  571: getfield_gc_r_pure %r3 <FieldP pypy.interpreter.pycode.PyCode.inst_co_consts_w 112 pure> -> %r3
+  576: getarrayitem_gc_r_pure %r3 $2 <ArrayP 8> -> %r3
+  582: -live- @0
+  585: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  590: assert_not_none %r3
+  592: -live- @18
+  595: setarrayitem_vable_r %r1 %i1 %r3 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  603: int_add %i1 1 -> %i1
+  607: -live- @18
+  610: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+  615: goto L618
+  618: int_copy 0 -> %i1
+  621: int_copy 0 -> %i3
+  624: ref_copy $ref(0x0) -> %r3
+  627: ref_copy $ref(0x0) -> %r5
+  630: pe_bailout_point 54 [$18, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  643: -live- @0
+  646: setfield_vable_i %r1 $18 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  651: inline_call_ir_v <JitCode COMPARE_OP__AccessDirect_None> [$2, $21] [%r1]
+  659: -live- @0
+  662: goto L665
+  665: int_copy 0 -> %i1
+  668: int_copy 0 -> %i3
+  671: ref_copy $ref(0x0) -> %r3
+  674: ref_copy $ref(0x0) -> %r5
+  677: pe_bailout_point 54 [$21, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  690: -live- @0
+  693: setfield_vable_i %r1 $21 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  698: -live- @0
+  701: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  706: int_sub %i1 1 -> %i1
+  710: -live- @18
+  713: getarrayitem_vable_r %r1 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r3
+  721: -live- @18
+  724: setarrayitem_vable_r %r1 %i1 $ref(0x0) <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  732: -live- @18
+  735: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+  740: assert_not_none %r3
+  742: -live- @0
+  745: goto_if_not_ptr_nonzero %r3 L802
+  749: int_copy 24 -> %i1
+  752: ref_copy %r3 -> %r0
+  755: -live- @5
+  758: guard_class %r0 -> %i3
+  761: -live- @23
+  764: goto_if_not_int_eq %i3 $4332254360 L790
+  769: getfield_gc_i_pure %r3 <FieldS pypy.objspace.std.intobject.W_IntObject.inst_intval 8 pure> -> %i3
+  774: int_is_true %i3 -> %i3
+  777: -live- @23
+  780: goto_if_not %i3 L787
+  784: goto L808
+  787: goto L1186
+  790: inline_call_r_i <JitCode is_true> [%r3] -> %i3
+  796: -live- @23
+  799: goto L777
+  802: int_copy 24 -> %i1
+  805: goto L790
+  808: int_copy 0 -> %i1
+  811: int_copy 0 -> %i3
+  814: ref_copy $ref(0x0) -> %r3
+  817: ref_copy $ref(0x0) -> %r5
+  820: pe_bailout_point 54 [$24, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  833: -live- @28
+  836: setfield_vable_i %r1 $24 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  841: -live- @28
+  844: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_pycode 64> -> %r3
+  849: -live- @0
+  852: ref_guard_value %r3
+  854: getfield_gc_r_pure %r3 <FieldP pypy.interpreter.pycode.PyCode.inst_co_consts_w 112 pure> -> %r3
+  859: getarrayitem_gc_r_pure %r3 $2 <ArrayP 8> -> %r3
+  865: -live- @0
+  868: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  873: assert_not_none %r3
+  875: -live- @18
+  878: setarrayitem_vable_r %r1 %i1 %r3 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  886: int_add %i1 1 -> %i1
+  890: -live- @33
+  893: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+  898: goto L901
+  901: int_copy 0 -> %i1
+  904: int_copy 0 -> %i3
+  907: ref_copy $ref(0x0) -> %r3
+  910: ref_copy $ref(0x0) -> %r5
+  913: pe_bailout_point 54 [$27, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+  926: -live- @38
+  929: setfield_vable_i %r1 $27 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+  934: -live- @38
+  937: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_lastblock 48> -> %r0
+  942: -live- @42
+  945: goto_if_not_ptr_iszero %r0 L995
+  949: ref_copy $ref(0xad64e31a0) -> %r0
+  952: ref_copy %r1 -> %r3
+  955: setfield_gc_i %r1 1 <FieldU pypy.interpreter.pyframe.PyFrame.inst_frame_finished_execution 81>
+  960: -live- @38
+  963: int_guard_value $0
+  965: -live- @38
+  968: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  973: int_invert $0 -> %i2
+  976: int_add %i1 %i2 -> %i1
+  980: -live- @46
+  983: getarrayitem_vable_r %r1 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+  991: assert_not_none %r0
+  993: ref_return %r0
+  995: ref_copy %r1 -> %r0
+  998: ref_copy $ref(0xad64e31a0) -> %r3
+ 1001: ref_copy %r1 -> %r4
+ 1004: -live- @42
+ 1007: getfield_vable_i %r0 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 1012: int_sub %i1 1 -> %i1
+ 1016: -live- @51
+ 1019: getarrayitem_vable_r %r0 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r5
+ 1027: -live- @56
+ 1030: setarrayitem_vable_r %r0 %i1 $ref(0x0) <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 1038: -live- @56
+ 1041: setfield_vable_i %r0 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 1046: assert_not_none %r5
+ 1048: inline_call_ir_r <JitCode unrollstack__AccessDirect_None> [$1] [%r1] -> %r0
+ 1056: -live- @61
+ 1059: goto_if_not_ptr_iszero %r0 L1131
+ 1063: -live- @65
+ 1066: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 1071: assert_not_none %r5
+ 1073: -live- @69
+ 1076: setarrayitem_vable_r %r1 %i1 %r5 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 1084: int_add %i1 1 -> %i1
+ 1088: -live- @46
+ 1091: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 1096: -live- @38
+ 1099: int_guard_value $0
+ 1101: -live- @38
+ 1104: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 1109: int_invert $0 -> %i2
+ 1112: int_add %i1 %i2 -> %i1
+ 1116: -live- @46
+ 1119: getarrayitem_vable_r %r1 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+ 1127: assert_not_none %r0
+ 1129: ref_return %r0
+ 1131: new_with_vtable <SizeDescr 16> -> %r2
+ 1135: setfield_gc_r %r2 %r5 <FieldP pypy.interpreter.pyopcode.SReturnValue.inst_w_returnvalue 8 pure>
+ 1140: -live- @74
+ 1143: guard_class %r0 -> %i1
+ 1146: getfield_raw_i %i1 <FieldU pypy.interpreter.pyopcode.FrameBlock_vtable.cls_handle 48 pure> -> %i1
+ 1151: getfield_raw_i %i1 <FieldU specfunc.variant0 0 pure> -> %i1
+ 1156: -live- @78
+ 1159: int_guard_value %i1
+ 1161: residual_call_r_i %i1 [%r0, %r1, %r2] <Calli 8 rrr EF=7> -> %i1
+ 1170: -live- @46
+ 1173: hint_force_virtualizable %r1
+ 1175: new_with_vtable <SizeDescr 16> -> %r0
+ 1179: setfield_gc_i %r0 %i1 <FieldU pypy.interpreter.pyframe.W_ResidualExit.inst_next_instr 8 pure>
+ 1184: ref_return %r0
+ 1186: int_copy 0 -> %i1
+ 1189: int_copy 0 -> %i3
+ 1192: ref_copy $ref(0x0) -> %r3
+ 1195: ref_copy $ref(0x0) -> %r5
+ 1198: pe_bailout_point 54 [$28, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1211: -live- @0
+ 1214: setfield_vable_i %r1 $28 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1219: inline_call_ir_v <JitCode LOAD_GLOBAL_cached__AccessDirect_None> [$0, $31] [%r1]
+ 1227: -live- @0
+ 1230: goto L1233
+ 1233: int_copy 0 -> %i1
+ 1236: int_copy 0 -> %i3
+ 1239: ref_copy $ref(0x0) -> %r3
+ 1242: ref_copy $ref(0x0) -> %r5
+ 1245: pe_bailout_point 54 [$31, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1258: -live- @0
+ 1261: setfield_vable_i %r1 $31 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1266: -live- @0
+ 1269: getarrayitem_vable_r %r1 $0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+ 1277: -live- @5
+ 1280: goto_if_not_ptr_iszero %r0 L1305
+ 1284: int_copy 0 -> %i1
+ 1287: ref_copy $ref(0xad64e31a0) -> %r0
+ 1290: ref_copy %r1 -> %r3
+ 1293: inline_call_ir_v <JitCode _load_fast_failed__AccessDirect_None> [%i1] [%r1]
+ 1300: -live- @10
+ 1303: raise $ref(0x10383fc68)
+ 1305: int_copy 34 -> %i1
+ 1308: ref_copy %r1 -> %r3
+ 1311: -live- @5
+ 1314: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 1319: assert_not_none %r0
+ 1321: -live- @13
+ 1324: setarrayitem_vable_r %r1 %i1 %r0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 1332: int_add %i1 1 -> %i1
+ 1336: -live- @18
+ 1339: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 1344: ref_copy %r3 -> %r1
+ 1347: goto L1350
+ 1350: int_copy 0 -> %i1
+ 1353: int_copy 0 -> %i3
+ 1356: ref_copy $ref(0x0) -> %r3
+ 1359: ref_copy $ref(0x0) -> %r5
+ 1362: pe_bailout_point 54 [$34, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1375: -live- @0
+ 1378: setfield_vable_i %r1 $34 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1383: -live- @0
+ 1386: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_pycode 64> -> %r3
+ 1391: -live- @0
+ 1394: ref_guard_value %r3
+ 1396: getfield_gc_r_pure %r3 <FieldP pypy.interpreter.pycode.PyCode.inst_co_consts_w 112 pure> -> %r3
+ 1401: getarrayitem_gc_r_pure %r3 $2 <ArrayP 8> -> %r3
+ 1407: -live- @0
+ 1410: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 1415: assert_not_none %r3
+ 1417: -live- @18
+ 1420: setarrayitem_vable_r %r1 %i1 %r3 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 1428: int_add %i1 1 -> %i1
+ 1432: -live- @18
+ 1435: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 1440: goto L1443
+ 1443: int_copy 0 -> %i1
+ 1446: int_copy 0 -> %i3
+ 1449: ref_copy $ref(0x0) -> %r3
+ 1452: ref_copy $ref(0x0) -> %r5
+ 1455: pe_bailout_point 54 [$37, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1468: -live- @0
+ 1471: setfield_vable_i %r1 $37 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1476: inline_call_ir_v <JitCode int_BINARY_SUB__AccessDirect_None> [$0, $38] [%r1]
+ 1484: -live- @0
+ 1487: goto L1490
+ 1490: int_copy 0 -> %i1
+ 1493: int_copy 0 -> %i3
+ 1496: ref_copy $ref(0x0) -> %r3
+ 1499: ref_copy $ref(0x0) -> %r5
+ 1502: pe_bailout_point 54 [$38, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1515: -live- @0
+ 1518: setfield_vable_i %r1 $38 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1523: inline_call_ir_v <JitCode CALL_FUNCTION__AccessDirect_None> [$1, $41] [%r1]
+ 1531: -live- @0
+ 1534: goto L1537
+ 1537: int_copy 0 -> %i1
+ 1540: int_copy 0 -> %i3
+ 1543: ref_copy $ref(0x0) -> %r3
+ 1546: ref_copy $ref(0x0) -> %r5
+ 1549: pe_bailout_point 54 [$41, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1562: -live- @0
+ 1565: setfield_vable_i %r1 $41 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1570: inline_call_ir_v <JitCode LOAD_GLOBAL_cached__AccessDirect_None> [$0, $44] [%r1]
+ 1578: -live- @0
+ 1581: goto L1584
+ 1584: int_copy 0 -> %i1
+ 1587: int_copy 0 -> %i3
+ 1590: ref_copy $ref(0x0) -> %r3
+ 1593: ref_copy $ref(0x0) -> %r5
+ 1596: pe_bailout_point 54 [$44, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1609: -live- @0
+ 1612: setfield_vable_i %r1 $44 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1617: -live- @0
+ 1620: getarrayitem_vable_r %r1 $0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+ 1628: -live- @5
+ 1631: goto_if_not_ptr_iszero %r0 L1656
+ 1635: int_copy 0 -> %i1
+ 1638: ref_copy $ref(0xad64e31a0) -> %r0
+ 1641: ref_copy %r1 -> %r3
+ 1644: inline_call_ir_v <JitCode _load_fast_failed__AccessDirect_None> [%i1] [%r1]
+ 1651: -live- @10
+ 1654: raise $ref(0x10383fc68)
+ 1656: int_copy 47 -> %i1
+ 1659: ref_copy %r1 -> %r3
+ 1662: -live- @5
+ 1665: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 1670: assert_not_none %r0
+ 1672: -live- @13
+ 1675: setarrayitem_vable_r %r1 %i1 %r0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 1683: int_add %i1 1 -> %i1
+ 1687: -live- @18
+ 1690: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 1695: ref_copy %r3 -> %r1
+ 1698: goto L1701
+ 1701: int_copy 0 -> %i1
+ 1704: int_copy 0 -> %i3
+ 1707: ref_copy $ref(0x0) -> %r3
+ 1710: ref_copy $ref(0x0) -> %r5
+ 1713: pe_bailout_point 54 [$47, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1726: -live- @28
+ 1729: setfield_vable_i %r1 $47 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1734: -live- @28
+ 1737: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_pycode 64> -> %r3
+ 1742: -live- @0
+ 1745: ref_guard_value %r3
+ 1747: getfield_gc_r_pure %r3 <FieldP pypy.interpreter.pycode.PyCode.inst_co_consts_w 112 pure> -> %r3
+ 1752: getarrayitem_gc_r_pure %r3 $3 <ArrayP 8> -> %r3
+ 1758: -live- @0
+ 1761: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 1766: assert_not_none %r3
+ 1768: -live- @18
+ 1771: setarrayitem_vable_r %r1 %i1 %r3 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 1779: int_add %i1 1 -> %i1
+ 1783: -live- @33
+ 1786: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 1791: goto L1794
+ 1794: int_copy 0 -> %i1
+ 1797: int_copy 0 -> %i3
+ 1800: ref_copy $ref(0x0) -> %r3
+ 1803: ref_copy $ref(0x0) -> %r5
+ 1806: pe_bailout_point 54 [$50, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1819: -live- @28
+ 1822: setfield_vable_i %r1 $50 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1827: inline_call_ir_v <JitCode int_BINARY_SUB__AccessDirect_None> [$0, $51] [%r1]
+ 1835: -live- @28
+ 1838: goto L1841
+ 1841: int_copy 0 -> %i1
+ 1844: int_copy 0 -> %i3
+ 1847: ref_copy $ref(0x0) -> %r3
+ 1850: ref_copy $ref(0x0) -> %r5
+ 1853: pe_bailout_point 54 [$51, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1866: -live- @28
+ 1869: setfield_vable_i %r1 $51 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1874: inline_call_ir_v <JitCode CALL_FUNCTION__AccessDirect_None> [$1, $54] [%r1]
+ 1882: -live- @28
+ 1885: goto L1888
+ 1888: int_copy 0 -> %i1
+ 1891: int_copy 0 -> %i3
+ 1894: ref_copy $ref(0x0) -> %r3
+ 1897: ref_copy $ref(0x0) -> %r5
+ 1900: pe_bailout_point 54 [$54, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1913: -live- @28
+ 1916: setfield_vable_i %r1 $54 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1921: inline_call_ir_v <JitCode int_BINARY_ADD__AccessDirect_None> [$0, $55] [%r1]
+ 1929: -live- @28
+ 1932: goto L1935
+ 1935: int_copy 0 -> %i1
+ 1938: int_copy 0 -> %i3
+ 1941: ref_copy $ref(0x0) -> %r3
+ 1944: ref_copy $ref(0x0) -> %r5
+ 1947: pe_bailout_point 54 [$55, %i0] [$ref(0xad64e31a0)] [] [] [%r1, %r2] []
+ 1960: -live- @38
+ 1963: setfield_vable_i %r1 $55 <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>
+ 1968: -live- @38
+ 1971: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_lastblock 48> -> %r0
+ 1976: -live- @42
+ 1979: goto_if_not_ptr_iszero %r0 L2029
+ 1983: ref_copy $ref(0xad64e31a0) -> %r0
+ 1986: ref_copy %r1 -> %r3
+ 1989: setfield_gc_i %r1 1 <FieldU pypy.interpreter.pyframe.PyFrame.inst_frame_finished_execution 81>
+ 1994: -live- @38
+ 1997: int_guard_value $0
+ 1999: -live- @38
+ 2002: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 2007: int_invert $0 -> %i2
+ 2010: int_add %i1 %i2 -> %i1
+ 2014: -live- @46
+ 2017: getarrayitem_vable_r %r1 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+ 2025: assert_not_none %r0
+ 2027: ref_return %r0
+ 2029: ref_copy %r1 -> %r0
+ 2032: ref_copy $ref(0xad64e31a0) -> %r3
+ 2035: ref_copy %r1 -> %r4
+ 2038: -live- @42
+ 2041: getfield_vable_i %r0 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 2046: int_sub %i1 1 -> %i1
+ 2050: -live- @51
+ 2053: getarrayitem_vable_r %r0 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r5
+ 2061: -live- @56
+ 2064: setarrayitem_vable_r %r0 %i1 $ref(0x0) <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 2072: -live- @56
+ 2075: setfield_vable_i %r0 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 2080: assert_not_none %r5
+ 2082: inline_call_ir_r <JitCode unrollstack__AccessDirect_None> [$1] [%r1] -> %r0
+ 2090: -live- @61
+ 2093: goto_if_not_ptr_iszero %r0 L2165
+ 2097: -live- @65
+ 2100: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 2105: assert_not_none %r5
+ 2107: -live- @69
+ 2110: setarrayitem_vable_r %r1 %i1 %r5 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+ 2118: int_add %i1 1 -> %i1
+ 2122: -live- @46
+ 2125: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>
+ 2130: -live- @38
+ 2133: int_guard_value $0
+ 2135: -live- @38
+ 2138: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+ 2143: int_invert $0 -> %i2
+ 2146: int_add %i1 %i2 -> %i1
+ 2150: -live- @46
+ 2153: getarrayitem_vable_r %r1 %i1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0
+ 2161: assert_not_none %r0
+ 2163: ref_return %r0
+ 2165: new_with_vtable <SizeDescr 16> -> %r2
+ 2169: setfield_gc_r %r2 %r5 <FieldP pypy.interpreter.pyopcode.SReturnValue.inst_w_returnvalue 8 pure>
+ 2174: -live- @74
+ 2177: guard_class %r0 -> %i1
+ 2180: getfield_raw_i %i1 <FieldU pypy.interpreter.pyopcode.FrameBlock_vtable.cls_handle 48 pure> -> %i1
+ 2185: getfield_raw_i %i1 <FieldU specfunc.variant0 0 pure> -> %i1
+ 2190: -live- @78
+ 2193: int_guard_value %i1
+ 2195: residual_call_r_i %i1 [%r0, %r1, %r2] <Calli 8 rrr EF=7> -> %i1
+ 2204: -live- @46
+ 2207: hint_force_virtualizable %r1
+ 2209: new_with_vtable <SizeDescr 16> -> %r0
+ 2213: setfield_gc_i %r0 %i1 <FieldU pypy.interpreter.pyframe.W_ResidualExit.inst_next_instr 8 pure>
+ 2218: ref_return %r0
+[2006339] jit-jitcode-dump}

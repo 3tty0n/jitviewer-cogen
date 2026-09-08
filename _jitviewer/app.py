@@ -60,6 +60,8 @@ except ImportError:
 #
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
 from _jitviewer.display import CodeRepr, CodeReprNoFile
+from _jitviewer.jitcodeparser import parse_jitcode_dumps, find_code_objects,\
+     match_code, disassemble, source_line
 import _jitviewer
 
 CUTOFF = 30
@@ -117,9 +119,32 @@ class Server(object):
 
         qt_workaround = ('Qt/4.7.2' in flask.request.user_agent.string)
         return flask.render_template("index.html", loops=loops,
+                                     jitcodes=self.storage.jitcode_dumps,
                                      filename=self.filename,
                                      qt_workaround=qt_workaround,
                                      extra_data=extra_data)
+
+    def jitcode(self, index):
+        dump = self.storage.jitcode_dumps[index]
+        candidates = self.storage.jitcode_candidates
+        pick = flask.request.args.get('code', None)
+        if pick is not None:
+            code = disassemble(self.storage, candidates[int(pick)])
+        else:
+            code = match_code(dump, candidates, self.storage)
+        rows = []
+        for block in dump.blocks:
+            row = {'pc': block.bytecode_pc, 'html': block.html(),
+                   'source': '', 'dis': '', 'lineno': None}
+            opcode = code and code.map.get(block.bytecode_pc, None)
+            if opcode is not None:
+                row['lineno'] = opcode.lineno
+                row['dis'] = '%s %s' % (opcode.__class__.__name__,
+                                        opcode.argstr)
+                row['source'] = source_line(code, opcode.lineno)
+            rows.append(row)
+        return flask.render_template('jitcode.html', dump=dump, code=code,
+                                     candidates=candidates, rows=rows)
 
     def loop(self):
         name = mangle_descr(flask.request.args['name'])
@@ -262,11 +287,14 @@ def main(argv, run_app=True):
     storage.loops = [loop for loop in loops
                      if not loop.descr.startswith('bridge')]
     storage.loop_dict = create_loop_dict(loops)
+    storage.jitcode_dumps = parse_jitcode_dumps(filename)
+    storage.jitcode_candidates = find_code_objects(filename)
     app = OverrideFlask('_jitviewer')
     server = Server(filename, storage)
     app.debug = True
     app.route('/')(server.index)
     app.route('/loop')(server.loop)
+    app.route('/jitcode/<int:index>')(server.jitcode)
     if run_app:
         def run():
             app.run(use_reloader=bool(os.environ.get('JITVIEWER_USE_RELOADER', False)), host='0.0.0.0', port=args.port)

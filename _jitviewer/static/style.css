@@ -251,3 +251,36 @@ h1 {
 
 /* End of Formatting 
 -----------------------------------------*/
+
+/* jitcode view
+-----------------------------------------*/
+
+table.jitcode {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.jitcode td {
+    border-top: 1px solid #cacaca;
+    vertical-align: top;
+    padding: 4px 8px;
+}
+
+td.jitcode-bytecode {
+    width: 30em;
+}
+
+td.jitcode-bytecode pre {
+    margin: 0;
+}
+
+.jitcode-pc {
+    color: #888;
+    font-size: 11px;
+}
+
+.jitcode-const {
+    background: #e3f0fb;
+    color: #0a5ea8;
+    font-weight: bold;
+}
