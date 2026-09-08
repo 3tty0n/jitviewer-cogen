@@ -61,7 +61,8 @@ except ImportError:
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 from _jitviewer.jitcodeparser import parse_jitcode_dumps, find_code_objects,\
-     match_code, disassemble, source_line, handler_source
+     match_code, disassemble, source_line, handler_source, parse_templates,\
+     align
 import _jitviewer
 
 CUTOFF = 30
@@ -120,6 +121,7 @@ class Server(object):
         qt_workaround = ('Qt/4.7.2' in flask.request.user_agent.string)
         return flask.render_template("index.html", loops=loops,
                                      jitcodes=self.storage.jitcode_dumps,
+                                     templates=len(self.storage.jitcode_templates),
                                      filename=self.filename,
                                      qt_workaround=qt_workaround,
                                      extra_data=extra_data)
@@ -132,13 +134,23 @@ class Server(object):
             code = disassemble(self.storage, candidates[int(pick)])
         else:
             code = match_code(dump, candidates, self.storage)
+        templates = self.storage.jitcode_templates
         rows = []
         for block in dump.blocks:
             opcode = code and code.map.get(block.bytecode_pc, None)
             opname = opcode is not None and opcode.__class__.__name__ or None
-            row = {'pc': block.bytecode_pc, 'html': block.html(opname),
+            template = templates.get((opname, int(block is dump.blocks[0])))
+            diff = template is not None and align(template, block) or None
+            handler, handler_line = opname and handler_source(opname) \
+                or ('', 0)
+            hits = set([lineno for fname, lineno, func
+                        in (diff.line_source.values() if diff else [])])
+            row = {'pc': block.bytecode_pc, 'html': block.html(opname, diff),
                    'source': '', 'dis': '', 'lineno': None,
-                   'handler': opname and handler_source(opname) or ''}
+                   'summary': diff is not None and diff.summary() or '',
+                   'template': diff is not None and diff.template_html() or '',
+                   'handler': [(line, handler_line + i in hits)
+                               for i, line in enumerate(handler.splitlines())]}
             if opcode is not None:
                 row['lineno'] = opcode.lineno
                 row['dis'] = '%s %s' % (opname, opcode.argstr)
@@ -290,6 +302,7 @@ def main(argv, run_app=True):
     storage.loop_dict = create_loop_dict(loops)
     storage.jitcode_dumps = parse_jitcode_dumps(filename)
     storage.jitcode_candidates = find_code_objects(filename)
+    storage.jitcode_templates = parse_templates(filename)
     app = OverrideFlask('_jitviewer')
     server = Server(filename, storage)
     app.debug = True

@@ -1,5 +1,6 @@
 import re
 import cgi
+import difflib
 import textwrap
 
 try:
@@ -53,23 +54,186 @@ def folded_operands(block, opname):
     return folded
 
 
+TEMPLATE_HEADER = re.compile(r'^template (\S+) key=(-?\d+) merge_point=(\d+) '
+                             r'regs i=(\d+) r=(\d+) f=(\d+)\s*$')
+PROLOGUE = re.compile(r'^\s*prologue ([irf]) (\d+) <- hole\((\w+)\)\s*$')
+SOURCE = re.compile(r'\t# (\S+):(\d+) (\S+)\s*$')
+EXIT = re.compile(r'^exit \d+\b')
+HOLE = re.compile(r'hole\((\w+)\)')
+WILDCARD = re.compile(r'hole\(\w+\)|'
+                      r'\$(?:ref\(0x[0-9a-fA-F]+\)|-?\d+)')
+COPY_CONST = re.compile(r'^(int_copy|ref_copy|float_copy) (?!%)(\S+) ->')
+KINDS = {'i': 'int_copy', 'r': 'ref_copy', 'f': 'float_copy'}
+
+
+def align_key(text):
+    return WILDCARD.sub('?', COPY_CONST.sub(r'\1 ? ->', text))
+
+
+def hole_values(template_text, residual_text):
+    parts = []
+    names = []
+    pos = 0
+    for match in WILDCARD.finditer(template_text):
+        parts.append(re.escape(template_text[pos:match.start()]))
+        hole = HOLE.match(match.group(0))
+        if hole is not None:
+            names.append(hole.group(1))
+            parts.append(r'(\S+?)')
+        else:
+            parts.append(r'\S+?')
+        pos = match.end()
+    if not names:
+        return {}
+    parts.append(re.escape(template_text[pos:]))
+    match = re.match(''.join(parts) + '$', residual_text)
+    if match is None:
+        return {}
+    return dict(zip(names, match.groups()))
+
+
+class Template(object):
+    def __init__(self, name, key, merge_point, num_regs):
+        self.name = name
+        self.key = key
+        self.merge_point = merge_point
+        self.num_regs = num_regs
+        self.prologue = []
+        self.insns = []
+
+    def all_insns(self):
+        insns = [(None, '%s hole(%s) -> %%%s%d' % (KINDS[kind], hole,
+                                                   kind, index), None, False)
+                 for kind, index, hole in self.prologue]
+        return insns + self.insns
+
+
+def parse_template(lines):
+    templates = {}
+    template = None
+    for line in lines:
+        match = TEMPLATE_HEADER.match(line)
+        if match is not None:
+            template = Template(match.group(1), int(match.group(2)),
+                                int(match.group(3)),
+                                tuple([int(x) for x in match.group(4, 5, 6)]))
+            templates[(template.name, template.merge_point)] = template
+            continue
+        if template is None:
+            continue
+        match = PROLOGUE.match(line)
+        if match is not None:
+            template.prologue.append((match.group(1), int(match.group(2)),
+                                      match.group(3)))
+            continue
+        source = None
+        match = SOURCE.search(line)
+        if match is not None:
+            source = (match.group(1), int(match.group(2)), match.group(3))
+            line = line[:match.start()]
+        match = INSN.match(line)
+        if match is not None:
+            text = match.group(2)
+            template.insns.append((int(match.group(1)), text, source,
+                                   EXIT.match(text) is not None))
+    return templates
+
+
+def parse_templates(filename):
+    log = parse_log_file(filename)
+    templates = {}
+    for section in extract_category(log, 'jit-jitcode-template'):
+        templates.update(parse_template(section.splitlines()))
+    return templates
+
+
+class BlockDiff(object):
+    def __init__(self, template):
+        self.template = template
+        self.holes = {}
+        self.line_holes = {}
+        self.line_source = {}
+        self.matched_template = set()
+        self.added = 0
+
+    @property
+    def folded(self):
+        return len([1 for pos, item in enumerate(self.template.all_insns())
+                    if not item[3] and pos not in self.matched_template])
+
+    def summary(self):
+        parts = []
+        if self.holes:
+            parts.append(u'holes: %s' % u', '.join(sorted(self.holes)))
+        parts.append(u'folded %d' % self.folded)
+        parts.append(u'added %d' % self.added)
+        return u' · '.join(parts)
+
+    def template_html(self):
+        lines = []
+        for pos, item in enumerate(self.template.all_insns()):
+            idx, text, source, is_exit = item
+            text = cgi.escape(text)
+            if not is_exit and pos not in self.matched_template:
+                text = '<span class="jitcode-struck">%s</span>' % text
+            lines.append('%5s: %s' % (idx is None and '-' or idx, text))
+        holes = ' '.join('%s=%s' % (name, cgi.escape(value))
+                         for name, value in sorted(self.holes.items()))
+        if holes:
+            lines.append('holes: ' + holes)
+        return '\n'.join(lines)
+
+
+def align(template, block):
+    diff = BlockDiff(template)
+    titems = [(pos, item) for pos, item in enumerate(template.all_insns())
+              if not item[3]]
+    tkeys = [align_key(item[1]) for pos, item in titems]
+    rkeys = [align_key(text) for pc, text in block.insns]
+    matcher = difflib.SequenceMatcher(None, tkeys, rkeys)
+    matched = 0
+    for i, j, size in matcher.get_matching_blocks():
+        for offset in range(size):
+            pos, (idx, text, source, is_exit) = titems[i + offset]
+            pc, residual = block.insns[j + offset]
+            diff.matched_template.add(pos)
+            matched += 1
+            if source is not None:
+                diff.line_source[pc] = source
+            values = hole_values(text, residual)
+            if values:
+                diff.holes.update(values)
+                diff.line_holes[pc] = set(values.values())
+    diff.added = len(block.insns) - matched
+    return diff
+
+
 class Block(object):
     def __init__(self, bytecode_pc, insns):
         self.bytecode_pc = bytecode_pc
         self.insns = insns
 
-    def html(self, opname=None):
-        folded = folded_operands(self, opname)
-
-        def span(match):
-            cls = match.group(0) in folded and 'jitcode-folded' \
-                or 'jitcode-const'
-            return '<span class="%s">%s</span>' % (cls, match.group(0))
+    def html(self, opname=None, diff=None):
+        folded = diff is None and folded_operands(self, opname) or set()
 
         lines = []
         for pc, text in self.insns:
-            lines.append('%5d: %s' % (pc, CONST.sub(span, cgi.escape(text))))
-        return '\n'.join(lines)
+            if diff is not None:
+                folded = diff.line_holes.get(pc, set())
+
+            def span(match, folded=folded):
+                cls = match.group(0) in folded and 'jitcode-folded' \
+                    or 'jitcode-const'
+                return '<span class="%s">%s</span>' % (cls, match.group(0))
+
+            line = '<span class="jitcode-text">%5d: %s</span>' % (
+                pc, CONST.sub(span, cgi.escape(text)))
+            source = diff is not None and diff.line_source.get(pc) or None
+            if source is not None:
+                line += '<span class="jitcode-src">%s:%d</span>' % (
+                    cgi.escape(source[0].split('/')[-1]), source[1])
+            lines.append('<div class="jitcode-line">%s</div>' % line)
+        return ''.join(lines)
 
 
 class JitCodeDump(object):
@@ -188,7 +352,7 @@ def _extract(source, opname):
         match = header.match(line)
         if match is None:
             if assign.match(line):
-                return line.strip()
+                return line.strip(), i + 1
             continue
         indent = len(match.group(1))
         start = i
@@ -206,7 +370,7 @@ def _extract(source, opname):
             lines.pop()
         truncated = len(lines) > HANDLER_LINES
         text = textwrap.dedent('\n'.join(lines[:HANDLER_LINES]))
-        return truncated and text + '\n...' or text
+        return truncated and text + '\n...' or text, start + 1
     return None
 
 
@@ -214,7 +378,7 @@ def handler_source(opname):
     if opname not in _handlers:
         source = pyopcode_source()
         _handlers[opname] = source and _extract(source, opname) \
-            or '(no handler)'
+            or ('(no handler)', 0)
     return _handlers[opname]
 
 

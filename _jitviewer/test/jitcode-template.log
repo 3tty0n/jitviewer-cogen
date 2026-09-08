@@ -1,0 +1,52 @@
+[1fe3d41] {jit-jitcode-template
+template LOAD_CONST key=100 merge_point=0 regs i=7 r=7 f=1
+  0: pe_bailout_point 54 [hole(pc), %i0] [hole(pycode)] [] [] [%r1, %r2] []	# pypy/interpreter/pyopcode.py:94 dispatch
+  1: -live- @0
+  2: setfield_vable_i %r1 hole(pc) <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>	# pypy/interpreter/pyopcode.py:95 dispatch
+  3: -live- @0
+  4: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_pycode 64> -> %r3	# pypy/interpreter/pyopcode.py:624 LOAD_CONST
+  5: -live- @0
+  6: ref_guard_value %r3
+  7: ref_guard_nonnull %r3
+  8: getfield_gc_r_pure %r3 <FieldP pypy.interpreter.pycode.PyCode.inst_co_consts_w 112 pure> -> %r3	# pypy/interpreter/pyopcode.py:624 LOAD_CONST
+  9: getarrayitem_gc_r_pure %r3 hole(oparg) <ArrayP 8> -> %r3	# pypy/interpreter/pyopcode.py:625 LOAD_CONST
+  10: -live- @0
+  11: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  12: assert_not_none %r3
+  13: -live- @18
+  14: setarrayitem_vable_r %r1 %i1 %r3 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  15: int_add %i1 1 -> %i1
+  16: int_guard_value %i1
+  17: -live- @18
+  18: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>	# pypy/interpreter/pyopcode.py:95 dispatch
+  19: exit 0 [%i1, %r3]
+template LOAD_FAST key=124 merge_point=1 regs i=7 r=7 f=1
+  prologue i 1 <- hole(oparg)
+  0: -live- @0
+  1: int_guard_value %i0
+  2: -live- @0
+  3: jit_merge_point 54 [hole(pc), %i0] [hole(pycode)] [] [] [%r1, %r2] []	# pypy/interpreter/pyopcode.py:94 dispatch
+  4: -live- @0
+  5: setfield_vable_i %r1 hole(pc) <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>	# pypy/interpreter/pyopcode.py:95 dispatch
+  6: -live- @0
+  7: getarrayitem_vable_r %r1 hole(oparg) <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0	# pypy/interpreter/pyopcode.py:611 LOAD_FAST
+  8: -live- @5
+  9: goto_if_not_ptr_iszero %r0 L80
+  10: ref_copy hole(pycode) -> %r0
+  11: ref_copy %r1 -> %r3
+  12: inline_call_ir_v <JitCode _load_fast_failed__AccessDirect_None> [%i1] [%r1]
+  13: -live- @10
+  14: raise $ref(0x10383fc68)
+  15: int_copy 3 -> %i1
+  16: ref_copy %r1 -> %r3
+  17: -live- @5
+  18: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
+  19: assert_not_none %r0
+  20: -live- @13
+  21: setarrayitem_vable_r %r1 %i1 %r0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
+  22: int_add %i1 1 -> %i1
+  23: -live- @18
+  24: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>	# pypy/interpreter/pyopcode.py:95 dispatch
+  25: ref_copy %r3 -> %r1
+  26: exit 0 [%i1, %r3]
+[1fe3d42] jit-jitcode-template}

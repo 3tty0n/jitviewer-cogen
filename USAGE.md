@@ -17,10 +17,13 @@ branch. Python 2 only (run everything with `pypy2` or `python2`).
 
     cd path/to/benchmarks/own
     PYPY_COGEN_THRESHOLD=1 \
-    PYPYLOG=jit-log-opt,jit-backend-counts,jit-jitcode-dump:fib.log \
+    PYPYLOG=jit-log-opt,jit-backend-counts,jit-jitcode-dump,jit-jitcode-template:fib.log \
         pypy-cogen-c fib.py -n 3
 
 - `jit-jitcode-dump` carries the residual JitCode.
+- `jit-jitcode-template` carries the per-opcode cogen templates, emitted
+  once per process; without it the JitCode still renders, using the older
+  constant-folding heuristic for the highlighting.
 - `jit-log-opt` carries the code objects used to align the dump with the
   Python source and bytecode; without it the JitCode still renders but has
   no source column.
@@ -58,6 +61,18 @@ bytecode:
 | handler | the RPython method for that opcode from `pyopcode.py` (toggle with the checkbox above the table) |
 | JitCode | the residual block, verbatim from the log |
 
+If the log has `jit-jitcode-template`, each residual block is diffed against
+the template of its opcode (merge point 1 for the first block, 0 for the
+rest) by sequence alignment on a key made of the instruction text with holes
+and `$` constants wildcarded and register names kept. The result gives, per
+block: the holes the cogen filled in (highlighted blue in the JitCode
+column, listed under the PC label), the template lines the cogen folded away
+and the residual lines it added (counted in the same summary line), the
+RPython source position of every residual line that matched a template line
+(grey, right of the line, and highlighted in the handler column), and the
+template itself under the block ("show cogen template" checkbox, collapsed
+by default, folded lines struck through).
+
 Each block starts with register resets, then `pe_bailout_point` (or
 `jit_merge_point` for the first block) whose first green is the bytecode
 offset, then `setfield_vable_i ... inst_last_instr`, the specialised body,
@@ -81,7 +96,8 @@ page lists the candidates as `?code=<n>` links to pick one by hand.
     PYTHONPATH=$PWD:path/to/pypy-cogen pypy2 -m pytest _jitviewer/test/test_jitcodeparser.py -q
 
 `_jitviewer/test/jitcode-dump.log` is a fixture holding the `fib` dump
-(22 blocks).
+(22 blocks); `_jitviewer/test/jitcode-template.log` is a hand-written
+template section for its `LOAD_FAST` and `LOAD_CONST` blocks.
 
 ## Known limits
 

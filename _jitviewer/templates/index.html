@@ -47,7 +47,7 @@
   </div>
   {% if jitcodes %}
   <div id="jitcodes">
-    <h2>Residual JitCode dumps</h2>
+    <h2>Residual JitCode dumps{% if templates %} ({{ templates }} templates){% endif %}</h2>
     <ul>
       {% for dump in jitcodes %}
       <li><a href="/jitcode/{{ loop.index0 }}">{{ dump.name }}</a>

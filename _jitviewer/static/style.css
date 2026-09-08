@@ -304,3 +304,42 @@ td.jitcode-handler {
 #show-handler:not(:checked) ~ table .jitcode-handler {
     display: none;
 }
+
+.jitcode-line {
+    display: flex;
+    justify-content: space-between;
+    white-space: pre;
+}
+
+.jitcode-text {
+    white-space: pre;
+}
+
+.jitcode-src {
+    color: #999;
+    padding-left: 12px;
+    white-space: nowrap;
+}
+
+.jitcode-body {
+    overflow-x: auto;
+}
+
+.jitcode-struck {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.jitcode-hit {
+    background: #fdf3c8;
+}
+
+pre.jitcode-template {
+    border-top: 1px dashed #cacaca;
+    margin-top: 4px;
+    color: #555;
+}
+
+#show-template:not(:checked) ~ table .jitcode-template {
+    display: none;
+}
