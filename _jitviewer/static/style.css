@@ -280,7 +280,20 @@ td.jitcode-bytecode pre {
 }
 
 .jitcode-const {
+    color: #888;
+}
+
+.jitcode-folded {
     background: #e3f0fb;
     color: #0a5ea8;
     font-weight: bold;
+}
+
+td.jitcode-handler {
+    width: 30em;
+    color: #555;
+}
+
+#show-handler:not(:checked) ~ table .jitcode-handler {
+    display: none;
 }

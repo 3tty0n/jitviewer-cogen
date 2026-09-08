@@ -61,7 +61,7 @@ except ImportError:
 from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 from _jitviewer.jitcodeparser import parse_jitcode_dumps, find_code_objects,\
-     match_code, disassemble, source_line
+     match_code, disassemble, source_line, handler_source
 import _jitviewer
 
 CUTOFF = 30
@@ -134,13 +134,14 @@ class Server(object):
             code = match_code(dump, candidates, self.storage)
         rows = []
         for block in dump.blocks:
-            row = {'pc': block.bytecode_pc, 'html': block.html(),
-                   'source': '', 'dis': '', 'lineno': None}
             opcode = code and code.map.get(block.bytecode_pc, None)
+            opname = opcode is not None and opcode.__class__.__name__ or None
+            row = {'pc': block.bytecode_pc, 'html': block.html(opname),
+                   'source': '', 'dis': '', 'lineno': None,
+                   'handler': opname and handler_source(opname) or ''}
             if opcode is not None:
                 row['lineno'] = opcode.lineno
-                row['dis'] = '%s %s' % (opcode.__class__.__name__,
-                                        opcode.argstr)
+                row['dis'] = '%s %s' % (opname, opcode.argstr)
                 row['source'] = source_line(code, opcode.lineno)
             rows.append(row)
         return flask.render_template('jitcode.html', dump=dump, code=code,

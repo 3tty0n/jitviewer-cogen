@@ -44,9 +44,12 @@ Logs that contain the ``jit-jitcode-dump`` category (emitted by the online
 cogen when it generates a program-specialised JitCode) get an extra section
 on the index page listing every dumped JitCode.  Following such a link opens
 ``/jitcode/<index>``, which shows one row per Python bytecode: on the left
-the source line and the dis-style bytecode, on the right the residual JitCode
-block verbatim, with the constants the cogen folded in from the program
-(bytecode PCs, co_consts indices, the PyCode reference) highlighted.
+the source line and the dis-style bytecode, then the RPython handler for that
+opcode from ``pypy/interpreter/pyopcode.py`` (collapsible with the checkbox
+above the table, needs pypy on the PYTHONPATH), and on the right the residual
+JitCode block verbatim.  Only the constants the cogen actually folded in from
+the program (bytecode PCs, opargs, co_consts indices, the PyCode reference)
+are highlighted; other constants stay grey.
 
 Collect such a log with, for example::
 

@@ -1,5 +1,7 @@
 import os
-from _jitviewer.jitcodeparser import parse_jitcode_dumps
+import pytest
+from _jitviewer.jitcodeparser import parse_jitcode_dumps, folded_operands, \
+     handler_source
 
 LOG = os.path.join(os.path.dirname(__file__), 'jitcode-dump.log')
 
@@ -19,3 +21,32 @@ def test_parse_dump():
     assert 'jit_merge_point' in [text.split(' ')[0]
                                  for pc, text in first.insns]
     assert 'jitcode-const' in first.html()
+
+
+def block_at(pc):
+    dump = parse_jitcode_dumps(LOG)[0]
+    for block in dump.blocks:
+        if block.bytecode_pc == pc:
+            return block
+    raise AssertionError(pc)
+
+
+def test_folded_operands_compare_op():
+    block = block_at(6)
+    assert folded_operands(block, 'COMPARE_OP') == set(
+        ['$6', '$2', '$9', '$ref(0xad64e31a0)'])
+    assert 'jitcode-folded' in block.html('COMPARE_OP')
+
+
+def test_folded_operands_load_const():
+    block = block_at(3)
+    assert folded_operands(block, 'LOAD_CONST') == set(
+        ['$3', '$1', '$ref(0xad64e31a0)'])
+
+
+def test_handler_source():
+    try:
+        import pypy.interpreter.pyopcode
+    except ImportError:
+        pytest.skip('pypy not importable')
+    assert 'def LOAD_FAST' in handler_source('LOAD_FAST')

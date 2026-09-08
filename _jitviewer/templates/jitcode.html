@@ -25,6 +25,8 @@
       {% endif %}
     {% endif %}
   </div>
+  <input type="checkbox" id="show-handler" checked/>
+  <label for="show-handler">show RPython handler</label>
   <table class="jitcode">
     {% for row in rows %}
     <tr>
@@ -33,6 +35,7 @@
         <pre>{{ row.source }}</pre>
         <pre>{{ row.dis }}</pre>
       </td>
+      <td class="jitcode-handler"><pre>{{ row.handler }}</pre></td>
       <td><pre>{{ row.html|safe }}</pre></td>
     </tr>
     {% endfor %}
