@@ -4,7 +4,7 @@ import os.path
 
 script_path = os.path.abspath(__file__)
 pythonpath = os.path.dirname(os.path.dirname(script_path))
-sys.path.append(pythonpath)
+sys.path.insert(0, pythonpath)
 
 # Check we are running with PyPy first.
 if not '__pypy__' in sys.builtin_module_names:

@@ -257,7 +257,14 @@ h1 {
 
 table.jitcode {
     border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
+}
+
+table.jitcode td pre {
+    margin: 0;
+    white-space: pre;
+    overflow-x: auto;
 }
 
 table.jitcode td {
@@ -267,11 +274,11 @@ table.jitcode td {
 }
 
 td.jitcode-bytecode {
-    width: 30em;
+    width: 22%;
 }
 
-td.jitcode-bytecode pre {
-    margin: 0;
+td.jitcode-insns {
+    width: 44%;
 }
 
 .jitcode-pc {
@@ -290,7 +297,7 @@ td.jitcode-bytecode pre {
 }
 
 td.jitcode-handler {
-    width: 30em;
+    width: 34%;
     color: #555;
 }
 
