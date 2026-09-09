@@ -8,6 +8,13 @@ try:
 except ImportError:
     from pypy.tool.logparser import parse_log_file, extract_category
 
+try:
+    from pygments import highlight as _pygments_highlight
+    from pygments.lexers import PythonLexer
+    from pygments.formatters import HtmlFormatter
+except ImportError:
+    _pygments_highlight = None
+
 HEADER = re.compile(r'^jitcode (\S+): (\d+) bytes, '
                     r'regs i=(\d+) r=(\d+) f=(\d+), '
                     r'consts i=(\d+) r=(\d+) f=(\d+)\s*$')
@@ -15,7 +22,6 @@ INSN = re.compile(r'^\s*(\d+): (.*?)\s*$')
 BLOCK_START = re.compile(r'^(?:pe_bailout_point|jit_merge_point) '
                          r'\d+ \[\$(\d+)[,\]].*?\[(\$ref\(0x[0-9a-f]+\))?\]')
 RESET = re.compile(r'^(?:int_copy 0|ref_copy \$ref\(0x0\)) ->')
-CONST = re.compile(r'\$(?:ref\(0x[0-9a-fA-F]+\)|-?\d+)')
 CODE_OBJECT = re.compile(r'<code object (\w+)[,.] file \'([^\']+)\'[,.] '
                          r'line (\d+)>')
 GREENS = re.compile(r'^(?:pe_bailout_point|jit_merge_point) \d+ '
@@ -27,6 +33,81 @@ CALL = re.compile(r'^(?:inline_call|residual_call)\S*\s+<JitCode ([^>]+)>'
 GETARRAY = re.compile(r'^getarrayitem_gc_r_pure %\w+ (\$-?\d+)')
 CONST_ARRAY_FIELDS = ('inst_co_consts_w', 'inst_co_names_w', 'inst_fastlocals')
 INT_CONST = re.compile(r'\$-?\d+')
+
+
+_PY_LEXER = None
+_PY_FORMATTER = None
+
+
+def highlight_python(text):
+    """Pygments-highlight RPython/Python source, one HTML string per line."""
+    if _pygments_highlight is None:
+        return [cgi.escape(line) for line in text.splitlines()]
+    global _PY_LEXER, _PY_FORMATTER
+    if _PY_LEXER is None:
+        _PY_LEXER = PythonLexer()
+        _PY_FORMATTER = HtmlFormatter(nowrap=True)
+    html = _pygments_highlight(text, _PY_LEXER, _PY_FORMATTER)
+    lines = html.split('\n')
+    nlines = len(text.splitlines())
+    while len(lines) > nlines and lines and not lines[-1].strip():
+        lines.pop()
+    return lines
+
+
+TOKEN = re.compile(
+    r'(?P<hole>hole\(\w+\))'
+    r'|(?P<descr><[^<>]*>)'
+    r'|(?P<label>\bL\d+:?)'
+    r'|(?P<live>-live-(?: @\d+)?)'
+    r'|(?P<reg>%[irf]\d+)'
+    r'|(?P<const>\$ref\((?:[^()]|\([^()]*\))*\)|\$-?\d+|\b\d+\b)'
+    r'|(?P<op>[A-Za-z_]\w*)')
+CONTROL_OP = re.compile(
+    r'^(goto(_if_not\w*)?|pe_bailout_point|jit_merge_point|exit\w*|'
+    r'\w*_return)$')
+PC_PREFIX = re.compile(r'^(\s*)((?:-|\d+):)')
+
+
+def highlight_insn(text, folded=None):
+    """Colorize one jitcode instruction line into <span class="jc-*"> tokens."""
+    folded = folded or ()
+    src_match = SOURCE.search(text)
+    if src_match is not None:
+        head, src = text[:src_match.start()], text[src_match.start():]
+    else:
+        head, src = text, ''
+    pc_match = PC_PREFIX.match(head)
+    if pc_match is not None:
+        ws, pcnum = pc_match.group(1), pc_match.group(2)
+        body = head[pc_match.end():]
+    else:
+        ws, pcnum, body = '', '', head
+    out = []
+    if ws:
+        out.append(cgi.escape(ws))
+    if pcnum:
+        out.append('<span class="jc-pc">%s</span>' % cgi.escape(pcnum))
+    pos = 0
+    for m in TOKEN.finditer(body):
+        if m.start() > pos:
+            out.append(cgi.escape(body[pos:m.start()]))
+        kind = m.lastgroup
+        value = m.group(0)
+        cls = 'jc-' + kind
+        if kind == 'op' and CONTROL_OP.match(value):
+            cls += ' jc-control'
+        elif kind == 'hole':
+            cls += ' jitcode-folded'
+        elif kind == 'const':
+            cls += value in folded and ' jitcode-folded' or ' jitcode-const'
+        out.append('<span class="%s">%s</span>' % (cls, cgi.escape(value)))
+        pos = m.end()
+    if pos < len(body):
+        out.append(cgi.escape(body[pos:]))
+    if src:
+        out.append('<span class="jc-src">%s</span>' % cgi.escape(src))
+    return ''.join(out)
 
 
 def folded_operands(block, opname):
@@ -219,10 +300,11 @@ class BlockDiff(object):
         lines = []
         for pos, item in enumerate(self.template.all_insns()):
             idx, text, source, is_exit = item
-            text = cgi.escape(text)
+            line_text = '%5s: %s' % (idx is None and '-' or idx, text)
+            html = highlight_insn(line_text)
             if not is_exit and pos not in self.matched_template:
-                text = '<span class="jitcode-struck">%s</span>' % text
-            lines.append('%5s: %s' % (idx is None and '-' or idx, text))
+                html = '<span class="jitcode-struck">%s</span>' % html
+            lines.append(html)
         holes = ' '.join('%s=%s' % (name, cgi.escape(value))
                          for name, value in sorted(self.holes.items()))
         if holes:
@@ -260,20 +342,15 @@ class Block(object):
         self.insns = insns
 
     def html(self, opname=None, diff=None):
-        folded = diff is None and folded_operands(self, opname) or set()
+        default_folded = diff is None and folded_operands(self, opname) or set()
 
         lines = []
         for pc, text in self.insns:
-            if diff is not None:
-                folded = diff.line_holes.get(pc, set())
-
-            def span(match, folded=folded):
-                cls = match.group(0) in folded and 'jitcode-folded' \
-                    or 'jitcode-const'
-                return '<span class="%s">%s</span>' % (cls, match.group(0))
-
-            line = '<span class="jitcode-text">%5d: %s</span>' % (
-                pc, CONST.sub(span, cgi.escape(text)))
+            folded = diff.line_holes.get(pc, set()) if diff is not None \
+                else default_folded
+            line_text = '%5d: %s' % (pc, text)
+            line = '<span class="jitcode-text">%s</span>' % \
+                highlight_insn(line_text, folded)
             source = diff is not None and diff.line_source.get(pc) or None
             if source is not None:
                 line += '<span class="jitcode-src">%s:%d</span>' % (

@@ -1,7 +1,7 @@
 import os
 import pytest
 from _jitviewer.jitcodeparser import parse_jitcode_dumps, folded_operands, \
-     handler_source, parse_templates, align
+     handler_source, parse_templates, align, highlight_insn
 
 LOG = os.path.join(os.path.dirname(__file__), 'jitcode-dump.log')
 TEMPLATE_LOG = os.path.join(os.path.dirname(__file__), 'jitcode-template.log')
@@ -95,6 +95,26 @@ def test_align_load_const():
     html = block_at(3).html('LOAD_CONST', diff)
     assert 'jitcode-folded">$1<' in html
     assert 'rlist.py:695' in html
+
+
+def test_highlight_insn():
+    html = highlight_insn(
+        "3: setfield_gc_i %i0 $ref(0xad64e31a0) <FieldS pypy.foo.Bar.x 8>")
+    assert 'class="jc-pc">3:<' in html
+    assert 'class="jc-op">setfield_gc_i<' in html
+    assert 'class="jc-reg">%i0<' in html
+    assert 'class="jc-const jitcode-const">$ref(0xad64e31a0)<' in html
+    assert 'class="jc-descr">&lt;FieldS pypy.foo.Bar.x 8&gt;<' in html
+
+
+def test_highlight_insn_template_source():
+    html = highlight_insn(
+        "20: int_copy hole(pc) -> %i0"
+        "\t# pypy/interpreter/pyopcode.py:273 interp_step")
+    assert 'class="jc-hole jitcode-folded">hole(pc)<' in html
+    assert '<span class="jc-src">\t# pypy/interpreter/pyopcode.py:273' \
+        ' interp_step</span>' in html
+    assert html.count('jc-src') == 1
 
 
 def test_align_load_fast_merge_point():

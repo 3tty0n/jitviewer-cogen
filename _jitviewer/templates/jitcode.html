@@ -28,7 +28,7 @@
   </div>
   <input type="checkbox" id="show-handler" checked/>
   <label for="show-handler">show RPython handler</label>
-  <input type="checkbox" id="show-template"/>
+  <input type="checkbox" id="show-template" checked/>
   <label for="show-template">show cogen template</label>
   <table class="jitcode">
     {% for row in rows %}
@@ -39,9 +39,10 @@
         <pre>{{ row.source }}</pre>
         <pre>{{ row.dis }}</pre>
       </td>
-      <td class="jitcode-handler"><pre>{% for line, hit in row.handler %}{% if hit %}<span class="jitcode-hit">{{ line }}</span>{% else %}{{ line }}{% endif %}
+      <td class="jitcode-handler highlight"><pre>{% for line, hit in row.handler %}<span class="line{% if hit %} jitcode-hit{% endif %}">{{ line|safe }}</span>
 {% endfor %}</pre></td>
       <td class="jitcode-insns">
+        <div class="jitcode-hint">{{ row.template_hint }}</div>
         <div class="jitcode-body">{{ row.html|safe }}</div>
         {% if row.template %}<pre class="jitcode-template">{{ row.template|safe }}</pre>{% endif %}
       </td>

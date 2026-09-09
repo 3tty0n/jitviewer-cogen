@@ -62,7 +62,7 @@ from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 from _jitviewer.jitcodeparser import parse_jitcode_dumps, find_code_objects,\
      match_code, disassemble, source_line, handler_source, parse_templates,\
-     align
+     align, highlight_python
 import _jitviewer
 
 CUTOFF = 30
@@ -145,12 +145,22 @@ class Server(object):
                 or ('', 0)
             hits = set([lineno for fname, lineno, func
                         in (diff.line_source.values() if diff else [])])
+            if template is not None:
+                template_hint = 'template: %s merge_point=%d ' \
+                    '(%d insns, %d folded)' % (template.name,
+                                               template.merge_point,
+                                               len(template.all_insns()),
+                                               diff.folded)
+            else:
+                template_hint = 'template: none'
+            handler_lines = highlight_python(handler)
             row = {'pc': block.bytecode_pc, 'html': block.html(opname, diff),
                    'source': '', 'dis': '', 'lineno': None,
                    'summary': diff is not None and diff.summary() or '',
                    'template': diff is not None and diff.template_html() or '',
+                   'template_hint': template_hint,
                    'handler': [(line, handler_line + i in hits)
-                               for i, line in enumerate(handler.splitlines())]}
+                               for i, line in enumerate(handler_lines)]}
             if opcode is not None:
                 row['lineno'] = opcode.lineno
                 row['dis'] = '%s %s' % (opname, opcode.argstr)

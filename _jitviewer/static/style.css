@@ -1,5 +1,5 @@
 /*HTML5 Reset*/
-a,abbr,address,article,aside,audio,b,blockquote,body,canvas,caption,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,p,pre,q,samp,section,small,span,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,ul,var,video{ margin:0; padding:0; border:0; font-size:100%; font-weight:inherit; font-style:inherit; vertical-align:baseline}article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{ display:block}a,ins,del{ text-decoration:none}ul,ol{ list-style:none}table{ border-spacing:0; border-collapse:collapse}caption,th{ text-align:left}q:after,q:before{ content:”“}
+a,abbr,address,article,aside,audio,b,blockquote,body,canvas,caption,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,p,pre,q,samp,section,small,span,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,ul,var,video{ margin:0; padding:0; border:0; font-size:100%; font-weight:inherit; font-style:inherit; vertical-align:baseline}article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{ display:block}a,ins,del{ text-decoration:none}ul,ol{ list-style:none}table{ border-spacing:0; border-collapse:collapse}caption,th{ text-align:left}q:after,q:before{ content:ï¿½ï¿½}
 /*End of HTML5 Reset*/
 
 /* General Layout & Typography 
@@ -287,7 +287,7 @@ td.jitcode-insns {
 }
 
 .jitcode-const {
-    color: #888;
+    color: #3a8f5a;
 }
 
 .jitcode-folded {
@@ -342,4 +342,43 @@ pre.jitcode-template {
 
 #show-template:not(:checked) ~ table .jitcode-template {
     display: none;
+}
+
+.jitcode-hint {
+    color: #888;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+
+.jc-op {
+    color: #333;
+}
+
+.jc-control {
+    font-weight: bold;
+}
+
+.jc-reg {
+    color: #2a6fb0;
+}
+
+.jc-descr {
+    color: #999;
+}
+
+.jc-label {
+    color: #7d3c98;
+}
+
+.jc-live {
+    color: #bbb;
+}
+
+.jc-src, .jitcode-handler .line .jc-src {
+    color: #999;
+    font-size: 11px;
+}
+
+.jitcode-handler .line {
+    display: block;
 }
