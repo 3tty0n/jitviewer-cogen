@@ -40,7 +40,6 @@ _PY_FORMATTER = None
 
 
 def highlight_python(text):
-    """Pygments-highlight RPython/Python source, one HTML string per line."""
     if _pygments_highlight is None:
         return [cgi.escape(line) for line in text.splitlines()]
     global _PY_LEXER, _PY_FORMATTER
@@ -70,7 +69,6 @@ PC_PREFIX = re.compile(r'^(\s*)((?:-|\d+):)')
 
 
 def highlight_insn(text, folded=None):
-    """Colorize one jitcode instruction line into <span class="jc-*"> tokens."""
     folded = folded or ()
     src_match = SOURCE.search(text)
     if src_match is not None:
@@ -173,7 +171,6 @@ def _collapse_descr(match):
 
 
 def _canon(text):
-    """Normalize template and residual insn text to the same shape."""
     text = text.replace(',', ' ').replace("'", '')
     text = re.sub(r'\bFieldDescr(?=<)', '', text)
     text = KIND_BRACKET.sub('[', text)
@@ -294,7 +291,7 @@ class BlockDiff(object):
             parts.append(u'holes: %s' % u', '.join(sorted(self.holes)))
         parts.append(u'folded %d' % self.folded)
         parts.append(u'added %d' % self.added)
-        return u' · '.join(parts)
+        return ' | '.join(parts)
 
     def template_html(self):
         lines = []

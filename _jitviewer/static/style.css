@@ -380,5 +380,5 @@ pre.jitcode-template {
 }
 
 .jitcode-handler .line {
-    display: block;
+    display: inline;
 }
