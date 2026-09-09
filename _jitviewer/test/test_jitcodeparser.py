@@ -97,6 +97,37 @@ def test_align_load_const():
     assert 'rlist.py:695' in html
 
 
+def test_pairs_load_const():
+    template = parse_templates(TEMPLATE_LOG)[('LOAD_CONST', 0)]
+    block = block_at(3)
+    diff = align(template, block)
+    residual_seen = []
+    template_seen = []
+    for titem, ritem, kind in diff.pairs:
+        assert kind in ('match', 'folded', 'added')
+        if titem is not None:
+            template_seen.append(titem)
+        if ritem is not None:
+            residual_seen.append(ritem)
+        if kind == 'match':
+            assert titem is not None and ritem is not None
+        elif kind == 'folded':
+            assert titem is not None and ritem is None
+        else:
+            assert titem is None and ritem is not None
+    assert residual_seen == block.insns
+    assert template_seen == template.all_insns()
+    boundary_count = len([1 for item in template.all_insns() if item[3]])
+    folded_count = len([1 for t, r, k in diff.pairs if k == 'folded'])
+    added_count = len([1 for t, r, k in diff.pairs if k == 'added'])
+    assert folded_count == diff.folded + boundary_count
+    assert added_count == diff.added
+    bailout = [(t, r) for t, r, k in diff.pairs
+              if k == 'match' and t[1].startswith('pe_bailout_point')]
+    assert len(bailout) == 1
+    assert bailout[0][1][1].startswith('pe_bailout_point')
+
+
 def test_highlight_insn():
     html = highlight_insn(
         "3: setfield_gc_i %i0 $ref(0xad64e31a0) <FieldS pypy.foo.Bar.x 8>")

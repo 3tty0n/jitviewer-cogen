@@ -279,6 +279,7 @@ class BlockDiff(object):
         self.line_source = {}
         self.matched_template = set()
         self.added = 0
+        self.pairs = []
 
     @property
     def folded(self):
@@ -293,43 +294,52 @@ class BlockDiff(object):
         parts.append(u'added %d' % self.added)
         return ' | '.join(parts)
 
-    def template_html(self):
-        lines = []
-        for pos, item in enumerate(self.template.all_insns()):
-            idx, text, source, is_exit = item
-            line_text = '%5s: %s' % (idx is None and '-' or idx, text)
-            html = highlight_insn(line_text)
-            if not is_exit and pos not in self.matched_template:
-                html = '<span class="jitcode-struck">%s</span>' % html
-            lines.append(html)
-        holes = ' '.join('%s=%s' % (name, cgi.escape(value))
-                         for name, value in sorted(self.holes.items()))
-        if holes:
-            lines.append('holes: ' + holes)
-        return '\n'.join(lines)
-
 
 def align(template, block):
     diff = BlockDiff(template)
-    titems = [(pos, item) for pos, item in enumerate(template.all_insns())
-              if not item[3]]
+    allitems = list(enumerate(template.all_insns()))
+    titems = [(pos, item) for pos, item in allitems if not item[3]]
     tkeys = [align_key(item[1]) for pos, item in titems]
     rkeys = [align_key(text) for pc, text in block.insns]
     matcher = difflib.SequenceMatcher(None, tkeys, rkeys)
+    pairs = []
+    emitted = set()
+
+    def emit_boundaries(limit_pos):
+        for pos, item in allitems:
+            if not item[3] or pos in emitted:
+                continue
+            if limit_pos is not None and pos >= limit_pos:
+                break
+            pairs.append((item, None, 'folded'))
+            emitted.add(pos)
+
     matched = 0
-    for i, j, size in matcher.get_matching_blocks():
-        for offset in range(size):
-            pos, (idx, text, source, is_exit) = titems[i + offset]
-            pc, residual = block.insns[j + offset]
-            diff.matched_template.add(pos)
-            matched += 1
-            if source is not None:
-                diff.line_source[pc] = source
-            values = hole_values(text, residual)
-            if values:
-                diff.holes.update(values)
-                diff.line_holes[pc] = set(values.values())
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == 'equal':
+            for offset in range(i2 - i1):
+                pos, (idx, text, source, is_exit) = titems[i1 + offset]
+                emit_boundaries(pos)
+                pc, residual = block.insns[j1 + offset]
+                diff.matched_template.add(pos)
+                matched += 1
+                if source is not None:
+                    diff.line_source[pc] = source
+                values = hole_values(text, residual)
+                if values:
+                    diff.holes.update(values)
+                    diff.line_holes[pc] = set(values.values())
+                pairs.append((titems[i1 + offset][1], (pc, residual), 'match'))
+        else:
+            for offset in range(i1, i2):
+                pos, item = titems[offset]
+                emit_boundaries(pos)
+                pairs.append((item, None, 'folded'))
+            for offset in range(j1, j2):
+                pairs.append((None, block.insns[offset], 'added'))
+    emit_boundaries(None)
     diff.added = len(block.insns) - matched
+    diff.pairs = pairs
     return diff
 
 
@@ -354,6 +364,36 @@ class Block(object):
                     cgi.escape(source[0].split('/')[-1]), source[1])
             lines.append('<div class="jitcode-line">%s</div>' % line)
         return ''.join(lines)
+
+
+def diff_table_html(block, opname, diff):
+    rows = []
+    if diff is None:
+        folded = folded_operands(block, opname)
+        for pc, text in block.insns:
+            line_text = '%5d: %s' % (pc, text)
+            res_html = highlight_insn(line_text, folded)
+            rows.append('<tr><td class="res">%s</td></tr>' % res_html)
+    else:
+        for titem, ritem, kind in diff.pairs:
+            tmpl_html = ''
+            if titem is not None:
+                idx, text, source, is_exit = titem
+                line_text = '%5s: %s' % (idx is None and '-' or idx, text)
+                tmpl_html = highlight_insn(line_text)
+            res_html = ''
+            if ritem is not None:
+                pc, text = ritem
+                line_text = '%5d: %s' % (pc, text)
+                res_html = highlight_insn(line_text, diff.line_holes.get(pc, set()))
+                source = diff.line_source.get(pc)
+                if source is not None:
+                    res_html += '<span class="jitcode-src">%s:%d</span>' % (
+                        cgi.escape(source[0].split('/')[-1]), source[1])
+            rows.append('<tr class="jc-row-%s"><td class="tmpl">%s</td>'
+                        '<td class="res">%s</td></tr>' % (kind, tmpl_html,
+                                                           res_html))
+    return '<table class="jitcode-diff">%s</table>' % ''.join(rows)
 
 
 class JitCodeDump(object):

@@ -62,7 +62,7 @@ from _jitviewer.parser import ParserWithHtmlRepr, FunctionHtml
 from _jitviewer.display import CodeRepr, CodeReprNoFile
 from _jitviewer.jitcodeparser import parse_jitcode_dumps, find_code_objects,\
      match_code, disassemble, source_line, handler_source, parse_templates,\
-     align, highlight_python
+     align, highlight_python, diff_table_html
 import _jitviewer
 
 CUTOFF = 30
@@ -154,10 +154,10 @@ class Server(object):
             else:
                 template_hint = 'template: none'
             handler_lines = highlight_python(handler)
-            row = {'pc': block.bytecode_pc, 'html': block.html(opname, diff),
+            row = {'pc': block.bytecode_pc,
+                   'html': diff_table_html(block, opname, diff),
                    'source': '', 'dis': '', 'lineno': None,
                    'summary': diff is not None and diff.summary() or '',
-                   'template': diff is not None and diff.template_html() or '',
                    'template_hint': template_hint,
                    'handler': [(line, handler_line + i in hits)
                                for i, line in enumerate(handler_lines)]}

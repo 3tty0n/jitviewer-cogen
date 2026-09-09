@@ -44,7 +44,6 @@
       <td class="jitcode-insns">
         <div class="jitcode-hint">{{ row.template_hint }}</div>
         <div class="jitcode-body">{{ row.html|safe }}</div>
-        {% if row.template %}<pre class="jitcode-template">{{ row.template|safe }}</pre>{% endif %}
       </td>
     </tr>
     {% endfor %}

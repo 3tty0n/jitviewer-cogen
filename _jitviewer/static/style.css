@@ -274,11 +274,11 @@ table.jitcode td {
 }
 
 td.jitcode-bytecode {
-    width: 22%;
+    width: 16%;
 }
 
 td.jitcode-insns {
-    width: 44%;
+    width: 58%;
 }
 
 .jitcode-pc {
@@ -297,7 +297,7 @@ td.jitcode-insns {
 }
 
 td.jitcode-handler {
-    width: 34%;
+    width: 26%;
     color: #555;
 }
 
@@ -325,22 +325,46 @@ td.jitcode-handler {
     overflow-x: auto;
 }
 
-.jitcode-struck {
-    text-decoration: line-through;
-    color: #999;
-}
-
 .jitcode-hit {
     background: #fdf3c8;
 }
 
-pre.jitcode-template {
-    border-top: 1px dashed #cacaca;
-    margin-top: 4px;
-    color: #555;
+table.jitcode-diff {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
 }
 
-#show-template:not(:checked) ~ table .jitcode-template {
+table.jitcode-diff td {
+    vertical-align: top;
+    white-space: pre;
+    overflow-x: auto;
+    padding: 1px 4px;
+}
+
+table.jitcode-diff td.tmpl,
+table.jitcode-diff td.res {
+    width: 50%;
+}
+
+table.jitcode-diff td:only-child {
+    width: 100%;
+}
+
+tr.jc-row-folded {
+    background: #fbe3e3;
+}
+
+tr.jc-row-folded td.tmpl {
+    text-decoration: line-through;
+    color: #999;
+}
+
+tr.jc-row-added {
+    background: #e3fbe7;
+}
+
+#show-template:not(:checked) ~ table td.tmpl {
     display: none;
 }
 
