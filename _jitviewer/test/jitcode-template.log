@@ -1,52 +1,624 @@
 [1fe3d41] {jit-jitcode-template
-template LOAD_CONST key=100 merge_point=0 regs i=7 r=7 f=1
-  0: pe_bailout_point 54 [hole(pc), %i0] [hole(pycode)] [] [] [%r1, %r2] []	# pypy/interpreter/pyopcode.py:94 dispatch
-  1: -live- @0
-  2: setfield_vable_i %r1 hole(pc) <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>	# pypy/interpreter/pyopcode.py:95 dispatch
-  3: -live- @0
-  4: getfield_vable_r %r1 <FieldP pypy.interpreter.pyframe.PyFrame.inst_pycode 64> -> %r3	# pypy/interpreter/pyopcode.py:624 LOAD_CONST
-  5: -live- @0
-  6: ref_guard_value %r3
-  7: ref_guard_nonnull %r3
-  8: getfield_gc_r_pure %r3 <FieldP pypy.interpreter.pycode.PyCode.inst_co_consts_w 112 pure> -> %r3	# pypy/interpreter/pyopcode.py:624 LOAD_CONST
-  9: getarrayitem_gc_r_pure %r3 hole(oparg) <ArrayP 8> -> %r3	# pypy/interpreter/pyopcode.py:625 LOAD_CONST
-  10: -live- @0
-  11: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
-  12: assert_not_none %r3
-  13: -live- @18
-  14: setarrayitem_vable_r %r1 %i1 %r3 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
-  15: int_add %i1 1 -> %i1
-  16: int_guard_value %i1
-  17: -live- @18
-  18: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>	# pypy/interpreter/pyopcode.py:95 dispatch
-  19: exit 0 [%i1, %r3]
-template LOAD_FAST key=124 merge_point=1 regs i=7 r=7 f=1
-  prologue i 1 <- hole(oparg)
-  0: -live- @0
-  1: int_guard_value %i0
-  2: -live- @0
-  3: jit_merge_point 54 [hole(pc), %i0] [hole(pycode)] [] [] [%r1, %r2] []	# pypy/interpreter/pyopcode.py:94 dispatch
-  4: -live- @0
-  5: setfield_vable_i %r1 hole(pc) <FieldS pypy.interpreter.pyframe.PyFrame.inst_last_instr 40>	# pypy/interpreter/pyopcode.py:95 dispatch
-  6: -live- @0
-  7: getarrayitem_vable_r %r1 hole(oparg) <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8> -> %r0	# pypy/interpreter/pyopcode.py:611 LOAD_FAST
-  8: -live- @5
-  9: goto_if_not_ptr_iszero %r0 L80
-  10: ref_copy hole(pycode) -> %r0
-  11: ref_copy %r1 -> %r3
-  12: inline_call_ir_v <JitCode _load_fast_failed__AccessDirect_None> [%i1] [%r1]
-  13: -live- @10
-  14: raise $ref(0x10383fc68)
-  15: int_copy 3 -> %i1
-  16: ref_copy %r1 -> %r3
-  17: -live- @5
-  18: getfield_vable_i %r1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72> -> %i1
-  19: assert_not_none %r0
-  20: -live- @13
-  21: setarrayitem_vable_r %r1 %i1 %r0 <FieldP pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w 56> <ArrayP 8>
-  22: int_add %i1 1 -> %i1
-  23: -live- @18
-  24: setfield_vable_i %r1 %i1 <FieldS pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth 72>	# pypy/interpreter/pyopcode.py:95 dispatch
-  25: ref_copy %r3 -> %r1
-  26: exit 0 [%i1, %r3]
-[1fe3d42] jit-jitcode-template}
+template BINARY_ADD key=23 merge_point=0 regs i=6 r=3 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: inline_call_ir_v <JitCode 'int_BINARY_ADD__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:341 interp_step
+  5: -live-	# pypy/interpreter/pyopcode.py:341 interp_step
+  6: L2:
+  7: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  8: ---
+template BINARY_ADD key=23 merge_point=1 regs i=6 r=3 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: inline_call_ir_v <JitCode 'int_BINARY_ADD__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:341 interp_step
+  9: -live-	# pypy/interpreter/pyopcode.py:341 interp_step
+  10: L2:
+  11: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  12: ---
+template BINARY_SUBTRACT key=24 merge_point=0 regs i=6 r=3 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: inline_call_ir_v <JitCode 'int_BINARY_SUB__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:363 interp_step
+  5: -live-	# pypy/interpreter/pyopcode.py:363 interp_step
+  6: L2:
+  7: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  8: ---
+template BINARY_SUBTRACT key=24 merge_point=1 regs i=6 r=3 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: inline_call_ir_v <JitCode 'int_BINARY_SUB__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:363 interp_step
+  9: -live-	# pypy/interpreter/pyopcode.py:363 interp_step
+  10: L2:
+  11: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  12: ---
+template RETURN_VALUE key=83 merge_point=0 regs i=6 r=6 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: -live-	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  5: getfield_vable_r %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_lastblock> -> %r0	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  6: -live-	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  7: goto_if_not_ptr_iszero %r0, L2	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  8: ref_copy hole(pycode) -> %r0	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  9: ref_copy %r1 -> %r3	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  10: L3:
+  11: setfield_gc_i %r1, $True, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_frame_finished_execution>	# pypy/interpreter/pyopcode.py:279 interp_step
+  12: -live-	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  13: int_guard_value $0	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  14: -live-	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  15: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  16: int_invert $0 -> %i2	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  17: int_add %i1, %i2 -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  18: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  19: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  20: assert_not_none %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  21: ref_return %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  22: ---	# pypy/interpreter/pyframe.py:428 peekvalue
+  23: L2:	# pypy/interpreter/pyframe.py:428 peekvalue
+  24: ref_copy %r1 -> %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  25: ref_copy hole(pycode) -> %r3	# pypy/interpreter/pyframe.py:428 peekvalue
+  26: ref_copy %r1 -> %r4	# pypy/interpreter/pyframe.py:428 peekvalue
+  27: L4:
+  28: -live-	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  29: getfield_vable_i %r0, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  30: int_sub %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  31: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  32: getarrayitem_vable_r %r0, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r5	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  33: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  34: setarrayitem_vable_r %r0, %i1, $ref(GCREF (gcopaque)), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  35: -live-	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  36: setfield_vable_i %r0, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  37: assert_not_none %r5	# pypy/interpreter/pyframe.py:351 popvalue
+  38: inline_call_ir_r <JitCode 'unrollstack__AccessDirect_None'>, I[$1], R[%r1] -> %r0	# pypy/interpreter/pyopcode.py:282 interp_step
+  39: -live-	# pypy/interpreter/pyopcode.py:282 interp_step
+  40: -live-	# pypy/interpreter/pyopcode.py:282 interp_step
+  41: goto_if_not_ptr_iszero %r0, L5	# pypy/interpreter/pyopcode.py:282 interp_step
+  42: L6:
+  43: -live-	# pypy/interpreter/pyframe.py:328 pushvalue
+  44: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:328 pushvalue
+  45: assert_not_none %r5	# pypy/interpreter/pyframe.py:329 pushvalue
+  46: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  47: setarrayitem_vable_r %r1, %i1, %r5, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  48: int_add %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:330 pushvalue
+  49: -live-	# pypy/interpreter/pyframe.py:330 pushvalue
+  50: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:330 pushvalue
+  51: -live-	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  52: int_guard_value $0	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  53: -live-	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  54: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  55: int_invert $0 -> %i2	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  56: int_add %i1, %i2 -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  57: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  58: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  59: assert_not_none %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  60: ref_return %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  61: ---	# pypy/interpreter/pyframe.py:428 peekvalue
+  62: L5:	# pypy/interpreter/pyframe.py:428 peekvalue
+  63: L7:
+  64: new_with_vtable <rpython.jit.backend.llsupport.descr.SizeDescr object at 0x0000000aede2ba28> -> %r2	# pypy/interpreter/pyopcode.py:287 interp_step
+  65: setfield_gc_r %r2, %r5, FieldDescr<pypy.interpreter.pyopcode.SReturnValue.inst_w_returnvalue>	# pypy/interpreter/pyopcode.py:1508 __init__
+  66: -live-	# pypy/interpreter/pyopcode.py:288 interp_step
+  67: guard_class %r0 -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  68: getfield_raw_i %i1, FieldDescr<pypy.interpreter.pyopcode.FrameBlock_vtable.cls_handle> -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  69: getfield_raw_i %i1, FieldDescr<specfunc.variant0> -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  70: -live-	# pypy/interpreter/pyopcode.py:288 interp_step
+  71: int_guard_value %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  72: residual_call_r_i %i1, <IndirectCallTargets>, R[%r0, %r1, %r2], <CallDescr(rrr) EF=7> -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  73: -live-	# pypy/interpreter/pyopcode.py:288 interp_step
+  74: hint_force_virtualizable %r1	# pypy/interpreter/pyopcode.py:71 _residual_exit
+  75: new_with_vtable <rpython.jit.backend.llsupport.descr.SizeDescr object at 0x0000000aeda2e988> -> %r0	# pypy/interpreter/pyopcode.py:72 _residual_exit
+  76: setfield_gc_i %r0, %i1, FieldDescr<pypy.interpreter.pyframe.W_ResidualExit.inst_next_instr>	# pypy/interpreter/pyframe.py:52 __init__
+  77: ref_return %r0	# pypy/interpreter/pyframe.py:52 __init__
+  78: ---	# pypy/interpreter/pyframe.py:52 __init__
+template RETURN_VALUE key=83 merge_point=1 regs i=6 r=6 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: -live-	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  9: getfield_vable_r %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_lastblock> -> %r0	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  10: -live-	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  11: goto_if_not_ptr_iszero %r0, L2	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  12: ref_copy hole(pycode) -> %r0	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  13: ref_copy %r1 -> %r3	# pypy/interpreter/pyframe.py:189 blockstack_non_empty
+  14: L3:
+  15: setfield_gc_i %r1, $True, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_frame_finished_execution>	# pypy/interpreter/pyopcode.py:279 interp_step
+  16: -live-	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  17: int_guard_value $0	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  18: -live-	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  19: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  20: int_invert $0 -> %i2	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  21: int_add %i1, %i2 -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  22: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  23: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  24: assert_not_none %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  25: ref_return %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  26: ---	# pypy/interpreter/pyframe.py:428 peekvalue
+  27: L2:	# pypy/interpreter/pyframe.py:428 peekvalue
+  28: ref_copy %r1 -> %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  29: ref_copy hole(pycode) -> %r3	# pypy/interpreter/pyframe.py:428 peekvalue
+  30: ref_copy %r1 -> %r4	# pypy/interpreter/pyframe.py:428 peekvalue
+  31: L4:
+  32: -live-	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  33: getfield_vable_i %r0, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  34: int_sub %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  35: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  36: getarrayitem_vable_r %r0, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r5	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  37: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  38: setarrayitem_vable_r %r0, %i1, $ref(GCREF (gcopaque)), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  39: -live-	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  40: setfield_vable_i %r0, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  41: assert_not_none %r5	# pypy/interpreter/pyframe.py:351 popvalue
+  42: inline_call_ir_r <JitCode 'unrollstack__AccessDirect_None'>, I[$1], R[%r1] -> %r0	# pypy/interpreter/pyopcode.py:282 interp_step
+  43: -live-	# pypy/interpreter/pyopcode.py:282 interp_step
+  44: -live-	# pypy/interpreter/pyopcode.py:282 interp_step
+  45: goto_if_not_ptr_iszero %r0, L5	# pypy/interpreter/pyopcode.py:282 interp_step
+  46: L6:
+  47: -live-	# pypy/interpreter/pyframe.py:328 pushvalue
+  48: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:328 pushvalue
+  49: assert_not_none %r5	# pypy/interpreter/pyframe.py:329 pushvalue
+  50: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  51: setarrayitem_vable_r %r1, %i1, %r5, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  52: int_add %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:330 pushvalue
+  53: -live-	# pypy/interpreter/pyframe.py:330 pushvalue
+  54: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:330 pushvalue
+  55: -live-	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  56: int_guard_value $0	# pypy/interpreter/pyframe.py:431 peekvalue_maybe_none
+  57: -live-	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  58: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  59: int_invert $0 -> %i2	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  60: int_add %i1, %i2 -> %i1	# pypy/interpreter/pyframe.py:432 peekvalue_maybe_none
+  61: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  62: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  63: assert_not_none %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  64: ref_return %r0	# pypy/interpreter/pyframe.py:428 peekvalue
+  65: ---	# pypy/interpreter/pyframe.py:428 peekvalue
+  66: L5:	# pypy/interpreter/pyframe.py:428 peekvalue
+  67: L7:
+  68: new_with_vtable <rpython.jit.backend.llsupport.descr.SizeDescr object at 0x0000000aede2ba28> -> %r2	# pypy/interpreter/pyopcode.py:287 interp_step
+  69: setfield_gc_r %r2, %r5, FieldDescr<pypy.interpreter.pyopcode.SReturnValue.inst_w_returnvalue>	# pypy/interpreter/pyopcode.py:1508 __init__
+  70: -live-	# pypy/interpreter/pyopcode.py:288 interp_step
+  71: guard_class %r0 -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  72: getfield_raw_i %i1, FieldDescr<pypy.interpreter.pyopcode.FrameBlock_vtable.cls_handle> -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  73: getfield_raw_i %i1, FieldDescr<specfunc.variant0> -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  74: -live-	# pypy/interpreter/pyopcode.py:288 interp_step
+  75: int_guard_value %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  76: residual_call_r_i %i1, <IndirectCallTargets>, R[%r0, %r1, %r2], <CallDescr(rrr) EF=7> -> %i1	# pypy/interpreter/pyopcode.py:288 interp_step
+  77: -live-	# pypy/interpreter/pyopcode.py:288 interp_step
+  78: hint_force_virtualizable %r1	# pypy/interpreter/pyopcode.py:71 _residual_exit
+  79: new_with_vtable <rpython.jit.backend.llsupport.descr.SizeDescr object at 0x0000000aeda2e988> -> %r0	# pypy/interpreter/pyopcode.py:72 _residual_exit
+  80: setfield_gc_i %r0, %i1, FieldDescr<pypy.interpreter.pyframe.W_ResidualExit.inst_next_instr>	# pypy/interpreter/pyframe.py:52 __init__
+  81: ref_return %r0	# pypy/interpreter/pyframe.py:52 __init__
+  82: ---	# pypy/interpreter/pyframe.py:52 __init__
+template LOAD_CONST key=100 merge_point=0 regs i=6 r=4 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: -live-	# pypy/interpreter/pyframe.py:591 getcode
+  5: getfield_vable_r %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_pycode> -> %r3	# pypy/interpreter/pyframe.py:591 getcode
+  6: -live-	# pypy/interpreter/pyframe.py:591 getcode
+  7: ref_guard_value %r3	# pypy/interpreter/pyframe.py:591 getcode
+  8: getfield_gc_r_pure %r3, FieldDescr<pypy.interpreter.pycode.PyCode.inst_co_consts_w> -> %r3	# pypy/interpreter/pyopcode.py:589 getconstant_w
+  9: getarrayitem_gc_r_pure %r3, hole(oparg), <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r3	# rpython/rtyper/rlist.py:695 ll_getitem_nonneg
+  10: -live-	# pypy/interpreter/pyframe.py:328 pushvalue
+  11: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:328 pushvalue
+  12: assert_not_none %r3	# pypy/interpreter/pyframe.py:329 pushvalue
+  13: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  14: setarrayitem_vable_r %r1, %i1, %r3, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  15: int_add %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:330 pushvalue
+  16: -live-	# pypy/interpreter/pyframe.py:330 pushvalue
+  17: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:330 pushvalue
+  18: L2:
+  19: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  20: ---
+template LOAD_CONST key=100 merge_point=1 regs i=6 r=4 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: -live-	# pypy/interpreter/pyframe.py:591 getcode
+  9: getfield_vable_r %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_pycode> -> %r3	# pypy/interpreter/pyframe.py:591 getcode
+  10: -live-	# pypy/interpreter/pyframe.py:591 getcode
+  11: ref_guard_value %r3	# pypy/interpreter/pyframe.py:591 getcode
+  12: getfield_gc_r_pure %r3, FieldDescr<pypy.interpreter.pycode.PyCode.inst_co_consts_w> -> %r3	# pypy/interpreter/pyopcode.py:589 getconstant_w
+  13: getarrayitem_gc_r_pure %r3, hole(oparg), <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r3	# rpython/rtyper/rlist.py:695 ll_getitem_nonneg
+  14: -live-	# pypy/interpreter/pyframe.py:328 pushvalue
+  15: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:328 pushvalue
+  16: assert_not_none %r3	# pypy/interpreter/pyframe.py:329 pushvalue
+  17: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  18: setarrayitem_vable_r %r1, %i1, %r3, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  19: int_add %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:330 pushvalue
+  20: -live-	# pypy/interpreter/pyframe.py:330 pushvalue
+  21: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:330 pushvalue
+  22: L2:
+  23: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  24: ---
+template COMPARE_OP key=107 merge_point=0 regs i=6 r=3 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: inline_call_ir_v <JitCode 'COMPARE_OP__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:393 interp_step
+  5: -live-	# pypy/interpreter/pyopcode.py:393 interp_step
+  6: L2:
+  7: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  8: ---
+template COMPARE_OP key=107 merge_point=1 regs i=6 r=3 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: inline_call_ir_v <JitCode 'COMPARE_OP__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:393 interp_step
+  9: -live-	# pypy/interpreter/pyopcode.py:393 interp_step
+  10: L2:
+  11: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  12: ---
+template POP_JUMP_IF_FALSE key=114 merge_point=0 regs i=6 r=5 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: -live-	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  5: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  6: int_sub %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  7: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  8: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r3	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  9: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  10: setarrayitem_vable_r %r1, %i1, $ref(GCREF (gcopaque)), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  11: -live-	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  12: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  13: assert_not_none %r3	# pypy/interpreter/pyframe.py:351 popvalue
+  14: -live-	# pypy/interpreter/pyframe.py:351 popvalue
+  15: goto_if_not_ptr_nonzero %r3, L2	# pypy/interpreter/pyframe.py:351 popvalue
+  16: int_copy hole(pc) -> %i1	# pypy/interpreter/pyframe.py:351 popvalue
+  17: int_copy hole(oparg) -> %i2	# pypy/interpreter/pyframe.py:351 popvalue
+  18: ref_copy %r3 -> %r0	# pypy/interpreter/pyframe.py:351 popvalue
+  19: ref_copy hole(pycode) -> %r4	# pypy/interpreter/pyframe.py:351 popvalue
+  20: L3:
+  21: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  22: guard_class %r0 -> %i3	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  23: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  24: goto_if_not_int_eq %i3, $ref(object_vtable), L4	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  25: L5:
+  26: getfield_gc_i_pure %r3, FieldDescr<pypy.objspace.std.intobject.W_IntObject.inst_intval> -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  27: int_is_true %i3 -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  28: L6:
+  29: -live-
+  30: goto_if_not %i3, L7
+  31: L8:
+  32: L9:
+  33: exit 1 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  34: ---
+  35: L7:
+  36: L10:
+  37: L11:
+  38: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  39: ---
+  40: L4:
+  41: L12:
+  42: inline_call_r_i <JitCode 'is_true'>, R[%r3] -> %i3	# pypy/objspace/std/objspace.py:617 is_true
+  43: -live-	# pypy/objspace/std/objspace.py:617 is_true
+  44: goto L6
+  45: ---
+  46: L2:
+  47: int_copy hole(pc) -> %i1
+  48: int_copy hole(oparg) -> %i2
+  49: ref_copy hole(pycode) -> %r4
+  50: goto L12
+  51: ---
+template POP_JUMP_IF_FALSE key=114 merge_point=1 regs i=6 r=5 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: -live-	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  9: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  10: int_sub %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  11: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  12: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r3	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  13: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  14: setarrayitem_vable_r %r1, %i1, $ref(GCREF (gcopaque)), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  15: -live-	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  16: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  17: assert_not_none %r3	# pypy/interpreter/pyframe.py:351 popvalue
+  18: -live-	# pypy/interpreter/pyframe.py:351 popvalue
+  19: goto_if_not_ptr_nonzero %r3, L2	# pypy/interpreter/pyframe.py:351 popvalue
+  20: int_copy hole(pc) -> %i1	# pypy/interpreter/pyframe.py:351 popvalue
+  21: int_copy hole(oparg) -> %i2	# pypy/interpreter/pyframe.py:351 popvalue
+  22: ref_copy %r3 -> %r0	# pypy/interpreter/pyframe.py:351 popvalue
+  23: ref_copy hole(pycode) -> %r4	# pypy/interpreter/pyframe.py:351 popvalue
+  24: L3:
+  25: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  26: guard_class %r0 -> %i3	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  27: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  28: goto_if_not_int_eq %i3, $ref(object_vtable), L4	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  29: L5:
+  30: getfield_gc_i_pure %r3, FieldDescr<pypy.objspace.std.intobject.W_IntObject.inst_intval> -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  31: int_is_true %i3 -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  32: L6:
+  33: -live-
+  34: goto_if_not %i3, L7
+  35: L8:
+  36: L9:
+  37: exit 1 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  38: ---
+  39: L7:
+  40: L10:
+  41: L11:
+  42: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  43: ---
+  44: L4:
+  45: L12:
+  46: inline_call_r_i <JitCode 'is_true'>, R[%r3] -> %i3	# pypy/objspace/std/objspace.py:617 is_true
+  47: -live-	# pypy/objspace/std/objspace.py:617 is_true
+  48: goto L6
+  49: ---
+  50: L2:
+  51: int_copy hole(pc) -> %i1
+  52: int_copy hole(oparg) -> %i2
+  53: ref_copy hole(pycode) -> %r4
+  54: goto L12
+  55: ---
+template POP_JUMP_IF_TRUE key=115 merge_point=0 regs i=6 r=5 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: -live-	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  5: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  6: int_sub %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  7: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  8: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r3	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  9: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  10: setarrayitem_vable_r %r1, %i1, $ref(GCREF (gcopaque)), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  11: -live-	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  12: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  13: assert_not_none %r3	# pypy/interpreter/pyframe.py:351 popvalue
+  14: -live-	# pypy/interpreter/pyframe.py:351 popvalue
+  15: goto_if_not_ptr_nonzero %r3, L2	# pypy/interpreter/pyframe.py:351 popvalue
+  16: int_copy hole(pc) -> %i1	# pypy/interpreter/pyframe.py:351 popvalue
+  17: int_copy hole(oparg) -> %i2	# pypy/interpreter/pyframe.py:351 popvalue
+  18: ref_copy %r3 -> %r0	# pypy/interpreter/pyframe.py:351 popvalue
+  19: ref_copy hole(pycode) -> %r4	# pypy/interpreter/pyframe.py:351 popvalue
+  20: L3:
+  21: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  22: guard_class %r0 -> %i3	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  23: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  24: goto_if_not_int_eq %i3, $ref(object_vtable), L4	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  25: L5:
+  26: getfield_gc_i_pure %r3, FieldDescr<pypy.objspace.std.intobject.W_IntObject.inst_intval> -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  27: int_is_true %i3 -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  28: L6:
+  29: -live-
+  30: goto_if_not %i3, L7
+  31: L8:
+  32: L9:
+  33: exit 1 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  34: ---
+  35: L7:
+  36: L10:
+  37: L11:
+  38: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  39: ---
+  40: L4:
+  41: L12:
+  42: inline_call_r_i <JitCode 'is_true'>, R[%r3] -> %i3	# pypy/objspace/std/objspace.py:617 is_true
+  43: -live-	# pypy/objspace/std/objspace.py:617 is_true
+  44: goto L6
+  45: ---
+  46: L2:
+  47: int_copy hole(pc) -> %i1
+  48: int_copy hole(oparg) -> %i2
+  49: ref_copy hole(pycode) -> %r4
+  50: goto L12
+  51: ---
+template POP_JUMP_IF_TRUE key=115 merge_point=1 regs i=6 r=5 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: -live-	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  9: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  10: int_sub %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:354 popvalue_maybe_none
+  11: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  12: getarrayitem_vable_r %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r3	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  13: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  14: setarrayitem_vable_r %r1, %i1, $ref(GCREF (gcopaque)), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  15: -live-	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  16: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:359 popvalue_maybe_none
+  17: assert_not_none %r3	# pypy/interpreter/pyframe.py:351 popvalue
+  18: -live-	# pypy/interpreter/pyframe.py:351 popvalue
+  19: goto_if_not_ptr_nonzero %r3, L2	# pypy/interpreter/pyframe.py:351 popvalue
+  20: int_copy hole(pc) -> %i1	# pypy/interpreter/pyframe.py:351 popvalue
+  21: int_copy hole(oparg) -> %i2	# pypy/interpreter/pyframe.py:351 popvalue
+  22: ref_copy %r3 -> %r0	# pypy/interpreter/pyframe.py:351 popvalue
+  23: ref_copy hole(pycode) -> %r4	# pypy/interpreter/pyframe.py:351 popvalue
+  24: L3:
+  25: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  26: guard_class %r0 -> %i3	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  27: -live-	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  28: goto_if_not_int_eq %i3, $ref(object_vtable), L4	# rpython/rtyper/rclass.py:1175 ll_inst_type
+  29: L5:
+  30: getfield_gc_i_pure %r3, FieldDescr<pypy.objspace.std.intobject.W_IntObject.inst_intval> -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  31: int_is_true %i3 -> %i3	# pypy/objspace/std/objspace.py:616 is_true
+  32: L6:
+  33: -live-
+  34: goto_if_not %i3, L7
+  35: L8:
+  36: L9:
+  37: exit 1 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  38: ---
+  39: L7:
+  40: L10:
+  41: L11:
+  42: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  43: ---
+  44: L4:
+  45: L12:
+  46: inline_call_r_i <JitCode 'is_true'>, R[%r3] -> %i3	# pypy/objspace/std/objspace.py:617 is_true
+  47: -live-	# pypy/objspace/std/objspace.py:617 is_true
+  48: goto L6
+  49: ---
+  50: L2:
+  51: int_copy hole(pc) -> %i1
+  52: int_copy hole(oparg) -> %i2
+  53: ref_copy hole(pycode) -> %r4
+  54: goto L12
+  55: ---
+template LOAD_GLOBAL key=116 merge_point=0 regs i=6 r=3 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: inline_call_ir_v <JitCode 'LOAD_GLOBAL_cached__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:1051 LOAD_GLOBAL
+  5: -live-	# pypy/interpreter/pyopcode.py:1051 LOAD_GLOBAL
+  6: L2:
+  7: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  8: ---
+template LOAD_GLOBAL key=116 merge_point=1 regs i=6 r=3 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: inline_call_ir_v <JitCode 'LOAD_GLOBAL_cached__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:1051 LOAD_GLOBAL
+  9: -live-	# pypy/interpreter/pyopcode.py:1051 LOAD_GLOBAL
+  10: L2:
+  11: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  12: ---
+template LOAD_FAST key=124 merge_point=0 regs i=6 r=5 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  5: getarrayitem_vable_r %r1, hole(oparg), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  6: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  7: goto_if_not_ptr_iszero %r0, L2	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  8: int_copy hole(oparg) -> %i1	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  9: ref_copy hole(pycode) -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  10: ref_copy %r1 -> %r3	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  11: L3:
+  12: inline_call_ir_v <JitCode '_load_fast_failed__AccessDirect_None'>, I[%i1], R[%r1]	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  13: -live-	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  14: raise $ref(object)	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  15: ---	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  16: L2:	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  17: int_copy hole(pc) -> %i1	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  18: ref_copy %r1 -> %r3	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  19: ref_copy hole(pycode) -> %r4	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  20: L4:
+  21: -live-	# pypy/interpreter/pyframe.py:328 pushvalue
+  22: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:328 pushvalue
+  23: assert_not_none %r0	# pypy/interpreter/pyframe.py:329 pushvalue
+  24: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  25: setarrayitem_vable_r %r1, %i1, %r0, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  26: int_add %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:330 pushvalue
+  27: -live-	# pypy/interpreter/pyframe.py:330 pushvalue
+  28: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:330 pushvalue
+  29: L5:
+  30: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r3]
+  31: ---
+template LOAD_FAST key=124 merge_point=1 regs i=6 r=5 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  9: getarrayitem_vable_r %r1, hole(oparg), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020> -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  10: -live-	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  11: goto_if_not_ptr_iszero %r0, L2	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  12: int_copy hole(oparg) -> %i1	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  13: ref_copy hole(pycode) -> %r0	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  14: ref_copy %r1 -> %r3	# rpython/rtyper/rlist.py:720 ll_getitem_fast
+  15: L3:
+  16: inline_call_ir_v <JitCode '_load_fast_failed__AccessDirect_None'>, I[%i1], R[%r1]	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  17: -live-	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  18: raise $ref(object)	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  19: ---	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  20: L2:	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  21: int_copy hole(pc) -> %i1	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  22: ref_copy %r1 -> %r3	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  23: ref_copy hole(pycode) -> %r4	# pypy/interpreter/pyopcode.py:613 LOAD_FAST
+  24: L4:
+  25: -live-	# pypy/interpreter/pyframe.py:328 pushvalue
+  26: getfield_vable_i %r1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth> -> %i1	# pypy/interpreter/pyframe.py:328 pushvalue
+  27: assert_not_none %r0	# pypy/interpreter/pyframe.py:329 pushvalue
+  28: -live-	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  29: setarrayitem_vable_r %r1, %i1, %r0, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_locals_cells_stack_w>, <rpython.jit.backend.llsupport.descr.ArrayDescr object at 0x0000000b1b272020>	# rpython/rtyper/rlist.py:733 ll_setitem_nonneg
+  30: int_add %i1, $1 -> %i1	# pypy/interpreter/pyframe.py:330 pushvalue
+  31: -live-	# pypy/interpreter/pyframe.py:330 pushvalue
+  32: setfield_vable_i %r1, %i1, FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_valuestackdepth>	# pypy/interpreter/pyframe.py:330 pushvalue
+  33: L5:
+  34: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r3]
+  35: ---
+template CALL_FUNCTION key=131 merge_point=0 regs i=6 r=3 f=0
+  0: L1:
+  1: pe_bailout_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  2: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  3: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  4: inline_call_ir_v <JitCode 'CALL_FUNCTION__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:383 interp_step
+  5: -live-	# pypy/interpreter/pyopcode.py:383 interp_step
+  6: L2:
+  7: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  8: ---
+template CALL_FUNCTION key=131 merge_point=1 regs i=6 r=3 f=0
+  0: L1:
+  1: -live-
+  2: int_guard_value %i0
+  3: -live-
+  4: jit_merge_point $54, I[hole(pc), %i0], R[hole(pycode)], F[], I[], R[%r1, %r2], F[]
+  5: -live-
+  6: -live-	# pypy/interpreter/pyopcode.py:273 interp_step
+  7: setfield_vable_i %r1, hole(instr_start), FieldDescr<pypy.interpreter.pyframe.PyFrame.inst_last_instr>	# pypy/interpreter/pyopcode.py:273 interp_step
+  8: inline_call_ir_v <JitCode 'CALL_FUNCTION__AccessDirect_None'>, I[hole(oparg), hole(pc)], R[%r1]	# pypy/interpreter/pyopcode.py:383 interp_step
+  9: -live-	# pypy/interpreter/pyopcode.py:383 interp_step
+  10: L2:
+  11: exit 0 [ec=%r2, is_being_profiled=%i0, pycode=%r0, self=%r1]
+  12: ---
+[1fe3d99] jit-jitcode-template}

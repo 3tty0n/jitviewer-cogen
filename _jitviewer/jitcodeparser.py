@@ -59,18 +59,60 @@ TEMPLATE_HEADER = re.compile(r'^template (\S+) key=(-?\d+) merge_point=(\d+) '
 PROLOGUE = re.compile(r'^\s*prologue ([irf]) (\d+) <- hole\((\w+)\)\s*$')
 SOURCE = re.compile(r'\t# (\S+):(\d+) (\S+)\s*$')
 EXIT = re.compile(r'^exit \d+\b')
-HOLE = re.compile(r'hole\((\w+)\)')
-WILDCARD = re.compile(r'hole\(\w+\)|'
-                      r'\$(?:ref\(0x[0-9a-fA-F]+\)|-?\d+)')
-COPY_CONST = re.compile(r'^(int_copy|ref_copy|float_copy) (?!%)(\S+) ->')
+LABEL_DEF = re.compile(r'^L\d+:$')
+HOLE = re.compile(r'^hole\((\w+)\)$')
+KIND_BRACKET = re.compile(r'\b[IRF]\[')
+ANGLE = re.compile(r'<([^<>]*)>')
+FIELD_PATH = re.compile(r'pypy(?:\.\w+)+')
+# Matches, in order of preference: a hole, a $ref(...) constant (possibly
+# with one level of nested parens), a $-prefixed int, a bare int not part
+# of a %register or an already-collapsed <descr>, and a raw jump label.
+WILDCARD = re.compile(
+    r'hole\(\w+\)'
+    r'|\$ref\((?:[^()]|\([^()]*\))*\)'
+    r'|\$-?\d+'
+    r'|(?<![%.\w])-?\d+(?!\w)'
+    r'|\bL\d+\b')
 KINDS = {'i': 'int_copy', 'r': 'ref_copy', 'f': 'float_copy'}
 
 
+def _collapse_descr(match):
+    # FieldDescr<pypy...> (template) and <FieldS pypy... N> (residual) both
+    # carry the same dotted field path; keep only that. Everything else
+    # (ArrayDescr/SizeDescr/Calli/...) has no shared textual form between
+    # the two sides, so it collapses to one generic placeholder. A JitCode
+    # callee name is the one thing worth keeping verbatim.
+    inner = match.group(1)
+    if inner.startswith('JitCode'):
+        return '<%s>' % inner
+    field = FIELD_PATH.search(inner)
+    if field is not None:
+        return '<%s>' % field.group(0)
+    return '<descr>'
+
+
+def _canon(text):
+    """Normalize template and residual insn text to the same shape."""
+    text = text.replace(',', ' ').replace("'", '')
+    text = re.sub(r'\bFieldDescr(?=<)', '', text)
+    text = KIND_BRACKET.sub('[', text)
+    text = ANGLE.sub(_collapse_descr, text)
+    return ' '.join(text.split())
+
+
 def align_key(text):
-    return WILDCARD.sub('?', COPY_CONST.sub(r'\1 ? ->', text))
+    text = _canon(text)
+    if text.startswith('-live-'):
+        return '-live-'
+    op, sep, rest = text.partition(' ')
+    if op in ('pe_bailout_point', 'jit_merge_point'):
+        op = 'merge'
+    return op + sep + WILDCARD.sub('?', rest)
 
 
 def hole_values(template_text, residual_text):
+    template_text = _canon(template_text)
+    residual_text = _canon(residual_text)
     parts = []
     names = []
     pos = 0
@@ -134,8 +176,12 @@ def parse_template(lines):
         match = INSN.match(line)
         if match is not None:
             text = match.group(2)
+            # Labels, like exits, are structural scaffolding: never folded,
+            # never matched against a residual insn.
+            boundary = EXIT.match(text) is not None or \
+                LABEL_DEF.match(text) is not None
             template.insns.append((int(match.group(1)), text, source,
-                                   EXIT.match(text) is not None))
+                                   boundary))
     return templates
 
 

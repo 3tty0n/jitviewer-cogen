@@ -57,24 +57,50 @@ def test_handler_source():
 
 def test_parse_templates():
     templates = parse_templates(TEMPLATE_LOG)
-    assert sorted(templates) == [('LOAD_CONST', 0), ('LOAD_FAST', 1)]
+    assert sorted(templates) == [
+        ('BINARY_ADD', 0), ('BINARY_ADD', 1),
+        ('BINARY_SUBTRACT', 0), ('BINARY_SUBTRACT', 1),
+        ('CALL_FUNCTION', 0), ('CALL_FUNCTION', 1),
+        ('COMPARE_OP', 0), ('COMPARE_OP', 1),
+        ('LOAD_CONST', 0), ('LOAD_CONST', 1),
+        ('LOAD_FAST', 0), ('LOAD_FAST', 1),
+        ('LOAD_GLOBAL', 0), ('LOAD_GLOBAL', 1),
+        ('POP_JUMP_IF_FALSE', 0), ('POP_JUMP_IF_FALSE', 1),
+        ('POP_JUMP_IF_TRUE', 0), ('POP_JUMP_IF_TRUE', 1),
+        ('RETURN_VALUE', 0), ('RETURN_VALUE', 1)]
     load_fast = templates[('LOAD_FAST', 1)]
     assert load_fast.key == 124
-    assert load_fast.prologue == [('i', 1, 'oparg')]
-    assert templates[('LOAD_CONST', 0)].insns[0][2] == \
-        ('pypy/interpreter/pyopcode.py', 94, 'dispatch')
+    # The real build never emits a prologue for this jitdriver; the parser
+    # still supports one (PROLOGUE regex) in case another jitdriver needs it.
+    assert load_fast.prologue == []
+    load_const = templates[('LOAD_CONST', 0)]
+    assert load_const.insns[0] == (0, 'L1:', None, True)
+    assert load_const.insns[2][2] == \
+        ('pypy/interpreter/pyopcode.py', 273, 'interp_step')
+    exits = [item for item in load_const.all_insns() if item[3] and
+             item[1].startswith('exit')]
+    assert exits and exits[0][1].startswith('exit 0 [')
 
 
 def test_align_load_const():
     diff = align(parse_templates(TEMPLATE_LOG)[('LOAD_CONST', 0)],
                  block_at(3))
-    assert diff.holes == {'pc': '$3', 'oparg': '$1',
+    assert diff.holes == {'pc': '$3', 'instr_start': '$3', 'oparg': '$1',
                           'pycode': '$ref(0xad64e31a0)'}
-    assert diff.folded == 2
-    assert diff.added >= 4
+    assert diff.folded == 1
+    assert diff.added == 5
     source = [diff.line_source[pc] for pc, text in block_at(3).insns
               if text.startswith('getarrayitem_gc_r_pure')]
-    assert source == [('pypy/interpreter/pyopcode.py', 625, 'LOAD_CONST')]
+    assert source == [('rpython/rtyper/rlist.py', 695, 'll_getitem_nonneg')]
     html = block_at(3).html('LOAD_CONST', diff)
     assert 'jitcode-folded">$1<' in html
-    assert 'pyopcode.py:625' in html
+    assert 'rlist.py:695' in html
+
+
+def test_align_load_fast_merge_point():
+    diff = align(parse_templates(TEMPLATE_LOG)[('LOAD_FAST', 1)],
+                 block_at(0))
+    assert 20 in diff.line_holes
+    assert diff.line_holes[20] == set(['$0', '$ref(0xad64e31a0)'])
+    merge_line = [text for pc, text in block_at(0).insns if pc == 20][0]
+    assert merge_line.startswith('jit_merge_point')
