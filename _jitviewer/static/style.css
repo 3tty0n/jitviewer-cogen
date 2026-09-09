@@ -338,7 +338,8 @@ table.jitcode-diff {
 table.jitcode-diff td {
     vertical-align: top;
     white-space: pre;
-    overflow-x: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 1px 4px;
 }
 

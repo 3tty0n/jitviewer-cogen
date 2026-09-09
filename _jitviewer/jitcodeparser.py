@@ -377,22 +377,26 @@ def diff_table_html(block, opname, diff):
     else:
         for titem, ritem, kind in diff.pairs:
             tmpl_html = ''
+            tmpl_title = ''
             if titem is not None:
                 idx, text, source, is_exit = titem
                 line_text = '%5s: %s' % (idx is None and '-' or idx, text)
                 tmpl_html = highlight_insn(line_text)
+                tmpl_title = cgi.escape(text, True)
             res_html = ''
+            res_title = ''
             if ritem is not None:
                 pc, text = ritem
                 line_text = '%5d: %s' % (pc, text)
                 res_html = highlight_insn(line_text, diff.line_holes.get(pc, set()))
+                res_title = cgi.escape(text, True)
                 source = diff.line_source.get(pc)
                 if source is not None:
                     res_html += '<span class="jitcode-src">%s:%d</span>' % (
                         cgi.escape(source[0].split('/')[-1]), source[1])
-            rows.append('<tr class="jc-row-%s"><td class="tmpl">%s</td>'
-                        '<td class="res">%s</td></tr>' % (kind, tmpl_html,
-                                                           res_html))
+            rows.append('<tr class="jc-row-%s"><td class="tmpl" title="%s">%s'
+                        '</td><td class="res" title="%s">%s</td></tr>' % (
+                            kind, tmpl_title, tmpl_html, res_title, res_html))
     return '<table class="jitcode-diff">%s</table>' % ''.join(rows)
 
 
